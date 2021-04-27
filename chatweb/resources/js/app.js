@@ -37,3 +37,10 @@ const app = new Vue({
     vuetify: new Vuetify(),
 });
 
+Echo.private('chat')
+  .listen('MessageSent', (e) => {
+    this.messages.push({
+      message: e.message.message
+    });
+});
+

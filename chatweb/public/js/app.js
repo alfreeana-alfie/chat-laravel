@@ -1958,29 +1958,34 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   created: function created() {
+    var _this = this;
+
     this.getUserList();
+    Echo.join('chat').listen('MessageSent', function (event) {
+      _this.messages.push(event.messages);
+    });
   },
   methods: {
     getUserList: function getUserList() {
-      var _this = this;
+      var _this2 = this;
 
       axios.get('users').then(function (response) {
-        _this.users = response.data;
+        _this2.users = response.data;
       });
     },
     getUserMessage: function getUserMessage(user_id, name) {
-      var _this2 = this;
+      var _this3 = this;
 
       this.messageUserName = name, axios.post('http://127.0.0.1:8000/api/chatID', {
         user_id: this.$userId,
         to_user_id: user_id
       }).then(function (response) {
-        _this2.ChatID = response.data.id; // console.log(response.data.id)
+        _this3.ChatID = response.data.id; // console.log(response.data.id)
 
         axios.post('http://127.0.0.1:8000/api/chats', {
           chat_id: response.data.id
         }).then(function (response) {
-          _this2.messages = response.data; // console.log(response.data)
+          _this3.messages = response.data; // console.log(response.data)
         });
       });
     },
@@ -2181,6 +2186,8 @@ __webpack_require__.r(__webpack_exports__);
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var vuetify__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuetify */ "./node_modules/vuetify/dist/vuetify.js");
 /* harmony import */ var vuetify__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(vuetify__WEBPACK_IMPORTED_MODULE_0__);
+var _this = undefined;
+
 /**
  * First we will load all of this project's JavaScript dependencies which
  * includes Vue and other libraries. It is a great starting point when
@@ -2213,6 +2220,11 @@ Vue.use((vuetify__WEBPACK_IMPORTED_MODULE_0___default()));
 var app = new Vue({
   el: '#app',
   vuetify: new (vuetify__WEBPACK_IMPORTED_MODULE_0___default())()
+});
+Echo["private"]('chat').listen('MessageSent', function (e) {
+  _this.messages.push({
+    message: e.message.message
+  });
 });
 
 /***/ }),

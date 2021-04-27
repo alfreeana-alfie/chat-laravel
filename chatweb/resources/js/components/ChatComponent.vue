@@ -114,6 +114,11 @@
 
         created(){
             this.getUserList();
+
+            Echo.join('chat')
+                .listen('MessageSent', (event) => {
+                    this.messages.push(event.messages);
+                });
         },
 
         methods: {

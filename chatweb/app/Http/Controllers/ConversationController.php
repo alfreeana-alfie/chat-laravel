@@ -6,6 +6,8 @@ use App\Models\Conversation;
 use App\Models\Message;
 use App\Http\Resources\ConversationResource;
 use Illuminate\Http\Request;
+use App\Events\MessageSent;
+use Auth;
 
 class ConversationController extends Controller
 {
@@ -61,6 +63,8 @@ class ConversationController extends Controller
             'chat_id' => $request['chat_id'],
             'user_id' => auth()->user()->id
         ]);
+
+        broadcast(new MessageSent($message->load('user')))->toOthers();
 
         return $message;
     }
