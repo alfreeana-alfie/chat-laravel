@@ -1,12 +1,10 @@
 <template>
  <div id='chat'>
-   <v-card
-    width="250"
-    height="400"
-    class="d-flex flex-column fill-height">
+   <v-card height="400" >
         <v-toolbar dark dense flat>
             <v-toolbar-title> {{ userName }}</v-toolbar-title>
         </v-toolbar>
+   <v-card class="scroll" flat>
         <v-card-text class="flex-grow-1 overflow-y-auto">
                 <template v-for="(message, index) in messages" >
                     <div :class="message.user_id == currentID ? 'd-flex flex-row-reverse' : 'd-flex flex-row'" :key="index">
@@ -22,31 +20,41 @@
                                         {{ message.body }}
                                     </v-chip>
                                 </v-hover>
-                                
                             </template>
-                            
                         </v-menu>
+                        
                     </div>
+                    
                 </template>
             </v-card-text>
-
-            <v-card-text>
-                <v-text-field 
-                v-model="newMessage"
-                placeholder="Type a message..." 
-                type="text"
-                no-details
-                outlined
-                append-outer-icon="mdi-send"
-                @click:append-outer="sendMessage"
-                @keyup.enter="sendMessage"
-                name="message"
-                > 
-                </v-text-field>
-            </v-card-text>
+   </v-card>
+   <v-card-text>
+        <v-text-field 
+            v-model="newMessage"
+            placeholder="Type a message..." 
+            type="text"
+            no-details
+            outlined
+            append-outer-icon="mdi-send"
+            @click:append-outer="sendMessage"
+            @keyup.enter="sendMessage"
+            name="message"
+            > 
+        </v-text-field>
+   </v-card-text>
    </v-card>
  </div>
 </template>
+
+<style>
+.v-card {
+  display: flex !important;
+  flex-direction: column;
+}
+.scroll {
+   overflow-y: scroll
+}
+</style>
  
 <script>
 export default {
