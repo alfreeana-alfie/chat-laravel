@@ -1,8 +1,8 @@
 @extends('layouts.app')
 
 @section('content')
-    {{-- <user-list :user="{{ auth()->user() }}" class="chat-popup" id="myForm"></user-list> --}}
-    <main-screen></main-screen>
+    <main-component></main-component>
+    {{-- <users-list :user="{{ auth()->user() }}" class="chat-popup" id="myForm"></users-list> --}}
 
     {{-- <button class="open-button" type="button" onclick="openForm()">Chat</button> --}}
 
@@ -12,7 +12,8 @@
 
 <style>
     .open-button {
-        background-color: rgb(245, 245, 245);
+        background-color: #555;
+        color: white;
         padding: 16px 20px;
         border: none;
         cursor: pointer;
@@ -22,6 +23,7 @@
         right: 25px;
         width: 100px;
     }
+
         /* The popup chat - hidden by default */
     .chat-popup {
         display: block;

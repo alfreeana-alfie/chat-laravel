@@ -21,6 +21,10 @@ window.Vue = require('vue').default;
 
 Vue.component('conversation', require('./components/ExampleComponent.vue').default);
 Vue.component('main-component', require('./components/MainComponent.vue').default);
+Vue.component('chat', require('./components/Chat.vue').default);
+
+Vue.component('user-list', require('./components/UserList.vue').default);
+Vue.component('main-screen', require('./components/Main.vue').default);
 
 Vue.prototype.$userId = document.querySelector("meta[name='user-id']").getAttribute('content');
 /**

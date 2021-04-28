@@ -114,14 +114,15 @@
 
         created(){
             this.getUserList();
-
-            Echo.join('chat')
-                .listen('MessageSent', (event) => {
-                    this.messages.push(event.messages);
-                });
         },
 
         methods: {
+            fetchMessages() {
+                axios.get('messages').then(response => {
+                    this.messages = response.data;
+                })
+            },
+
             getUserList(){
                 axios.get('users').then(response => {
                     this.users = response.data;
@@ -162,7 +163,7 @@
                 axios.post('send', 
                 {
                     body: this.newMessage, 
-                    chat_id: this.ChatID,
+                    chat_id: '1',
                     user_id: this.$userId
                 })
                 .then(response => {
@@ -170,6 +171,23 @@
                 })
 
                 this.newMessage = ''
+            },
+
+            sendMessage02() {
+                this.messages.push({
+                    user: this.user,
+                    body: this.newMessage
+                });
+                axios.post('send', 
+                {
+                    body: this.newMessage, 
+                    chat_id: this.ChatID,
+                    user_id: this.$userId
+                })
+                .then(response => {
+                    // console.log(response.data)
+                })
+                this.newMessage = '';
             },
 
             getPhoneCall(){

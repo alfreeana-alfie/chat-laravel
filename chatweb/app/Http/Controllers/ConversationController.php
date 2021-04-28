@@ -99,7 +99,7 @@ class ConversationController extends Controller
             return $chats;
         }
     }
-
+    
     /**
      * Display the specified resource.
      *

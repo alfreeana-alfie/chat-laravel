@@ -9,7 +9,7 @@
           <v-tab>Chats</v-tab>
             <v-tab-item >
                 <v-card flat>
-                <ChatComponent/>
+                <UserList></UserList>
                 </v-card>
             </v-tab-item>
           <v-tab>Groups</v-tab>
@@ -25,6 +25,7 @@
 </template>
 
 <script>
+    import UserList from "./UserList";
     import ChatComponent from "./ChatComponent";
     import GroupComponent from "./GroupComponent";
     import GroupChatComponent from "./GroupChatComponent";
@@ -32,6 +33,7 @@
     export default {
     name: 'App',
     components: {
+        UserList,
         ChatComponent,
         GroupComponent,
         GroupChatComponent
@@ -43,6 +45,9 @@
         items: [
           'Chats', 'Groups',
         ],
+        user: {
+          username: 'matt'
+        }
       }
     },
   }

@@ -41,6 +41,9 @@ Route::post('/users-name', [UserController::class, 'getName']);
 Route::get('/conversation', [ConversationController::class, 'index']);
 Route::get('/chats/{from_user_id}', [ConversationController::class, 'fetchPersonal']);
 
+Route::get('/messages', [ConversationController::class, 'fetchMessages']);
+Route::post('/messages', 'ChatsController@sendMessage');
+
 // Message routes
 Route::post('/send', [ConversationController::class, 'sendMessage']);
 
