@@ -1912,7 +1912,7 @@ __webpack_require__.r(__webpack_exports__);
       chat_id: this.chatID
     };
   },
-  mounted: function mounted() {
+  created: function created() {
     var _this = this;
 
     this.fetchMessages();
@@ -2437,10 +2437,11 @@ __webpack_require__.r(__webpack_exports__);
       currentID: this.$userId,
       chatID: '',
       userName: '',
+      componentKey: 0,
       myComponent: null
     };
   },
-  created: function created() {
+  mounted: function mounted() {
     this.getUserList();
   },
   methods: {
@@ -2451,15 +2452,18 @@ __webpack_require__.r(__webpack_exports__);
         _this.users = response.data;
       });
     },
-    getUserMessage: function getUserMessage(user_id, name) {
+    getUserMessage: function getUserMessage(user_id, name, isValid) {
       var _this2 = this;
 
-      this.userName = name, axios.post('http://127.0.0.1:8000/api/chatID', {
+      this.userName = name, console.log(isValid);
+      axios.post('http://127.0.0.1:8000/api/chatID', {
         user_id: this.$userId,
         to_user_id: user_id
       }).then(function (response) {
         _this2.chatID = response.data.id;
+        console.log(_this2.chatID);
         _this2.myComponent = 'chat';
+        _this2.componentKey += 1;
       });
     }
   }
@@ -45648,6 +45652,7 @@ var render = function() {
     "v-layout",
     [
       _c(_vm.myComponent, {
+        key: _vm.componentKey,
         tag: "component",
         attrs: {
           chatID: _vm.chatID,
@@ -45681,7 +45686,11 @@ var render = function() {
                             {
                               on: {
                                 click: function($event) {
-                                  return _vm.getUserMessage(user.id, user.name)
+                                  return _vm.getUserMessage(
+                                    user.id,
+                                    user.name,
+                                    (_vm.componentKey = !_vm.componentKey)
+                                  )
                                 }
                               }
                             },

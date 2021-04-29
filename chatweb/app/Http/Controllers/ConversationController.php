@@ -79,22 +79,28 @@ class ConversationController extends Controller
         $chats = Conversation::where(
             ['user_id' => $request['user_id'], 
             'to_user_id' => $request['to_user_id']])
-            ->orWhere(
-            ['user_id' => $request['to_user_id'], 
-            'to_user_id' => $request['user_id']])
             ->first();
 
         if($chats == null){
-            Conversation::create([
-                'user_id' => $request['user_id'],
-                'to_user_id' => $request['to_user_id']
-            ]);
+            $chats02 = Conversation::where(
+                ['user_id' => $request['to_user_id'], 
+                'to_user_id' => $request['user_id']])
+                ->first();
 
-            $chats = Conversation::where(
-                ['user_id' => $request['user_id'], 
-                'to_user_id' => $request['to_user_id']])->first();
+                if($chats02 == null){
+                    Conversation::create([  
+                        'user_id' => $request['user_id'],
+                        'to_user_id' => $request['to_user_id']
+                    ]);
 
-            return $chats;
+                    $chats03 = Conversation::where(
+                        ['user_id' => $request['user_id'], 
+                        'to_user_id' => $request['to_user_id']])->first();
+                
+                    return $chats03;
+                }else{
+                    return $chats02;
+                }
         }else{
             return $chats;
         }

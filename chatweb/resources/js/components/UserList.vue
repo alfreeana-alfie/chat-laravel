@@ -1,6 +1,6 @@
 <template>
     <v-layout>
-        <component :is="myComponent" :chatID="chatID" :currentID="currentID" :userName="userName"></component>
+        <component :key="componentKey" :is="myComponent" :chatID="chatID" :currentID="currentID" :userName="userName"></component>
         <!-- <chat :chatID="ChatID" :currentID="currentID" :userName="userName"/>  -->
         <v-card 
         width="250"
@@ -10,7 +10,7 @@
                 <v-list-item-group color="#1976D2" >
                     <template v-for="(user, index) in users" >
                             <v-list-item :key="index" >
-                                <v-list-item-content v-on:click="getUserMessage(user.id, user.name)">
+                                <v-list-item-content v-on:click="getUserMessage(user.id, user.name, componentKey = !componentKey)">
                                     <v-list-item-title v-html="user.name">{{ user.name }}</v-list-item-title>
                                     <!-- <v-list-item-subtitle v-html="user.email"> {{ user.email }}</v-list-item-subtitle> -->
                                 </v-list-item-content>
@@ -46,11 +46,12 @@
                 currentID: this.$userId,
                 chatID: '',
                 userName: '',
+                componentKey: 0,
                 myComponent: null
             }
         },
 
-        created(){
+        mounted(){
             this.getUserList();
         },
 
@@ -61,8 +62,9 @@
                 })
             },
 
-            getUserMessage(user_id, name){
+            getUserMessage(user_id, name, isValid){
                 this.userName = name,
+                console.log(isValid)
                 axios.post('http://127.0.0.1:8000/api/chatID', 
                 {
                     user_id: this.$userId, 
@@ -70,8 +72,10 @@
                 })
                 .then(response => {
                     this.chatID = response.data.id;
+                    console.log(this.chatID);
                     
                     this.myComponent = 'chat';
+                    this.componentKey += 1;
                 })
                 
             }
