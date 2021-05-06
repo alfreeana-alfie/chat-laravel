@@ -13,6 +13,22 @@ class UserController extends Controller
         return $user;
     }
 
+    public function merchantID(){
+        $user = User::where('id', '!=', auth()->user()->id)
+        ->where('type', '=', '1')
+        ->get();
+        
+        return $user;
+    }
+
+    public function memberID(){
+        $user = User::where('id', '!=', auth()->user()->id)
+        ->where('type', '=', '0')
+        ->get();
+        
+        return $user;
+    }
+
     public function show($user_id){
         $user = User::findOrFail($user_id);
 

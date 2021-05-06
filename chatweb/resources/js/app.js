@@ -6,39 +6,27 @@
 
 require('./bootstrap');
 
-window.Vue = require('vue').default;
+window.Vue = require('vue');
+import Vue from 'vue';
 
-/**
- * The following block of code may be used to automatically register your
- * Vue components. It will recursively scan this directory for the Vue
- * components and automatically register them with their "basename".
- *
- * Eg. ./components/ExampleComponent.vue -> <example-component></example-component>
- */
-
-// const files = require.context('./', true, /\.vue$/i)
-// files.keys().map(key => Vue.component(key.split('/').pop().split('.')[0], files(key).default))
-
-Vue.component('conversation', require('./components/ExampleComponent.vue').default);
-Vue.component('main-component', require('./components/MainComponent.vue').default);
-Vue.component('chat', require('./components/Chat.vue').default);
+Vue.component('example-com', require('./components/ExampleComponent.vue').default);
+// Vue.component('main-component', require('./components/MainComponent.vue').default);
+// Vue.component('chat', require('./components/Chat.vue').default);
 
 Vue.component('user-list', require('./components/UserList.vue').default);
 Vue.component('main-screen', require('./components/Main.vue').default);
+Vue.component('video-chat', require('./components/VideoChatComponent.vue').default);
 
 Vue.prototype.$userId = document.querySelector("meta[name='user-id']").getAttribute('content');
-/**
- * Next, we will create a fresh Vue application instance and attach it to
- * the page. Then, you may begin adding components to this application
- * or customize the JavaScript scaffolding to fit your unique needs.
- */
 
- import Vuetify from 'vuetify';
- Vue.use(Vuetify); 
+import Vuetify from 'vuetify';
+
+Vue.use(Vuetify); 
 
 const app = new Vue({
-    el: '#app',
-    vuetify: new Vuetify(),
+el: '#app',
+vuetify: new Vuetify(),
+   
 });
 
 Echo.private('chat')

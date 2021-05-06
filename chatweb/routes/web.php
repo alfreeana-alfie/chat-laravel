@@ -18,13 +18,15 @@ use App\Http\Controllers\GroupController;
 */
 
 Route::get('/', function () {
-    broadcast(new WebSocketDemoEvent('some data'));
+    // broadcast(new WebSocketDemoEvent('some data'));
 
     return view('welcome');
 });
 
 // User routes
 Route::get('/users', [UserController::class, 'index']);
+Route::get('/user-merchant', [UserController::class, 'merchantID']);
+Route::get('/user-member', [UserController::class, 'memberID']);
 Route::get('/users/{user_id}', [UserController::class, 'show']);
 Route::post('/users-name', [UserController::class, 'getName']);
 

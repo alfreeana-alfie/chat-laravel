@@ -1,23 +1,24 @@
 <template>
-    <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">Example Component</div>
+    <v-card
+        color="grey lighten-4" flat height="200px" tile>
+        <v-toolbar dense>
+        <v-app-bar-nav-icon></v-app-bar-nav-icon>
 
-                    <div class="card-body">
-                        I'm an example component.
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+        <v-toolbar-title>Title</v-toolbar-title>
+
+        <div class="flex-grow-1"></div>
+
+        <v-btn icon>
+            <v-icon>mdi-magnify</v-icon>
+        </v-btn>
+
+        <v-btn icon>
+            <v-icon>mdi-heart</v-icon>
+        </v-btn>
+
+        <v-btn icon>
+            <v-icon>mdi-dots-vertical</v-icon>
+        </v-btn>
+        </v-toolbar>
+    </v-card>
 </template>
-
-<script>
-    export default {
-        mounted() {
-            console.log('Component mounted.')
-        }
-    }
-</script>

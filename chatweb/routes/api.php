@@ -21,6 +21,11 @@ Route::post('/chats', [ConversationController::class, 'fetchPersonal']);
 Route::post('/chatID', [ConversationController::class, 'fetchChatID']);
 Route::post('/send', [ConversationController::class, 'sendMessage']);
 
+// User Routes
+Route::get('/user-merchant', [UserController::class, 'merchantID']);
+Route::get('/user-member', [UserController::class, 'memberID']);
+
+
 // Route::post('/create', [GroupController::class, 'store']);
 // Route::post('/getGroupName', [GroupController::class, 'store']);
 
