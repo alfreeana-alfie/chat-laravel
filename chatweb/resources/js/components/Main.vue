@@ -68,31 +68,7 @@
             myComponent: null
         }),
         methods: {
-            loadComponent: function(){
-                    this.myComponent = 'chat';
-            },
-            onCapture() {
-            this.img = this.$refs.webcam.capture();
-            },
-            onStarted(stream) {
-                console.log("On Started Event", stream);
-            },
-            onStopped(stream) {
-                console.log("On Stopped Event", stream);
-            },
-            onStop() {
-                this.$refs.webcam.stop();
-            },
-            onStart() {
-                this.$refs.webcam.start();
-            },
-            onError(error) {
-                console.log("On Error Event", error);
-            },
-            onCameras(cameras) {
-                this.devices = cameras;
-                console.log("On Cameras Event", cameras);
-            },
+            
         }
     }
 </script>

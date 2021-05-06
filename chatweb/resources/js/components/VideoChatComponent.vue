@@ -8,9 +8,12 @@
                     class="btn btn-primary mr-2"
                     v-for="(user, index) in videoCallParams.users"
                     :key="index"
-                    @click="getVideo()"
+                    @click="placeVideoCall(user.id, user.name)"
                     >
                     Call {{ user.name }}
+                    <span class="badge badge-light">{{
+                        getUserOnlineStatus(user.id)
+                    }}</span>
                     </button>
                 </div>
             </div>
@@ -25,33 +28,36 @@
             playsinline
             autoplay
             class="cursor-pointer"
+            :class="isFocusMyself === true ? 'user-video' : 'partner-video'"
+            @click="toggleCameraArea"
           />
           <video
             ref="partnerVideo"
             playsinline
             autoplay
             class="cursor-pointer"
+            :class="isFocusMyself === true ? 'partner-video' : 'user-video'"
+            @click="toggleCameraArea"
+            v-if="videoCallParams.callAccepted"
           />
           <div class="partner-video">
             <div class="column items-center q-pt-xl">
               <div class="col q-gutter-y-md text-center">
                 <p class="q-pt-md">
+                    <strong>{{ callPartner }}</strong>
                 </p>
                 <p>calling...</p>
               </div>
             </div>
           </div>
           <div class="action-btns">
-            <button type="button" class="btn btn-info">
-              Mute
+            <button type="button" class="btn btn-info" @click="toggleMuteAudio">
+                {{ mutedAudio ? "Unmute" : "Mute" }}
             </button>
-            <button
-              type="button"
-              class="btn btn-primary mx-4"
-            >
-              Show
+            <button type="button" class="btn btn-primary mx-4" @click="toggleMuteAudio">
+              {{ mutedVideo ? "ShowVideo" : "HideVideo" }}
             </button>
-            <button type="button" class="btn btn-danger">
+            <button type="button" class="btn btn-danger" @click="endCall">
               EndCall
             </button>
           </div>
@@ -66,23 +72,41 @@
 </template>
 
 <script>
-export default {
+import Peer from "simple-peer";
+import { getPermissions } from "../helpers";
 
+export default {
     data(){
         return{
             currentID: this.$userId, // Current Logged in user
+            isFocusMyself: true,
+            callPlaced: false,
+            callPartner: null,
+            mutedAudio: false,
+            mutedVideo: false,
             videoCallParams: {
                 users: [], // User List Array
+                channel: null,
+                stream: null,
+                receivingCall: false,
+                caller: null,
+                callerSignal: null,
+                callerAccepted: false,
+                peer1: null,
+                peer2: null
             }
         }
     },
 
     mounted() {
         this.getUserList();
+        
+        // Channel Setups
+        this.initializeChannel();
+        this.initializeCallListeners();
     },
 
     methods: {
-
         // Get User List 
         getUserList(){
             axios.get('user-member').then(response => {
@@ -90,9 +114,239 @@ export default {
             })
         },
 
-        getVideo() {
-            console.log(this.currentID);
-        }
+        getUserOnlineStatus(id) {
+            const onlineUserIndex = this.videoCallParams.users.findIndex(
+                (data) => data.id === id
+            );
+            console.log(onlineUserIndex);
+            if (onlineUserIndex < 0) {
+                return "Offline";
+            }else{
+                return "Online";
+            }
+        },
+
+        // Get Media permissions
+        getMediaPermission() {
+            return getPermissions().then((stream) => {
+                this.videoCallParams.stream = stream;
+                if(this.$refs.userVideo){
+                    this.$refs.userVideo.srcObject = stream;
+                }
+            }).catch((error) => {
+                console.log(error);
+            });
+        },
+
+        // Start Initialize Channel & Call
+        initializeChannel() {
+            this.videoCallParams.channel = window.Echo.join("presence-video-channel");
+            console.log('Success Channel');
+        },
+
+        initializeCallListeners() {
+            this.videoCallParams.channel.here((users) => {
+                this.videoCallParams.users = users;
+            });
+
+            this.videoCallParams.channel.joining((users) => {
+                const joiningUserIndex = this.videoCallParams.users.findIndex((data) => data.id == user.id);
+                if(joiningUserIndex < 0){
+                    this.videoCallParams.users.push(user);
+                }
+            });
+
+            this.videoCallParams.channel.leaving((users) => {
+                const leavingUserIndex = this.videoCallParams.users.findIndex((data) => data.id == user.id);
+                this.videoCallParams.users.splice(leavingUserIndex, 1);
+            });
+
+            this.videoCallParams.channel.listen("StartVideoChat", ({data}) => {
+                if(data.type == "incomingCall"){
+                    const updateSignal = {
+                        ...data.signalData, 
+                        sdp: `${data.signalData.sdp}\n`, 
+                    };
+                    
+                    this.videoCallParams.receivingCall = true;
+                    this.videoCallParams.caller = data.from;
+                    this.videoCallParams.callerSignal = updateSignal;
+                }
+            });
+
+            console.log("Success Call Listeners");
+        },
+        // End Initialize Channel & Call
+
+        // Start Placing Video Call
+        async placeVideoCall(id, name){
+            this.callPlaced = true;
+            this.callPartner = name;
+
+            await this.getMediaPermission();
+            this.videoCallParams.peer1 = new Peer({
+                initiator: true,
+                trickle: false,
+                stream: this.videoCallParams.stream,
+            });
+
+            this.videoCallParams.peer1.on("signal", (data) => {
+                axios.post("/video/call-user", {
+                    user_to_call: id,
+                    signal_data: data,
+                    from: this.$userId,
+                }).then((response) => {
+                    console.log(response);
+                }).catch((error) => {
+                    console.log(error);
+                });
+            });
+
+            this.videoCallParams.peer1.on("stream", (stream) => {
+                console.log("Call Streaming...");
+                if (this.$refs.partnerVideo){
+                    this.$refs.partnerVideo.srcObject = stream;
+                }
+            });
+
+            this.videoCallParams.peer1.on("connect", () => {
+                console.log("Peer Connected!")
+            });
+
+            this.videoCallParams.peer1.on("error", (error) => {
+                console.log(error);
+            });
+
+            this.videoCallParams.peer1.on("close", () => {
+                console.log("Call Closed Caller");
+            });
+
+            this.videoCallParams.channel.listen("StartVideoChat", ({data}) => {
+                if(data.type == "callAccepted"){
+                    if (data.signal.renegotiate) {
+                        console.log("renegotating");
+                    }
+                    if(data.signal.sdp){
+                        this.videoCallParams.callAccepted = true;
+                        const updateSignal = {
+                            ...data.signal,
+                            sdp: `${data.signal.sdp}\n`,
+                        };
+                        this.videoCallParams.peer1.signal(updatedSignal);
+                    }
+                }
+            });
+        },
+        // End Placing Video Call
+
+        // Start Accepting Video Call
+        async acceptCall() {
+            this.callPlaced = true;
+            this.videoCallParams.callAccepted = true;
+            await this.getMediaPermission();
+
+            this.videoCallParams.peer2 = new Peer({
+                initiator: false,
+                trickle: false,
+                stream: this.videoCallParams.stream,
+            });
+
+            this.videoCallParams.receivingCall = false;
+            this.videoCallParams.peer2.on("signal", (data) => {
+                axios.post("/video/accept-call", {
+                    signal: data,
+                    to: this.videoCallParams.caller,
+                }).then((response) => {
+                    console.log(response);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+            });
+
+            this.videoCallParams.peer2.on("stream", (stream) => {
+                this.videoCallParams.callAccepted = true;
+                this.$refs.partnerVideo.srcObject = stream;
+            });
+
+            this.videoCallParams.peer2.on("connect", () => {
+                console.log("Peer02 Connected");
+                this.videoCallParams.callAccepted = true;
+            });
+
+            this.videoCallParams.peer2.on("error", (err) => {
+                console.log(err);
+            });
+
+            this.videoCallParams.peer2.on("close", () => {
+                console.log("Call Closed Accepter");
+            });
+
+            this.videoCallParams.peer2.signal(this.videoCallParams.callerSignal);
+        },
+        // End Accepting Video Call
+
+        // Start Declining Video Call
+        declineCall(){
+            this.videoCallParams.receivingCall = false;
+        },
+        // End Declining Video Call
+
+        // Start Ending Video Call
+        endCall(){
+            if(!this.mutedVideo) this.toggleMuteVideo();
+            if(!this.mutedAudio) this.toggleMuteAudio();
+
+            this.stopStreamedVideo(this.$refs.userVideo);
+            if (this.authuserid === this.videoCallParams.caller) {
+                this.videoCallParams.peer1.destroy();
+            } else {
+                this.videoCallParams.peer2.destroy();
+            }
+            this.videoCallParams.channel.pusher.channels.channels[
+                "presence-presence-video-channel"
+            ].disconnect();
+
+            setTimeout(() => {
+                this.callPlaced = false;
+            }, 3000);
+        },
+        // End Ending Video Call
+
+        toggleCameraArea() {
+            if (this.videoCallParams.callAccepted) {
+                this.isFocusMyself = !this.isFocusMyself;
+            }
+        },
+
+        toggleMuteAudio(){
+            if(this.mutedAudio){
+                this.$refs.userVideo.srcObject.getAudioTracks()[0].enabled = true;
+                this.mutedAudio = false;
+            }else{
+                this.$refs.userVideo.srcObject.getAudioTracks()[0].enabled = false;
+                this.mutedAudio = true;
+            }
+        },
+
+        toggleMuteVideo(){
+            if (this.mutedVideo) {
+                this.$refs.userVideo.srcObject.getVideoTracks()[0].enabled = true;
+                this.mutedVideo = false;
+            } else {
+                this.$refs.userVideo.srcObject.getVideoTracks()[0].enabled = false;
+                this.mutedVideo = true;
+            }
+        },
+
+        stopStreamedVideo(videoElem) {
+            const stream = videoElem.srcObject;
+            const tracks = stream.getTracks();
+            tracks.forEach((track) => {
+                track.stop();
+            });
+            videoElem.srcObject = null;
+        },
     }
 }
 </script>
