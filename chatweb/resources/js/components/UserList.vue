@@ -1,6 +1,10 @@
 <template>
     <v-layout>
+        <!-- Start Chat Component -->
         <component :key="componentKey" :is="myComponent" :chatID="chatID" :currentID="currentID" :userName="userName"></component>
+        <!-- End Chat Component -->
+
+        <!-- Start User List -->
         <v-card width="300"
         height="400">
             <v-list>
@@ -25,8 +29,62 @@
                 </v-list-item-group>
             </v-list>
         </v-card>
+        <!-- End User List -->
     </v-layout>
 </template>
+
+
+<script>
+import Chat from "./Chat";
+
+export default {
+    components: {
+        Chat
+    },
+
+    data(){
+        return{
+            users: [],
+            currentID: this.$userId,
+            chatID: '',
+            userName: '', 
+            componentKey: 0, // Component Key for changing values component
+            myComponent: null //Initiate Chat Component
+        }
+    },
+
+    mounted(){
+        this.getUserList();
+    },
+
+    methods: {
+        // Get User List
+        getUserList(){
+            axios.get('user-member').then(response => {
+                this.users = response.data;
+            })
+        },
+
+        // Get Chat Room ID for messages
+        getUserMessage(user_id, name, isValid){
+            this.userName = name,
+            console.log(isValid)
+            axios.post('http://127.0.0.1:8000/api/chatID', 
+            {
+                user_id: this.$userId, 
+                to_user_id: user_id
+            })
+            .then(response => {
+                this.chatID = response.data.id;
+                console.log(this.chatID);
+                
+                this.myComponent = 'chat';
+                this.componentKey += 1;
+            })
+        }
+    }
+}
+</script>
 
 <style>
 .v-list{
@@ -36,58 +94,3 @@
 }
 </style>
 
-<script>
-    import Chat from "./Chat";
-
-    export default {
-        components: {
-            Chat
-        },
-
-        data(){
-            return{
-                users: [],
-                currentID: this.$userId,
-                chatID: '',
-                userName: '',
-                componentKey: 0,
-                myComponent: null
-            }
-        },
-
-        mounted(){
-            this.getUserList();
-        },
-
-        methods: {
-            getUserList(){
-                axios.get('user-member').then(response => {
-                    this.users = response.data;
-                })
-            },
-
-            getUserMessage(user_id, name, isValid){
-                this.userName = name,
-                console.log(isValid)
-                axios.post('http://127.0.0.1:8000/api/chatID', 
-                {
-                    user_id: this.$userId, 
-                    to_user_id: user_id
-                })
-                .then(response => {
-                    this.chatID = response.data.id;
-                    console.log(this.chatID);
-                    
-                    this.myComponent = 'chat';
-                    this.componentKey += 1;
-                })
-                
-            },
-
-            sentFriendRequest(userID){
-                console.log('Sent')
-            }
-        }
-        
-    }
-</script>

@@ -5,6 +5,8 @@ use App\Events\WebSocketDemoEvent;
 use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\GroupController;
+use App\Http\Controllers\VideoChatController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -48,6 +50,17 @@ Route::post('/messages', 'ChatsController@sendMessage');
 
 // Message routes
 Route::post('/send', [ConversationController::class, 'sendMessage']);
+
+//Video routes
+Route::get('/video-chat', function () {
+    // fetch all users apart from the authenticated user
+    $users = User::where('id', '<>', Auth::id())->get();
+    return view('video-chat', ['users' => $users]);
+});
+
+// Endpoints to call or receive calls.
+Route::post('/video/call-user', [VideoChatController::class, 'callUser']);
+Route::post('/video/accept-call', [VideoChatController::class, 'acceptCall']);
 
 Auth::routes();
 
