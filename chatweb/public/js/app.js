@@ -2037,6 +2037,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -2050,21 +2053,34 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     return _ref = {
       hidden: false,
       myComponent: null,
-      allusers: []
+      allusers: {}
     }, _defineProperty(_ref, "myComponent", null), _defineProperty(_ref, "authUserID", this.$userId), _ref;
   },
   mounted: function mounted() {
+    var _this = this;
+
     this.getUserList();
+    setInterval(function () {
+      _this.getUserList(); // this.checkOnline();
+
+    }, 20000);
   },
   methods: {
     getUserList: function getUserList() {
-      var _this = this;
+      var _this2 = this;
 
       axios.get('user-member').then(function (response) {
-        _this.allusers = response.data;
+        _this2.allusers = response.data;
       });
       this.myComponent = 'video-chat';
-    }
+    } // checkOnline(){
+    //     axios.get('check').then(response => {
+    //         console.log(response)
+    //     }).catch(response => {
+    //         console.log(response)
+    //     })
+    // }
+
   }
 });
 
@@ -2278,6 +2294,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -2306,8 +2323,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     };
   },
   mounted: function mounted() {
-    // this.getUserList();
-    // Channel Setups
+    this.getUserList(); // this.checkOnline(2);
+
+    console.log(this.authUserID); // Channel Setups
+
     this.initializeChannel();
     this.initializeCallListeners();
   },
@@ -2315,15 +2334,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     incomingCallDialog: function incomingCallDialog() {
       if (this.videoCallParams.receivingCall && this.videoCallParams.caller != this.authUserID) {
         return true;
+      } else {
+        return false;
       }
-
-      return false;
     },
     callerDetails: function callerDetails() {
       var _this = this;
 
       if (this.videoCallParams.caller && this.videoCallParams.caller != this.authUserID) {
-        var incomingCaller = this.users.filter(function (user) {
+        var incomingCaller = this.allusers.filter(function (user) {
           return user.id == _this.videoCallParams.caller;
         });
         return {
@@ -2344,11 +2363,23 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         _this2.videoCallParams.users = response.data;
       });
     },
+    checkOnline: function checkOnline(id) {
+      axios.post('check', {
+        id: id
+      }).then(function (response) {
+        if (response.data == "Online") {
+          return "Online";
+        } else {
+          return "Offline";
+        }
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
     getUserOnlineStatus: function getUserOnlineStatus(id) {
       var onlineUserIndex = this.videoCallParams.users.findIndex(function (data) {
         return data.id === id;
       });
-      console.log(onlineUserIndex);
 
       if (onlineUserIndex < 0) {
         return "Offline";
@@ -2372,8 +2403,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     // Start Initialize Channel & Call
     initializeChannel: function initializeChannel() {
-      this.videoCallParams.channel = window.Echo.join("presence-video-channel");
-      console.log('Success Channel');
+      this.videoCallParams.channel = window.Echo.join("Demo");
+      console.log(this.videoCallParams.channel);
     },
     initializeCallListeners: function initializeCallListeners() {
       var _this4 = this;
@@ -2396,49 +2427,61 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         });
 
         _this4.videoCallParams.users.splice(leavingUserIndex, 1);
-      });
+      }); // listen to incomming call
+
       this.videoCallParams.channel.listen("StartVideoChat", function (_ref) {
         var data = _ref.data;
+        console.log(data);
 
-        if (data.type == "incomingCall") {
-          var updateSignal = _objectSpread(_objectSpread({}, data.signalData), {}, {
+        if (data.type === "incomingCall") {
+          // add a new line to the sdp to take care of error
+          var updatedSignal = _objectSpread(_objectSpread({}, data.signalData), {}, {
             sdp: "".concat(data.signalData.sdp, "\n")
           });
 
           _this4.videoCallParams.receivingCall = true;
           _this4.videoCallParams.caller = data.from;
-          _this4.videoCallParams.callerSignal = updateSignal;
+          _this4.videoCallParams.callerSignal = updatedSignal;
         }
       });
-      console.log("Success Call Listeners");
+      console.log(this.videoCallParams.channel);
     },
     // End Initialize Channel & Call
+    destroyed: function destroyed() {
+      var _this5 = this;
+
+      Echo.leave(function (user) {
+        _this5.users = _this5.users.filter(function (u) {
+          return u.id !== user.id;
+        });
+      });
+    },
     // Start Placing Video Call
     placeVideoCall: function placeVideoCall(id, name) {
-      var _this5 = this;
+      var _this6 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                _this5.callPlaced = true;
-                _this5.callPartner = name;
+                _this6.callPlaced = true;
+                _this6.callPartner = name;
                 _context.next = 4;
-                return _this5.getMediaPermission();
+                return _this6.getMediaPermission();
 
               case 4:
-                _this5.videoCallParams.peer1 = new (simple_peer__WEBPACK_IMPORTED_MODULE_1___default())({
+                _this6.videoCallParams.peer1 = new (simple_peer__WEBPACK_IMPORTED_MODULE_1___default())({
                   initiator: true,
                   trickle: false,
-                  stream: _this5.videoCallParams.stream
+                  stream: _this6.videoCallParams.stream
                 });
 
-                _this5.videoCallParams.peer1.on("signal", function (data) {
+                _this6.videoCallParams.peer1.on("signal", function (data) {
                   axios.post("/video/call-user", {
                     user_to_call: id,
                     signal_data: data,
-                    from: _this5.authUserID
+                    from: _this6.authUserID
                   }).then(function (response) {
                     console.log(response);
                   })["catch"](function (error) {
@@ -2446,27 +2489,27 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                   });
                 });
 
-                _this5.videoCallParams.peer1.on("stream", function (stream) {
+                _this6.videoCallParams.peer1.on("stream", function (stream) {
                   console.log("Call Streaming...");
 
-                  if (_this5.$refs.partnerVideo) {
-                    _this5.$refs.partnerVideo.srcObject = stream;
+                  if (_this6.$refs.partnerVideo) {
+                    _this6.$refs.partnerVideo.srcObject = stream;
                   }
                 });
 
-                _this5.videoCallParams.peer1.on("connect", function () {
+                _this6.videoCallParams.peer1.on("connect", function () {
                   console.log("Peer Connected!");
                 });
 
-                _this5.videoCallParams.peer1.on("error", function (error) {
+                _this6.videoCallParams.peer1.on("error", function (error) {
                   console.log(error);
                 });
 
-                _this5.videoCallParams.peer1.on("close", function () {
+                _this6.videoCallParams.peer1.on("close", function () {
                   console.log("Call Closed Caller");
                 });
 
-                _this5.videoCallParams.channel.listen("StartVideoChat", function (_ref2) {
+                _this6.videoCallParams.channel.listen("StartVideoChat", function (_ref2) {
                   var data = _ref2.data;
 
                   if (data.type == "callAccepted") {
@@ -2475,13 +2518,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                     }
 
                     if (data.signal.sdp) {
-                      _this5.videoCallParams.callAccepted = true;
+                      _this6.videoCallParams.callAccepted = true;
 
                       var updateSignal = _objectSpread(_objectSpread({}, data.signal), {}, {
                         sdp: "".concat(data.signal.sdp, "\n")
                       });
 
-                      _this5.videoCallParams.peer1.signal(updateSignal);
+                      _this6.videoCallParams.peer1.signal(updateSignal);
                     }
                   }
                 });
@@ -2497,30 +2540,30 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     // End Placing Video Call
     // Start Accepting Video Call
     acceptCall: function acceptCall() {
-      var _this6 = this;
+      var _this7 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2() {
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
-                _this6.callPlaced = true;
-                _this6.videoCallParams.callAccepted = true;
+                _this7.callPlaced = true;
+                _this7.videoCallParams.callAccepted = true;
                 _context2.next = 4;
-                return _this6.getMediaPermission();
+                return _this7.getMediaPermission();
 
               case 4:
-                _this6.videoCallParams.peer2 = new (simple_peer__WEBPACK_IMPORTED_MODULE_1___default())({
+                _this7.videoCallParams.peer2 = new (simple_peer__WEBPACK_IMPORTED_MODULE_1___default())({
                   initiator: false,
                   trickle: false,
-                  stream: _this6.videoCallParams.stream
+                  stream: _this7.videoCallParams.stream
                 });
-                _this6.videoCallParams.receivingCall = false;
+                _this7.videoCallParams.receivingCall = false;
 
-                _this6.videoCallParams.peer2.on("signal", function (data) {
+                _this7.videoCallParams.peer2.on("signal", function (data) {
                   axios.post("/video/accept-call", {
                     signal: data,
-                    to: _this6.videoCallParams.caller
+                    to: _this7.videoCallParams.caller
                   }).then(function (response) {
                     console.log(response);
                   })["catch"](function (error) {
@@ -2528,25 +2571,25 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                   });
                 });
 
-                _this6.videoCallParams.peer2.on("stream", function (stream) {
-                  _this6.videoCallParams.callAccepted = true;
-                  _this6.$refs.partnerVideo.srcObject = stream;
+                _this7.videoCallParams.peer2.on("stream", function (stream) {
+                  _this7.videoCallParams.callAccepted = true;
+                  _this7.$refs.partnerVideo.srcObject = stream;
                 });
 
-                _this6.videoCallParams.peer2.on("connect", function () {
+                _this7.videoCallParams.peer2.on("connect", function () {
                   console.log("Peer02 Connected");
-                  _this6.videoCallParams.callAccepted = true;
+                  _this7.videoCallParams.callAccepted = true;
                 });
 
-                _this6.videoCallParams.peer2.on("error", function (err) {
+                _this7.videoCallParams.peer2.on("error", function (err) {
                   console.log(err);
                 });
 
-                _this6.videoCallParams.peer2.on("close", function () {
+                _this7.videoCallParams.peer2.on("close", function () {
                   console.log("Call Closed Accepter");
                 });
 
-                _this6.videoCallParams.peer2.signal(_this6.videoCallParams.callerSignal);
+                _this7.videoCallParams.peer2.signal(_this7.videoCallParams.callerSignal);
 
               case 12:
               case "end":
@@ -2564,7 +2607,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     // End Declining Video Call
     // Start Ending Video Call
     endCall: function endCall() {
-      var _this7 = this;
+      var _this8 = this;
 
       if (!this.mutedVideo) this.toggleMuteVideo();
       if (!this.mutedAudio) this.toggleMuteAudio();
@@ -2578,7 +2621,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       this.videoCallParams.channel.pusher.channels.channels["presence-presence-video-channel"].disconnect();
       setTimeout(function () {
-        _this7.callPlaced = false;
+        _this8.callPlaced = false;
       }, 3000);
     },
     // End Ending Video Call
@@ -2703,8 +2746,10 @@ window.Pusher = __webpack_require__(/*! pusher-js */ "./node_modules/pusher-js/d
 window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__.default({
   broadcaster: 'pusher',
   key: "9c555324fd3ab0fb1661",
-  cluster: "mt1",
-  forceTLS: true
+  wsHost: window.location.hostname,
+  wsPort: 6001,
+  forceTLS: false,
+  disableStats: true
 });
 
 /***/ }),
@@ -56515,11 +56560,11 @@ var render = function() {
           _c(
             "div",
             { staticClass: "btn-group", attrs: { role: "group" } },
-            _vm._l(_vm.allusers, function(user) {
+            _vm._l(_vm.allusers, function(user, index) {
               return _c(
                 "button",
                 {
-                  key: user.id,
+                  key: index,
                   staticClass: "btn btn-primary mr-2",
                   attrs: { type: "button" },
                   on: {
@@ -56536,7 +56581,12 @@ var render = function() {
                   ),
                   _c("span", { staticClass: "badge badge-light" }, [
                     _vm._v(_vm._s(_vm.getUserOnlineStatus(user.id)))
-                  ])
+                  ]),
+                  _vm._v(" "),
+                  _c("span", {
+                    staticClass: "badge badge-light",
+                    attrs: { id: "userStatus" }
+                  })
                 ]
               )
             }),

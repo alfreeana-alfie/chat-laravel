@@ -18,7 +18,7 @@ class ConversationController extends Controller
      */
     public function index()
     {
-        return view('conversation');
+        return view('conversation')->with('auth_user', auth()->user());
     }
 
     public function fetchMessages(){

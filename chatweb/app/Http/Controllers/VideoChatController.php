@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Events\StartVideoChat;
 
@@ -11,7 +12,7 @@ class VideoChatController extends Controller
     {
         $data['userToCall'] = $request->user_to_call;
         $data['signalData'] = $request->signal_data;
-        $data['from'] = $request->from;
+        $data['from'] = Auth::id();
         $data['type'] = 'incomingCall';
 
         broadcast(new StartVideoChat($data))->toOthers();

@@ -14,6 +14,9 @@
         </v-btn>
     </v-fab-transition> -->
     <VideoChatComponent :allusers="allusers" :authUserID="authUserID"></VideoChatComponent>
+    <!-- <ul>
+        <li v-for="(user, index) in allusers" v-bind:key="index"> {{ user.name }} </li>
+    </ul> -->
     <!-- <component :is="myComponent" :allusers="allusers"></component> -->
 </v-container>
     <!-- <v-container class="container">
@@ -64,17 +67,22 @@
 
     export default {
         components: { UserList, VideoChatComponent },
+
         data(){
             return{
                 hidden: false,
                 myComponent: null,
-                allusers: [],
+                allusers: {},
                 myComponent: null,
                 authUserID: this.$userId,
             }
         },
         mounted() {
             this.getUserList();
+            setInterval(() =>{
+                this.getUserList();
+                // this.checkOnline();
+            }, 20000);
         },
         methods: {
             getUserList(){
@@ -83,6 +91,14 @@
                 })
                 this.myComponent = 'video-chat';
             },
+
+            // checkOnline(){
+            //     axios.get('check').then(response => {
+            //         console.log(response)
+            //     }).catch(response => {
+            //         console.log(response)
+            //     })
+            // }
         }
     }
 </script>

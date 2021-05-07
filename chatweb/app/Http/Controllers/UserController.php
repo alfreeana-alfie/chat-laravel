@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use DB;
+use Cache;
+
 
 class UserController extends Controller
 {
@@ -38,5 +41,22 @@ class UserController extends Controller
     public function getName(Request $request){
         $user = User::where('id', $request['id'])->pluck('name');
         return $user;
+    }
+
+    /**
+     * Show user online status.
+     *
+     */
+    public function userOnlineStatus(Request $request)
+    {
+        $users = User::where('id', $request['id'])->get();
+    
+        foreach ($users as $user) {
+            if ($user->isOnline()) {
+                return "Online";
+            }else{
+                return "Offline";
+            }
+        }
     }
 }

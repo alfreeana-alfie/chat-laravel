@@ -7,14 +7,15 @@
             <button
               type="button"
               class="btn btn-primary mr-2"
-              v-for="user in allusers"
-              :key="user.id"
+              v-for="(user, index) in allusers"
+              :key="index"
               @click="placeVideoCall(user.id, user.name)"
             >
               Call {{ user.name }}
               <span class="badge badge-light">{{
                 getUserOnlineStatus(user.id)
               }}</span>
+              <span class="badge badge-light" id="userStatus"></span>
             </button>
           </div>
         </div>
@@ -113,24 +114,26 @@ export default {
     },
 
     mounted() {
-        // this.getUserList();
-        
+        this.getUserList();
+        // this.checkOnline(2);
+        console.log(this.authUserID)
         // Channel Setups
         this.initializeChannel();
-        this.initializeCallListeners();
+        this.initializeCallListeners(); 
     },
 
     computed: {
         incomingCallDialog() {
             if(this.videoCallParams.receivingCall && this.videoCallParams.caller != this.authUserID){
                 return true;
+            }else{
+                return false;
             }
-            return false;
         },
 
         callerDetails() {
             if(this.videoCallParams.caller && this.videoCallParams.caller != this.authUserID){
-                const incomingCaller = this.users.filter(
+                const incomingCaller = this.allusers.filter(
                     (user) => user.id == this.videoCallParams.caller
                 );
 
@@ -151,11 +154,26 @@ export default {
             })
         },
 
+        checkOnline(id){
+            axios.post('check', 
+            {
+                id: id
+            })
+            .then(response => {
+                if(response.data == "Online") {
+                    return "Online";
+                }else{
+                    return "Offline";
+                }
+            }).catch(error => {
+                console.log(error)
+            })
+        },
+
         getUserOnlineStatus(id) {
             const onlineUserIndex = this.videoCallParams.users.findIndex(
                 (data) => data.id === id
             );
-            console.log(onlineUserIndex);
             if (onlineUserIndex < 0) {
                 return "Offline";
             }else{
@@ -180,8 +198,8 @@ export default {
 
         // Start Initialize Channel & Call
         initializeChannel() {
-            this.videoCallParams.channel = window.Echo.join("presence-video-channel");
-            console.log('Success Channel');
+            this.videoCallParams.channel = window.Echo.join("Demo");
+            console.log(this.videoCallParams.channel);
         },
 
         initializeCallListeners() {
@@ -201,22 +219,30 @@ export default {
                 this.videoCallParams.users.splice(leavingUserIndex, 1);
             });
 
-            this.videoCallParams.channel.listen("StartVideoChat", ({data}) => {
-                if(data.type == "incomingCall"){
-                    const updateSignal = {
-                        ...data.signalData, 
-                        sdp: `${data.signalData.sdp}\n`, 
-                    };
-                    
-                    this.videoCallParams.receivingCall = true;
-                    this.videoCallParams.caller = data.from;
-                    this.videoCallParams.callerSignal = updateSignal;
+            // listen to incomming call
+            this.videoCallParams.channel.listen("StartVideoChat", ({ data }) => {
+                console.log(data);
+                if (data.type === "incomingCall") {
+                // add a new line to the sdp to take care of error
+                const updatedSignal = {
+                    ...data.signalData,
+                    sdp: `${data.signalData.sdp}\n`,
+                };
+                this.videoCallParams.receivingCall = true;
+                this.videoCallParams.caller = data.from;
+                this.videoCallParams.callerSignal = updatedSignal;
                 }
             });
 
-            console.log("Success Call Listeners");
+            console.log(this.videoCallParams.channel);
         },
         // End Initialize Channel & Call
+
+        destroyed() {
+            Echo.leave(user => {
+                this.users = this.users.filter(u => (u.id !== user.id));
+            });
+        },
 
         // Start Placing Video Call
         async placeVideoCall(id, name){
