@@ -5,10 +5,28 @@
         <!-- End Chat Component -->
 
         <!-- Start User List -->
-        <v-card width="300"
-        height="400">
+        <v-card width="420" height="550" class="pa-0">
+
+            <!-- Card Text -->
+            <v-card-text class="pa-0">
+                <v-row no-gutters align="center">
+                    <v-col cols="6" md="4">
+                        <v-card-text><v-icon>mdi-account-circle</v-icon> User(s)</v-card-text>
+                    </v-col>
+                    <v-col cols="12" md="8">
+                        <v-chip-group column>
+                            <v-chip class="ma-1" small> All Members </v-chip>
+                            <v-chip class="ma-1" small> Friend List </v-chip>
+                            <v-chip class="ma-1" small> Group List </v-chip>
+                            <v-chip class="ma-1" small> Friend Request </v-chip>
+                            <v-chip class="ma-1" small> Merchant </v-chip>
+                        </v-chip-group>
+                    </v-col>
+                </v-row>
+            </v-card-text>
+
+            <!-- List -->
             <v-list>
-                <v-subheader>User(s)</v-subheader>
                 <v-list-item-group color="#1976D2" >
                     <template v-for="(user, index) in users" >
                             <v-list-item :key="index" >

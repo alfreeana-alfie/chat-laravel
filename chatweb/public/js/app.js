@@ -2108,6 +2108,24 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   components: {
@@ -56441,13 +56459,85 @@ var render = function() {
       _vm._v(" "),
       _c(
         "v-card",
-        { attrs: { width: "300", height: "400" } },
+        { staticClass: "pa-0", attrs: { width: "420", height: "550" } },
         [
+          _c(
+            "v-card-text",
+            { staticClass: "pa-0" },
+            [
+              _c(
+                "v-row",
+                { attrs: { "no-gutters": "", align: "center" } },
+                [
+                  _c(
+                    "v-col",
+                    { attrs: { cols: "6", md: "4" } },
+                    [
+                      _c(
+                        "v-card-text",
+                        [
+                          _c("v-icon", [_vm._v("mdi-account-circle")]),
+                          _vm._v(" User(s)")
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "v-col",
+                    { attrs: { cols: "12", md: "8" } },
+                    [
+                      _c(
+                        "v-chip-group",
+                        { attrs: { column: "" } },
+                        [
+                          _c(
+                            "v-chip",
+                            { staticClass: "ma-1", attrs: { small: "" } },
+                            [_vm._v(" All Members ")]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "v-chip",
+                            { staticClass: "ma-1", attrs: { small: "" } },
+                            [_vm._v(" Friend List ")]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "v-chip",
+                            { staticClass: "ma-1", attrs: { small: "" } },
+                            [_vm._v(" Group List ")]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "v-chip",
+                            { staticClass: "ma-1", attrs: { small: "" } },
+                            [_vm._v(" Friend Request ")]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "v-chip",
+                            { staticClass: "ma-1", attrs: { small: "" } },
+                            [_vm._v(" Merchant ")]
+                          )
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
           _c(
             "v-list",
             [
-              _c("v-subheader", [_vm._v("User(s)")]),
-              _vm._v(" "),
               _c(
                 "v-list-item-group",
                 { attrs: { color: "#1976D2" } },
