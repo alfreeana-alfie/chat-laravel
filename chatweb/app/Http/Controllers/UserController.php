@@ -32,6 +32,14 @@ class UserController extends Controller
         return $user;
     }
 
+    public function singleID(Request $request){
+        $user = User::where('id', '=', $request['id'])
+        ->where('type', '=', '0')
+        ->get();
+        
+        return $user;
+    }
+
     public function show($user_id){
         $user = User::findOrFail($user_id);
 

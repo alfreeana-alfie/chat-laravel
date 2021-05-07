@@ -1,6 +1,6 @@
 <template>
 <v-container >
-    <UserList class="user-container" :authUserName="authUserName"></UserList>
+    <UserList class="user-container" :authUserName="authUserName" :allusers="allusers" :authUserID="authUserID"></UserList>
     <v-fab-transition>
         <v-btn
         color="pink"
@@ -41,6 +41,7 @@
 
     export default {
         components: { UserList, VideoChatComponent },
+
         props: ['UserName'],
 
         data(){
@@ -58,7 +59,6 @@
 
             setInterval(() =>{
                 this.getUserList();
-                // this.checkOnline();
             }, 20000);
         },
         methods: {
@@ -67,15 +67,7 @@
                     this.allusers = response.data;
                 })
                 this.myComponent = 'video-chat';
-            },
-
-            // checkOnline(){
-            //     axios.get('check').then(response => {
-            //         console.log(response)
-            //     }).catch(response => {
-            //         console.log(response)
-            //     })
-            // }
+            }
         }
     }
 </script>

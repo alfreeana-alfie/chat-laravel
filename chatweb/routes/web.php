@@ -37,6 +37,7 @@ Route::group(['middleware' => ['auth',  'online']], function () {
     Route::get('/users', [UserController::class, 'index']);
     Route::get('/user-merchant', [UserController::class, 'merchantID']);
     Route::get('/user-member', [UserController::class, 'memberID']);
+    Route::post('/user-single', [UserController::class, 'singleID']);
     Route::get('/users/{user_id}', [UserController::class, 'show']);
     Route::post('/users-name', [UserController::class, 'getName']);
 
