@@ -13,7 +13,8 @@
         {{ hidden ? 'Show' : 'Hide' }}
         </v-btn>
     </v-fab-transition> -->
-    <VideoChatComponent></VideoChatComponent>
+    <VideoChatComponent :allusers="allusers" :authUserID="authUserID"></VideoChatComponent>
+    <!-- <component :is="myComponent" :allusers="allusers"></component> -->
 </v-container>
     <!-- <v-container class="container">
         <v-row>
@@ -63,12 +64,25 @@
 
     export default {
         components: { UserList, VideoChatComponent },
-        data: () => ({
-            hidden: false,
-            myComponent: null
-        }),
+        data(){
+            return{
+                hidden: false,
+                myComponent: null,
+                allusers: [],
+                myComponent: null,
+                authUserID: this.$userId,
+            }
+        },
+        mounted() {
+            this.getUserList();
+        },
         methods: {
-            
+            getUserList(){
+                axios.get('user-member').then(response => {
+                    this.allusers = response.data;
+                })
+                this.myComponent = 'video-chat';
+            },
         }
     }
 </script>

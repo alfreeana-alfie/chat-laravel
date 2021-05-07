@@ -1,28 +1,29 @@
 <template>
+<div id="video-chat">
     <div class="container">
         <div class="row">
             <div class="col">
                 <div class="btn-group" role="group">
-                    <button
-                    type="button"
-                    class="btn btn-primary mr-2"
-                    v-for="(user, index) in videoCallParams.users"
-                    :key="index"
-                    @click="placeVideoCall(user.id, user.name)"
-                    >
-                    Call {{ user.name }}
-                    <span class="badge badge-light">{{
-                        getUserOnlineStatus(user.id)
-                    }}</span>
-                    </button>
-                </div>
-            </div>
+            <button
+              type="button"
+              class="btn btn-primary mr-2"
+              v-for="user in allusers"
+              :key="user.id"
+              @click="placeVideoCall(user.id, user.name)"
+            >
+              Call {{ user.name }}
+              <span class="badge badge-light">{{
+                getUserOnlineStatus(user.id)
+              }}</span>
+            </button>
+          </div>
         </div>
-
+      </div>
     <!--Placing Video Call-->
       <div class="row mt-5" id="video-row">
-        <div class="col-12 video-container">
+        <div class="col-12 video-container" v-if="callPlaced">
           <video
+            id="video"
             ref="userVideo"
             muted
             playsinline
@@ -54,11 +55,11 @@
             <button type="button" class="btn btn-info" @click="toggleMuteAudio">
                 {{ mutedAudio ? "Unmute" : "Mute" }}
             </button>
-            <button type="button" class="btn btn-primary mx-4" @click="toggleMuteAudio">
-              {{ mutedVideo ? "ShowVideo" : "HideVideo" }}
+            <button type="button" class="btn btn-primary mx-4" @click="toggleMuteVideo">
+                {{ mutedVideo ? "ShowVideo" : "HideVideo" }}
             </button>
             <button type="button" class="btn btn-danger" @click="endCall">
-              EndCall
+                EndCall
             </button>
           </div>
         </div>
@@ -66,9 +67,18 @@
       <!-- End of Placing Video Call  -->
 
       <!-- Incoming Call  -->
-      
+      <div class="row" v-if="incomingCallDialog">
+          <div class="col"> 
+              <p>Incoming Call from <strong>{{ callerDetails.name }}</strong></p>
+              <div class="btn-group" role="group">
+                  <button type="button" class="btn btn-danger" data-dismiss="modal" @click="declineCall">Decline</button>
+                  <button type="button" class="btn btn-success ml-5" @click="acceptCall">Accept</button>
+              </div>
+          </div>
+      </div>
       <!-- End of Incoming Call  -->
     </div>
+</div>
 </template>
 
 <script>
@@ -76,9 +86,13 @@ import Peer from "simple-peer";
 import { getPermissions } from "../helpers";
 
 export default {
+    props: [
+        "allusers",
+        "authUserID"
+    ],
     data(){
         return{
-            currentID: this.$userId, // Current Logged in user
+            currentID: this.authUserID, // Current Logged in user
             isFocusMyself: true,
             callPlaced: false,
             callPartner: null,
@@ -99,11 +113,34 @@ export default {
     },
 
     mounted() {
-        this.getUserList();
+        // this.getUserList();
         
         // Channel Setups
         this.initializeChannel();
         this.initializeCallListeners();
+    },
+
+    computed: {
+        incomingCallDialog() {
+            if(this.videoCallParams.receivingCall && this.videoCallParams.caller != this.authUserID){
+                return true;
+            }
+            return false;
+        },
+
+        callerDetails() {
+            if(this.videoCallParams.caller && this.videoCallParams.caller != this.authUserID){
+                const incomingCaller = this.users.filter(
+                    (user) => user.id == this.videoCallParams.caller
+                );
+
+                return {
+                    id: this.videoCallParams.caller,
+                    name: `${incomingCaller[0].name}`,
+                };
+            }
+            return null;
+        }
     },
 
     methods: {
@@ -128,15 +165,18 @@ export default {
 
         // Get Media permissions
         getMediaPermission() {
-            return getPermissions().then((stream) => {
-                this.videoCallParams.stream = stream;
-                if(this.$refs.userVideo){
-                    this.$refs.userVideo.srcObject = stream;
-                }
-            }).catch((error) => {
-                console.log(error);
+        return getPermissions()
+            .then((stream) => {
+            this.videoCallParams.stream = stream;
+            if (this.$refs.userVideo) {
+                this.$refs.userVideo.srcObject = stream;
+            }
+            })
+            .catch((error) => {
+            console.log(error);
             });
         },
+
 
         // Start Initialize Channel & Call
         initializeChannel() {
@@ -194,7 +234,7 @@ export default {
                 axios.post("/video/call-user", {
                     user_to_call: id,
                     signal_data: data,
-                    from: this.$userId,
+                    from: this.authUserID,
                 }).then((response) => {
                     console.log(response);
                 }).catch((error) => {
@@ -232,7 +272,7 @@ export default {
                             ...data.signal,
                             sdp: `${data.signal.sdp}\n`,
                         };
-                        this.videoCallParams.peer1.signal(updatedSignal);
+                        this.videoCallParams.peer1.signal(updateSignal);
                     }
                 }
             });

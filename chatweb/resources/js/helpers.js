@@ -19,6 +19,8 @@ export const getPermissions = () => {
                 return Promise.reject(
                     new Error("getUserMedia is not implemented in this browser")
                 );
+            }else{
+                console.log("Gooddd................");
             }
 
             // Otherwise, wrap the call to the old navigator.getUserMedia with a Promise
@@ -30,7 +32,8 @@ export const getPermissions = () => {
     navigator.mediaDevices.getUserMedia =
         navigator.mediaDevices.getUserMedia ||
         navigator.webkitGetUserMedia ||
-        navigator.mozGetUserMedia;
+        navigator.mozGetUserMedia || 
+        navigator.msGetUserMedia;
 
     return new Promise((resolve, reject) => {
         navigator.mediaDevices
@@ -40,6 +43,7 @@ export const getPermissions = () => {
             })
             .catch(err => {
                 reject(err);
+                console.log(err);
                 //   throw new Error(`Unable to fetch stream ${err}`);
             });
     });

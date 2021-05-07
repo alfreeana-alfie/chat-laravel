@@ -6,7 +6,7 @@ use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\VideoChatController;
-
+use App\Models\User;
 
 /*
 |--------------------------------------------------------------------------
@@ -42,7 +42,10 @@ Route::post('/users-name', [UserController::class, 'getName']);
 // Route::post('/sendGroup', [GroupController::class, 'sendGroupMessage']);
 
 // Chat routes
-Route::get('/conversation', [ConversationController::class, 'index']);
+Route::get('/conversation', function() {
+    $users = User::where('id', '<>', Auth::id())->get();
+    return view('conversation', ['users' => $users]);
+});
 Route::get('/chats/{from_user_id}', [ConversationController::class, 'fetchPersonal']);
 
 Route::get('/messages', [ConversationController::class, 'fetchMessages']);
@@ -52,11 +55,6 @@ Route::post('/messages', 'ChatsController@sendMessage');
 Route::post('/send', [ConversationController::class, 'sendMessage']);
 
 //Video routes
-Route::get('/video-chat', function () {
-    // fetch all users apart from the authenticated user
-    $users = User::where('id', '<>', Auth::id())->get();
-    return view('video-chat', ['users' => $users]);
-});
 
 // Endpoints to call or receive calls.
 Route::post('/video/call-user', [VideoChatController::class, 'callUser']);

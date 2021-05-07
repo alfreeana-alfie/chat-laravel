@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Events\StartVideoChat;
 
 class VideoChatController extends Controller
 {
@@ -10,7 +11,7 @@ class VideoChatController extends Controller
     {
         $data['userToCall'] = $request->user_to_call;
         $data['signalData'] = $request->signal_data;
-        $data['from'] = Auth::id();
+        $data['from'] = $request->from;
         $data['type'] = 'incomingCall';
 
         broadcast(new StartVideoChat($data))->toOthers();
