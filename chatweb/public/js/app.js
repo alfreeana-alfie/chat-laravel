@@ -1917,6 +1917,9 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: ['chatID', 'currentID', 'userName'],
   data: function data() {
@@ -2021,6 +2024,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     UserList: _UserList__WEBPACK_IMPORTED_MODULE_0__.default,
     VideoChatComponent: _VideoChatComponent__WEBPACK_IMPORTED_MODULE_1__.default
   },
+  props: ['UserName'],
   data: function data() {
     var _ref;
 
@@ -2028,7 +2032,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       hidden: false,
       myComponent: null,
       allusers: {}
-    }, _defineProperty(_ref, "myComponent", null), _defineProperty(_ref, "authUserID", this.$userId), _ref;
+    }, _defineProperty(_ref, "myComponent", null), _defineProperty(_ref, "authUserID", this.$userId), _defineProperty(_ref, "authUserName", this.UserName), _ref;
   },
   mounted: function mounted() {
     var _this = this;
@@ -2126,11 +2130,13 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   components: {
     Chat: _Chat__WEBPACK_IMPORTED_MODULE_0__.default
   },
+  props: ['authUserName'],
   data: function data() {
     return {
       users: [],
@@ -2144,7 +2150,7 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   mounted: function mounted() {
-    this.getUserList();
+    this.getUserList(); // console.log(this.authUserName)
   },
   methods: {
     // Get User List
@@ -2159,7 +2165,7 @@ __webpack_require__.r(__webpack_exports__);
     getUserMessage: function getUserMessage(user_id, name, isValid) {
       var _this2 = this;
 
-      this.userName = name, console.log(isValid);
+      this.userName = name, // console.log(isValid)
       axios.post('http://127.0.0.1:8000/api/chatID', {
         user_id: this.$userId,
         to_user_id: user_id
@@ -56152,10 +56158,7 @@ var render = function() {
     [
       _c(
         "v-card",
-        {
-          staticClass: "mx-auto",
-          attrs: { width: "300", "max-height": "400" }
-        },
+        { attrs: { width: "420", height: "550" } },
         [
           _c(
             "v-toolbar",
@@ -56170,6 +56173,20 @@ var render = function() {
                 { attrs: { icon: "" } },
                 [_c("v-icon", [_vm._v("mdi-phone")])],
                 1
+              ),
+              _vm._v(" "),
+              _c(
+                "v-btn",
+                { attrs: { icon: "" } },
+                [_c("v-icon", [_vm._v("mdi-video")])],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "v-btn",
+                { attrs: { icon: "" } },
+                [_c("v-icon", [_vm._v("mdi-dots-vertical")])],
+                1
               )
             ],
             1
@@ -56177,7 +56194,7 @@ var render = function() {
           _vm._v(" "),
           _c(
             "v-card",
-            { staticClass: "scroll", attrs: { flat: "", height: "300" } },
+            { staticClass: "scroll", attrs: { flat: "", height: "550" } },
             [
               _c(
                 "v-card-text",
@@ -56213,7 +56230,7 @@ var render = function() {
                                               {
                                                 staticClass: "pa-4 mb-2",
                                                 staticStyle: {
-                                                  height: "40px",
+                                                  height: "35px",
                                                   "white-space": "normal"
                                                 },
                                                 attrs: {
@@ -56229,9 +56246,9 @@ var render = function() {
                                             ),
                                             [
                                               _vm._v(
-                                                "\n                                       " +
+                                                "\n                                           " +
                                                   _vm._s(message.body) +
-                                                  "\n                                   "
+                                                  "\n                                       "
                                               )
                                             ]
                                           )
@@ -56384,7 +56401,10 @@ var render = function() {
   return _c(
     "v-container",
     [
-      _c("UserList", { staticClass: "user-container" }),
+      _c("UserList", {
+        staticClass: "user-container",
+        attrs: { authUserName: _vm.authUserName }
+      }),
       _vm._v(" "),
       _c(
         "v-fab-transition",
@@ -56477,7 +56497,7 @@ var render = function() {
                         "v-card-text",
                         [
                           _c("v-icon", [_vm._v("mdi-account-circle")]),
-                          _vm._v(" User(s)")
+                          _vm._v(" " + _vm._s(_vm.authUserName) + " ")
                         ],
                         1
                       )

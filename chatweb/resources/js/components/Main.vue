@@ -1,6 +1,6 @@
 <template>
 <v-container >
-    <UserList class="user-container"></UserList>
+    <UserList class="user-container" :authUserName="authUserName"></UserList>
     <v-fab-transition>
         <v-btn
         color="pink"
@@ -41,6 +41,7 @@
 
     export default {
         components: { UserList, VideoChatComponent },
+        props: ['UserName'],
 
         data(){
             return{
@@ -49,10 +50,12 @@
                 allusers: {},
                 myComponent: null,
                 authUserID: this.$userId,
+                authUserName: this.UserName
             }
         },
         mounted() {
-            this.getUserList();
+            this.getUserList(); 
+
             setInterval(() =>{
                 this.getUserList();
                 // this.checkOnline();

@@ -11,7 +11,8 @@
             <v-card-text class="pa-0">
                 <v-row no-gutters align="center">
                     <v-col cols="6" md="4">
-                        <v-card-text><v-icon>mdi-account-circle</v-icon> User(s)</v-card-text>
+                        <v-card-text>
+                            <v-icon>mdi-account-circle</v-icon> {{ authUserName }} </v-card-text>
                     </v-col>
                     <v-col cols="12" md="8">
                         <v-chip-group column>
@@ -60,6 +61,8 @@ export default {
         Chat
     },
 
+    props: ['authUserName'],
+
     data(){
         return{
             users: [],
@@ -73,6 +76,7 @@ export default {
 
     mounted(){
         this.getUserList();
+        // console.log(this.authUserName)
     },
 
     methods: {
@@ -86,7 +90,7 @@ export default {
         // Get Chat Room ID for messages
         getUserMessage(user_id, name, isValid){
             this.userName = name,
-            console.log(isValid)
+            // console.log(isValid)
             axios.post('http://127.0.0.1:8000/api/chatID', 
             {
                 user_id: this.$userId, 

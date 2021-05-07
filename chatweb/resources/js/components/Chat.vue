@@ -1,38 +1,41 @@
 <template>
  <div id='chat'>
-   <v-card
-        class="mx-auto"
-        width="300"
-        max-height="400" >
+   <v-card width="420" height="550">
         <v-toolbar dark>
             <v-toolbar-title> {{ userName }}</v-toolbar-title>
             <v-spacer></v-spacer>
             <v-btn icon>
                 <v-icon>mdi-phone</v-icon>
             </v-btn>
+            <v-btn icon>
+                <v-icon>mdi-video</v-icon>
+            </v-btn>
+            <v-btn icon>
+                <v-icon>mdi-dots-vertical</v-icon>
+            </v-btn>
         </v-toolbar>
-   <v-card class="scroll" flat  height="300">
-        <v-card-text class="flex-grow-1 overflow-y-auto">
-                <template v-for="(message, index) in messages" >
-                    <div :class="message.user_id != currentID ? 'd-flex flex-row' : 'd-flex flex-row-reverse'" :key="index">
-                        <v-menu offset-y>
-                            <template v-slot:activator="{ on }">
-                                <v-hover>
-                                    <v-chip
-                                        :color="message.user_id != currentID ? '' : '#1565C0'"
-                                        dark
-                                        style="height:40px; white-space: normal;"
-                                        class="pa-4 mb-2"
-                                        v-on="on">
-                                        {{ message.body }}
-                                    </v-chip>
-                                </v-hover>
-                            </template>
-                        </v-menu>
-                    </div>
-                </template>
-            </v-card-text>
-   </v-card>
+        <v-card class="scroll" flat  height="550">
+                <v-card-text class="flex-grow-1 overflow-y-auto">
+                    <template v-for="(message, index) in messages" >
+                        <div :class="message.user_id != currentID ? 'd-flex flex-row' : 'd-flex flex-row-reverse'" :key="index">
+                            <v-menu offset-y>
+                                <template v-slot:activator="{ on }">
+                                    <v-hover>
+                                        <v-chip
+                                            :color="message.user_id != currentID ? '' : '#1565C0'"
+                                            dark
+                                            style="height:35px; white-space: normal;"
+                                            class="pa-4 mb-2"
+                                            v-on="on">
+                                            {{ message.body }}
+                                        </v-chip>
+                                    </v-hover>
+                                </template>
+                            </v-menu>
+                        </div>
+                    </template>
+                </v-card-text>
+        </v-card>
         <v-text-field 
             v-model="newMessage"
             placeholder="Type a message..." 
@@ -63,7 +66,6 @@
 export default {
     props: ['chatID', 'currentID', 'userName'],
     
-
     data(){
         return{
             messages: [],
