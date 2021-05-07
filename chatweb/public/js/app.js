@@ -2014,32 +2014,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -56392,9 +56366,39 @@ var render = function() {
   return _c(
     "v-container",
     [
-      _c("VideoChatComponent", {
-        attrs: { allusers: _vm.allusers, authUserID: _vm.authUserID }
-      })
+      _c("UserList", { staticClass: "user-container" }),
+      _vm._v(" "),
+      _c(
+        "v-fab-transition",
+        [
+          _c(
+            "v-btn",
+            {
+              staticClass: "v-btn-bottom",
+              attrs: {
+                color: "pink",
+                dark: "",
+                bottom: "",
+                right: "",
+                fab: ""
+              },
+              on: {
+                click: function($event) {
+                  _vm.hidden = !_vm.hidden
+                }
+              }
+            },
+            [
+              _vm._v(
+                "\n        " +
+                  _vm._s(_vm.hidden ? "Show" : "Hide") +
+                  "\n        "
+              )
+            ]
+          )
+        ],
+        1
+      )
     ],
     1
   )

@@ -1,6 +1,6 @@
 <template>
 <v-container >
-    <!-- <UserList class="user-container"></UserList>
+    <UserList class="user-container"></UserList>
     <v-fab-transition>
         <v-btn
         color="pink"
@@ -12,35 +12,9 @@
         class="v-btn-bottom">
         {{ hidden ? 'Show' : 'Hide' }}
         </v-btn>
-    </v-fab-transition> -->
-    <VideoChatComponent :allusers="allusers" :authUserID="authUserID"></VideoChatComponent>
-    <!-- <ul>
-        <li v-for="(user, index) in allusers" v-bind:key="index"> {{ user.name }} </li>
-    </ul> -->
-    <!-- <component :is="myComponent" :allusers="allusers"></component> -->
+    </v-fab-transition>
+    <!-- <VideoChatComponent :allusers="allusers" :authUserID="authUserID"></VideoChatComponent> -->
 </v-container>
-    <!-- <v-container class="container">
-        <v-row>
-            <div data-app>
-                <v-col>
-                    <v-fab-transition>
-                        <v-btn
-                        color="pink"
-                        dark
-                        absolute
-                        right
-                        fab
-                        @click="hidden = !hidden"
-                        >
-                        {{ hidden ? 'Show' : 'Hide' }}
-                        </v-btn>
-                    </v-fab-transition>
-                </v-col>
-                
-            </div>
-        </v-row>
-        <UserList class="user-container"></UserList>
-    </v-container> -->
 </template>
 
 <style>
