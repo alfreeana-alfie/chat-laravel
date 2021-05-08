@@ -1,6 +1,6 @@
 <template>
 <v-container >
-    <UserList class="user-container" :authUserName="authUserName" :authUserID="authUserID"></UserList>
+    <!-- <UserList class="user-container" :authUserName="authUserName" :authUserID="authUserID"></UserList>
     <v-fab-transition>
         <v-btn
         color="pink"
@@ -12,8 +12,8 @@
         class="v-btn-bottom">
         {{ hidden ? 'Show' : 'Hide' }}
         </v-btn>
-    </v-fab-transition>
-    <!-- <VideoChatComponent :allusers="allusers" :authUserID="authUserID"></VideoChatComponent> -->
+    </v-fab-transition> -->
+    <VideoChatComponent :allusers="allusers" :authUserID="authUserID"></VideoChatComponent>
 </v-container>
 </template>
 

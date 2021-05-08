@@ -1942,7 +1942,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   \***************************************************************************************************************************************************************************************************************/
 /***/ (() => {
 
-throw new Error("Module build failed (from ./node_modules/babel-loader/lib/index.js):\nSyntaxError: /Applications/MAMP/htdocs/chat-laravel/chatweb/resources/js/components/UserList.vue: Identifier 'getPermissions' has already been declared (188:9)\n\n\u001b[0m \u001b[90m 186 |\u001b[39m \u001b[36mimport\u001b[39m \u001b[33mPeer\u001b[39m \u001b[36mfrom\u001b[39m \u001b[32m\"simple-peer\"\u001b[39m\u001b[33m;\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 187 |\u001b[39m \u001b[36mimport\u001b[39m { getPermissions } \u001b[36mfrom\u001b[39m \u001b[32m\"../helpers_video\"\u001b[39m\u001b[33m;\u001b[39m\u001b[0m\n\u001b[0m\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 188 |\u001b[39m \u001b[36mimport\u001b[39m { getPermissions } \u001b[36mfrom\u001b[39m \u001b[32m\"../helpers_video\"\u001b[39m\u001b[33m;\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m     |\u001b[39m          \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 189 |\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 190 |\u001b[39m \u001b[36mexport\u001b[39m \u001b[36mdefault\u001b[39m {\u001b[0m\n\u001b[0m \u001b[90m 191 |\u001b[39m     components\u001b[33m:\u001b[39m {\u001b[0m\n    at Parser._raise (/Applications/MAMP/htdocs/chat-laravel/chatweb/node_modules/@babel/parser/lib/index.js:776:17)\n    at Parser.raiseWithData (/Applications/MAMP/htdocs/chat-laravel/chatweb/node_modules/@babel/parser/lib/index.js:769:17)\n    at Parser.raise (/Applications/MAMP/htdocs/chat-laravel/chatweb/node_modules/@babel/parser/lib/index.js:737:17)\n    at ScopeHandler.checkRedeclarationInScope (/Applications/MAMP/htdocs/chat-laravel/chatweb/node_modules/@babel/parser/lib/index.js:1453:12)\n    at ScopeHandler.declareName (/Applications/MAMP/htdocs/chat-laravel/chatweb/node_modules/@babel/parser/lib/index.js:1419:12)\n    at Parser.checkLVal (/Applications/MAMP/htdocs/chat-laravel/chatweb/node_modules/@babel/parser/lib/index.js:10261:24)\n    at Parser.parseImportSpecifier (/Applications/MAMP/htdocs/chat-laravel/chatweb/node_modules/@babel/parser/lib/index.js:13867:10)\n    at Parser.parseNamedImportSpecifiers (/Applications/MAMP/htdocs/chat-laravel/chatweb/node_modules/@babel/parser/lib/index.js:13844:12)\n    at Parser.parseImport (/Applications/MAMP/htdocs/chat-laravel/chatweb/node_modules/@babel/parser/lib/index.js:13675:39)\n    at Parser.parseStatementContent (/Applications/MAMP/htdocs/chat-laravel/chatweb/node_modules/@babel/parser/lib/index.js:12360:27)\n    at Parser.parseStatement (/Applications/MAMP/htdocs/chat-laravel/chatweb/node_modules/@babel/parser/lib/index.js:12260:17)\n    at Parser.parseBlockOrModuleBlockBody (/Applications/MAMP/htdocs/chat-laravel/chatweb/node_modules/@babel/parser/lib/index.js:12846:25)\n    at Parser.parseBlockBody (/Applications/MAMP/htdocs/chat-laravel/chatweb/node_modules/@babel/parser/lib/index.js:12837:10)\n    at Parser.parseProgram (/Applications/MAMP/htdocs/chat-laravel/chatweb/node_modules/@babel/parser/lib/index.js:12191:10)\n    at Parser.parseTopLevel (/Applications/MAMP/htdocs/chat-laravel/chatweb/node_modules/@babel/parser/lib/index.js:12182:25)\n    at Parser.parse (/Applications/MAMP/htdocs/chat-laravel/chatweb/node_modules/@babel/parser/lib/index.js:13893:10)");
+throw new Error("Module build failed (from ./node_modules/babel-loader/lib/index.js):\nSyntaxError: /Applications/MAMP/htdocs/chat-laravel/chatweb/resources/js/components/UserList.vue: Identifier 'getPermissions' has already been declared (188:9)\n\n\u001b[0m \u001b[90m 186 |\u001b[39m \u001b[36mimport\u001b[39m \u001b[33mPeer\u001b[39m \u001b[36mfrom\u001b[39m \u001b[32m\"simple-peer\"\u001b[39m\u001b[33m;\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 187 |\u001b[39m \u001b[36mimport\u001b[39m { getPermissions } \u001b[36mfrom\u001b[39m \u001b[32m\"../helpers-video\"\u001b[39m\u001b[33m;\u001b[39m\u001b[0m\n\u001b[0m\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 188 |\u001b[39m \u001b[36mimport\u001b[39m { getPermissions } \u001b[36mfrom\u001b[39m \u001b[32m\"../helpers-audio\"\u001b[39m\u001b[33m;\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m     |\u001b[39m          \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 189 |\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 190 |\u001b[39m \u001b[36mexport\u001b[39m \u001b[36mdefault\u001b[39m {\u001b[0m\n\u001b[0m \u001b[90m 191 |\u001b[39m     components\u001b[33m:\u001b[39m {\u001b[0m\n    at Parser._raise (/Applications/MAMP/htdocs/chat-laravel/chatweb/node_modules/@babel/parser/lib/index.js:776:17)\n    at Parser.raiseWithData (/Applications/MAMP/htdocs/chat-laravel/chatweb/node_modules/@babel/parser/lib/index.js:769:17)\n    at Parser.raise (/Applications/MAMP/htdocs/chat-laravel/chatweb/node_modules/@babel/parser/lib/index.js:737:17)\n    at ScopeHandler.checkRedeclarationInScope (/Applications/MAMP/htdocs/chat-laravel/chatweb/node_modules/@babel/parser/lib/index.js:1453:12)\n    at ScopeHandler.declareName (/Applications/MAMP/htdocs/chat-laravel/chatweb/node_modules/@babel/parser/lib/index.js:1419:12)\n    at Parser.checkLVal (/Applications/MAMP/htdocs/chat-laravel/chatweb/node_modules/@babel/parser/lib/index.js:10261:24)\n    at Parser.parseImportSpecifier (/Applications/MAMP/htdocs/chat-laravel/chatweb/node_modules/@babel/parser/lib/index.js:13867:10)\n    at Parser.parseNamedImportSpecifiers (/Applications/MAMP/htdocs/chat-laravel/chatweb/node_modules/@babel/parser/lib/index.js:13844:12)\n    at Parser.parseImport (/Applications/MAMP/htdocs/chat-laravel/chatweb/node_modules/@babel/parser/lib/index.js:13675:39)\n    at Parser.parseStatementContent (/Applications/MAMP/htdocs/chat-laravel/chatweb/node_modules/@babel/parser/lib/index.js:12360:27)\n    at Parser.parseStatement (/Applications/MAMP/htdocs/chat-laravel/chatweb/node_modules/@babel/parser/lib/index.js:12260:17)\n    at Parser.parseBlockOrModuleBlockBody (/Applications/MAMP/htdocs/chat-laravel/chatweb/node_modules/@babel/parser/lib/index.js:12846:25)\n    at Parser.parseBlockBody (/Applications/MAMP/htdocs/chat-laravel/chatweb/node_modules/@babel/parser/lib/index.js:12837:10)\n    at Parser.parseProgram (/Applications/MAMP/htdocs/chat-laravel/chatweb/node_modules/@babel/parser/lib/index.js:12191:10)\n    at Parser.parseTopLevel (/Applications/MAMP/htdocs/chat-laravel/chatweb/node_modules/@babel/parser/lib/index.js:12182:25)\n    at Parser.parse (/Applications/MAMP/htdocs/chat-laravel/chatweb/node_modules/@babel/parser/lib/index.js:13893:10)");
 
 /***/ }),
 
@@ -2058,14 +2058,29 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: ["allusers", "authUserID"],
   data: function data() {
     return {
-      currentID: this.authUserID,
-      // Current Logged in user
       isFocusMyself: true,
       callPlaced: false,
       callPartner: null,
@@ -2073,40 +2088,36 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       mutedVideo: false,
       videoCallParams: {
         users: [],
-        // User List Array
-        channel: null,
         stream: null,
         receivingCall: false,
         caller: null,
         callerSignal: null,
-        callerAccepted: false,
+        callAccepted: false,
+        channel: null,
         peer1: null,
         peer2: null
       }
     };
   },
   mounted: function mounted() {
-    this.getUserList(); // this.checkOnline(2);
+    this.initializeChannel(); // this initializes laravel echo
 
-    console.log(this.authUserID); // Channel Setups
-
-    this.initializeChannel();
-    this.initializeCallListeners();
+    this.initializeCallListeners(); // subscribes to video presence channel and listens to video events
   },
   computed: {
     incomingCallDialog: function incomingCallDialog() {
-      if (this.videoCallParams.receivingCall && this.videoCallParams.caller != this.authUserID) {
+      if (this.videoCallParams.receivingCall && this.videoCallParams.caller !== this.authuserid) {
         return true;
-      } else {
-        return false;
       }
+
+      return false;
     },
     callerDetails: function callerDetails() {
       var _this = this;
 
-      if (this.videoCallParams.caller && this.videoCallParams.caller != this.authUserID) {
+      if (this.videoCallParams.caller && this.videoCallParams.caller !== this.authuserid) {
         var incomingCaller = this.allusers.filter(function (user) {
-          return user.id == _this.videoCallParams.caller;
+          return user.id === _this.videoCallParams.caller;
         });
         return {
           id: this.videoCallParams.caller,
@@ -2137,7 +2148,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         return "Online";
       }
     },
-    // Get Media permissions
+    // Start Initialize Channel & Call
+    initializeChannel: function initializeChannel() {
+      this.videoCallParams.channel = window.Echo.join("Demo");
+    },
     getMediaPermission: function getMediaPermission() {
       var _this3 = this;
 
@@ -2151,36 +2165,28 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         console.log(error);
       });
     },
-    // Start Initialize Channel & Call
-    initializeChannel: function initializeChannel() {
-      this.videoCallParams.channel = window.Echo.join("Demo"); // console.log(this.videoCallParams.channel);
-    },
     initializeCallListeners: function initializeCallListeners() {
       var _this4 = this;
 
       this.videoCallParams.channel.here(function (users) {
         _this4.videoCallParams.users = users;
-        console.log(users);
       });
-      this.videoCallParams.channel.joining(function (users) {
+      this.videoCallParams.channel.joining(function (user) {
+        // check user availability
         var joiningUserIndex = _this4.videoCallParams.users.findIndex(function (data) {
-          return data.id == user.id;
+          return data.id === user.id;
         });
 
         if (joiningUserIndex < 0) {
           _this4.videoCallParams.users.push(user);
-
-          console.log(users);
         }
       });
-      this.videoCallParams.channel.leaving(function (users) {
+      this.videoCallParams.channel.leaving(function (user) {
         var leavingUserIndex = _this4.videoCallParams.users.findIndex(function (data) {
-          return data.id == user.id;
+          return data.id === user.id;
         });
 
         _this4.videoCallParams.users.splice(leavingUserIndex, 1);
-
-        console.log(users);
       }); // listen to incomming call
 
       this.videoCallParams.channel.listen("StartVideoChat", function (_ref) {
@@ -2197,87 +2203,78 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           _this4.videoCallParams.caller = data.from;
           _this4.videoCallParams.callerSignal = updatedSignal;
         }
-      }); // console.log(this.videoCallParams.channel);
-    },
-    // End Initialize Channel & Call
-    destroyed: function destroyed() {
-      var _this5 = this;
-
-      Echo.leave(function (user) {
-        _this5.users = _this5.users.filter(function (u) {
-          return u.id !== user.id;
-        });
       });
     },
     // Start Placing Video Call
     placeVideoCall: function placeVideoCall(id, name) {
-      var _this6 = this;
+      var _this5 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
           while (1) {
             switch (_context.prev = _context.next) {
               case 0:
-                _this6.callPlaced = true;
-                _this6.callPartner = name;
+                _this5.callPlaced = true;
+                _this5.callPartner = name;
                 _context.next = 4;
-                return _this6.getMediaPermission();
+                return _this5.getMediaPermission();
 
               case 4:
-                _this6.videoCallParams.peer1 = new (simple_peer__WEBPACK_IMPORTED_MODULE_1___default())({
+                _this5.videoCallParams.peer1 = new (simple_peer__WEBPACK_IMPORTED_MODULE_1___default())({
                   initiator: true,
                   trickle: false,
-                  stream: _this6.videoCallParams.stream
+                  stream: _this5.videoCallParams.stream
                 });
 
-                _this6.videoCallParams.peer1.on("signal", function (data) {
+                _this5.videoCallParams.peer1.on("signal", function (data) {
+                  console.log(data); // send user call signal
+
                   axios.post("/video/call-user", {
                     user_to_call: id,
                     signal_data: data,
-                    from: _this6.authUserID
-                  }).then(function (response) {
-                    console.log(response);
-                  })["catch"](function (error) {
+                    from: _this5.authUserID
+                  }).then(function () {})["catch"](function (error) {
                     console.log(error);
                   });
                 });
 
-                _this6.videoCallParams.peer1.on("stream", function (stream) {
-                  console.log("Call Streaming...");
+                _this5.videoCallParams.peer1.on("stream", function (stream) {
+                  console.log("call streaming");
 
-                  if (_this6.$refs.partnerVideo) {
-                    _this6.$refs.partnerVideo.srcObject = stream;
+                  if (_this5.$refs.partnerVideo) {
+                    _this5.$refs.partnerVideo.srcObject = stream;
                   }
                 });
 
-                _this6.videoCallParams.peer1.on("connect", function () {
-                  console.log("Peer Connected!");
+                _this5.videoCallParams.peer1.on("connect", function () {
+                  console.log("peer connected");
                 });
 
-                _this6.videoCallParams.peer1.on("error", function (error) {
-                  console.log(error);
+                _this5.videoCallParams.peer1.on("error", function (err) {
+                  console.log(err);
                 });
 
-                _this6.videoCallParams.peer1.on("close", function () {
-                  console.log("Call Closed Caller");
+                _this5.videoCallParams.peer1.on("close", function () {
+                  console.log("call closed caller");
                 });
 
-                _this6.videoCallParams.channel.listen("StartVideoChat", function (_ref2) {
+                _this5.videoCallParams.channel.listen("StartVideoChat", function (_ref2) {
                   var data = _ref2.data;
+                  console.log(data);
 
-                  if (data.type == "callAccepted") {
+                  if (data.type === "callAccepted") {
                     if (data.signal.renegotiate) {
                       console.log("renegotating");
                     }
 
                     if (data.signal.sdp) {
-                      _this6.videoCallParams.callAccepted = true;
+                      _this5.videoCallParams.callAccepted = true;
 
-                      var updateSignal = _objectSpread(_objectSpread({}, data.signal), {}, {
+                      var updatedSignal = _objectSpread(_objectSpread({}, data.signal), {}, {
                         sdp: "".concat(data.signal.sdp, "\n")
                       });
 
-                      _this6.videoCallParams.peer1.signal(updateSignal);
+                      _this5.videoCallParams.peer1.signal(updatedSignal);
                     }
                   }
                 });
@@ -2293,58 +2290,58 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     // End Placing Video Call
     // Start Accepting Video Call
     acceptCall: function acceptCall() {
-      var _this7 = this;
+      var _this6 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2() {
         return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
           while (1) {
             switch (_context2.prev = _context2.next) {
               case 0:
-                _this7.callPlaced = true;
-                _this7.videoCallParams.callAccepted = true;
+                _this6.callPlaced = true;
+                _this6.videoCallParams.callAccepted = true;
                 _context2.next = 4;
-                return _this7.getMediaPermission();
+                return _this6.getMediaPermission();
 
               case 4:
-                _this7.videoCallParams.peer2 = new (simple_peer__WEBPACK_IMPORTED_MODULE_1___default())({
+                _this6.videoCallParams.peer2 = new (simple_peer__WEBPACK_IMPORTED_MODULE_1___default())({
                   initiator: false,
                   trickle: false,
-                  stream: _this7.videoCallParams.stream
+                  stream: _this6.videoCallParams.stream
                 });
-                _this7.videoCallParams.receivingCall = false;
+                _this6.videoCallParams.receivingCall = false;
 
-                _this7.videoCallParams.peer2.on("signal", function (data) {
+                _this6.videoCallParams.peer2.on("signal", function (data) {
                   axios.post("/video/accept-call", {
                     signal: data,
-                    to: _this7.videoCallParams.caller
-                  }).then(function (response) {
-                    console.log(response);
-                  })["catch"](function (error) {
+                    to: _this6.videoCallParams.caller
+                  }).then(function () {})["catch"](function (error) {
                     console.log(error);
                   });
                 });
 
-                _this7.videoCallParams.peer2.on("stream", function (stream) {
-                  _this7.videoCallParams.callAccepted = true;
-                  _this7.$refs.partnerVideo.srcObject = stream;
+                _this6.videoCallParams.peer2.on("stream", function (stream) {
+                  _this6.videoCallParams.callAccepted = true;
+                  _this6.$refs.partnerVideo.srcObject = stream;
                 });
 
-                _this7.videoCallParams.peer2.on("connect", function () {
-                  console.log("Peer02 Connected");
-                  _this7.videoCallParams.callAccepted = true;
+                _this6.videoCallParams.peer2.on("connect", function () {
+                  console.log("peer connected");
+                  _this6.videoCallParams.callAccepted = true;
                 });
 
-                _this7.videoCallParams.peer2.on("error", function (err) {
+                _this6.videoCallParams.peer2.on("error", function (err) {
                   console.log(err);
                 });
 
-                _this7.videoCallParams.peer2.on("close", function () {
-                  console.log("Call Closed Accepter");
+                _this6.videoCallParams.peer2.on("close", function () {
+                  console.log("call closed accepter");
                 });
 
-                _this7.videoCallParams.peer2.signal(_this7.videoCallParams.callerSignal);
+                console.log(_this6.videoCallParams.callerSignal);
 
-              case 12:
+                _this6.videoCallParams.peer2.signal(_this6.videoCallParams.callerSignal);
+
+              case 13:
               case "end":
                 return _context2.stop();
             }
@@ -2352,36 +2349,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         }, _callee2);
       }))();
     },
-    // End Accepting Video Call
-    // Start Declining Video Call
-    declineCall: function declineCall() {
-      this.videoCallParams.receivingCall = false;
-    },
-    // End Declining Video Call
-    // Start Ending Video Call
-    endCall: function endCall() {
-      var _this8 = this;
-
-      if (!this.mutedVideo) this.toggleMuteVideo();
-      if (!this.mutedAudio) this.toggleMuteAudio();
-      this.stopStreamedVideo(this.$refs.userVideo);
-
-      if (this.authuserid === this.videoCallParams.caller) {
-        this.videoCallParams.peer1.destroy();
-      } else {
-        this.videoCallParams.peer2.destroy();
-      }
-
-      this.videoCallParams.channel.pusher.channels.channels["presence-presence-video-channel"].disconnect();
-      setTimeout(function () {
-        _this8.callPlaced = false;
-      }, 3000);
-    },
-    // End Ending Video Call
     toggleCameraArea: function toggleCameraArea() {
       if (this.videoCallParams.callAccepted) {
         this.isFocusMyself = !this.isFocusMyself;
       }
+    },
+    declineCall: function declineCall() {
+      this.videoCallParams.receivingCall = false;
     },
     toggleMuteAudio: function toggleMuteAudio() {
       if (this.mutedAudio) {
@@ -2408,6 +2382,25 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         track.stop();
       });
       videoElem.srcObject = null;
+    },
+    endCall: function endCall() {
+      var _this7 = this;
+
+      // if video or audio is muted, enable it so that the stopStreamedVideo method will work
+      if (!this.mutedVideo) this.toggleMuteVideo();
+      if (!this.mutedAudio) this.toggleMuteAudio();
+      this.stopStreamedVideo(this.$refs.userVideo);
+
+      if (this.authUserID === this.videoCallParams.caller) {
+        this.videoCallParams.peer1.destroy();
+      } else {
+        this.videoCallParams.peer2.destroy();
+      }
+
+      this.videoCallParams.channel.pusher.channels.channels["presence-Demo"].disconnect();
+      setTimeout(function () {
+        _this7.callPlaced = false;
+      }, 3000);
     }
   }
 });
@@ -55859,42 +55852,9 @@ var render = function() {
   return _c(
     "v-container",
     [
-      _c("UserList", {
-        staticClass: "user-container",
-        attrs: { authUserName: _vm.authUserName, authUserID: _vm.authUserID }
-      }),
-      _vm._v(" "),
-      _c(
-        "v-fab-transition",
-        [
-          _c(
-            "v-btn",
-            {
-              staticClass: "v-btn-bottom",
-              attrs: {
-                color: "pink",
-                dark: "",
-                bottom: "",
-                right: "",
-                fab: ""
-              },
-              on: {
-                click: function($event) {
-                  _vm.hidden = !_vm.hidden
-                }
-              }
-            },
-            [
-              _vm._v(
-                "\n        " +
-                  _vm._s(_vm.hidden ? "Show" : "Hide") +
-                  "\n        "
-              )
-            ]
-          )
-        ],
-        1
-      )
+      _c("VideoChatComponent", {
+        attrs: { allusers: _vm.allusers, authUserID: _vm.authUserID }
+      })
     ],
     1
   )
@@ -56549,18 +56509,18 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { attrs: { id: "video-chat" } }, [
+  return _c("div", [
     _c("div", { staticClass: "container" }, [
       _c("div", { staticClass: "row" }, [
         _c("div", { staticClass: "col" }, [
           _c(
             "div",
             { staticClass: "btn-group", attrs: { role: "group" } },
-            _vm._l(_vm.allusers, function(user, index) {
+            _vm._l(_vm.allusers, function(user) {
               return _c(
                 "button",
                 {
-                  key: index,
+                  key: user.id,
                   staticClass: "btn btn-primary mr-2",
                   attrs: { type: "button" },
                   on: {
@@ -56571,18 +56531,11 @@ var render = function() {
                 },
                 [
                   _vm._v(
-                    "\n              Call " +
-                      _vm._s(user.name) +
-                      "\n              "
+                    "\n            Call " + _vm._s(user.name) + "\n            "
                   ),
                   _c("span", { staticClass: "badge badge-light" }, [
                     _vm._v(_vm._s(_vm.getUserOnlineStatus(user.id)))
-                  ]),
-                  _vm._v(" "),
-                  _c("span", {
-                    staticClass: "badge badge-light",
-                    attrs: { id: "userStatus" }
-                  })
+                  ])
                 ]
               )
             }),
@@ -56599,12 +56552,7 @@ var render = function() {
                 staticClass: "cursor-pointer",
                 class:
                   _vm.isFocusMyself === true ? "user-video" : "partner-video",
-                attrs: {
-                  id: "video",
-                  muted: "",
-                  playsinline: "",
-                  autoplay: ""
-                },
+                attrs: { muted: "", playsinline: "", autoplay: "" },
                 domProps: { muted: true },
                 on: { click: _vm.toggleCameraArea }
               }),
@@ -56620,19 +56568,29 @@ var render = function() {
                     attrs: { playsinline: "", autoplay: "" },
                     on: { click: _vm.toggleCameraArea }
                   })
-                : _vm._e(),
-              _vm._v(" "),
-              _c("div", { staticClass: "partner-video" }, [
-                _c("div", { staticClass: "column items-center q-pt-xl" }, [
-                  _c("div", { staticClass: "col q-gutter-y-md text-center" }, [
-                    _c("p", { staticClass: "q-pt-md" }, [
-                      _c("strong", [_vm._v(_vm._s(_vm.callPartner))])
-                    ]),
-                    _vm._v(" "),
-                    _c("p", [_vm._v("calling...")])
-                  ])
-                ])
-              ]),
+                : _c("div", { staticClass: "partner-video" }, [
+                    _vm.callPartner
+                      ? _c(
+                          "div",
+                          { staticClass: "column items-center q-pt-xl" },
+                          [
+                            _c(
+                              "div",
+                              { staticClass: "col q-gutter-y-md text-center" },
+                              [
+                                _c("p", { staticClass: "q-pt-md" }, [
+                                  _c("strong", [
+                                    _vm._v(_vm._s(_vm.callPartner))
+                                  ])
+                                ]),
+                                _vm._v(" "),
+                                _c("p", [_vm._v("calling...")])
+                              ]
+                            )
+                          ]
+                        )
+                      : _vm._e()
+                  ]),
               _vm._v(" "),
               _c("div", { staticClass: "action-btns" }, [
                 _c(
@@ -56644,9 +56602,9 @@ var render = function() {
                   },
                   [
                     _vm._v(
-                      "\n                " +
+                      "\n            " +
                         _vm._s(_vm.mutedAudio ? "Unmute" : "Mute") +
-                        "\n            "
+                        "\n          "
                     )
                   ]
                 ),
@@ -56660,9 +56618,9 @@ var render = function() {
                   },
                   [
                     _vm._v(
-                      "\n                " +
+                      "\n            " +
                         _vm._s(_vm.mutedVideo ? "ShowVideo" : "HideVideo") +
-                        "\n            "
+                        "\n          "
                     )
                   ]
                 ),
@@ -56674,7 +56632,7 @@ var render = function() {
                     attrs: { type: "button" },
                     on: { click: _vm.endCall }
                   },
-                  [_vm._v("\n                EndCall\n            ")]
+                  [_vm._v("\n            EndCall\n          ")]
                 )
               ])
             ])
@@ -56685,7 +56643,7 @@ var render = function() {
         ? _c("div", { staticClass: "row" }, [
             _c("div", { staticClass: "col" }, [
               _c("p", [
-                _vm._v("Incoming Call from "),
+                _vm._v("\n          Incoming Call From "),
                 _c("strong", [_vm._v(_vm._s(_vm.callerDetails.name))])
               ]),
               _vm._v(" "),
@@ -56700,7 +56658,7 @@ var render = function() {
                       attrs: { type: "button", "data-dismiss": "modal" },
                       on: { click: _vm.declineCall }
                     },
-                    [_vm._v("Decline")]
+                    [_vm._v("\n            Decline\n          ")]
                   ),
                   _vm._v(" "),
                   _c(
@@ -56710,7 +56668,7 @@ var render = function() {
                       attrs: { type: "button" },
                       on: { click: _vm.acceptCall }
                     },
-                    [_vm._v("Accept")]
+                    [_vm._v("\n            Accept\n          ")]
                   )
                 ]
               )
