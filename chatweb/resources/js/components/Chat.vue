@@ -64,7 +64,7 @@
  
 <script>
 import Peer from "simple-peer";
-import { getPermissions } from "../helpers";
+import { getPermissions } from "../helpers-video";
 
 export default {
 

@@ -1,7 +1,7 @@
 <template>
     <v-layout>
         <!-- Chat Messages **Start** -->
-         <div id='chat' v-if="isOpenChat">
+         <div id='chat' v-if="componentKey">
             <v-card width="420" height="550">
                     <v-toolbar dark>
                         <v-btn icon @click="closeChat"> 
@@ -9,18 +9,18 @@
                         </v-btn>
                         <v-toolbar-title> {{ userName }}</v-toolbar-title>
                         <v-spacer></v-spacer>
-                        <v-btn icon
-                        @click="placeVideoCall(toUserId, userName)">
+                        <v-btn icon @click="placeVideoCall(toUserId, userName)">
                             <v-icon>mdi-phone</v-icon>
                         </v-btn>
-                        <v-btn icon>
+                        <v-btn icon @click="placeVideoCall(toUserId, userName)">
                             <v-icon>mdi-video</v-icon>
                         </v-btn>
                         <v-btn icon>
                             <v-icon>mdi-dots-vertical</v-icon>
                         </v-btn>
                     </v-toolbar>
-                    <v-card class="scroll" flat  height="550" id="MessageCard">
+                    <div id="chatCard">
+                        <v-card flat height="550">
                             <v-card-text class="flex-grow-1 overflow-y-auto">
                                 <template v-for="(message, index) in messages" >
                                     <div :class="message.user_id != currentID ? 'd-flex flex-row' : 'd-flex flex-row-reverse'" :key="index">
@@ -41,63 +41,75 @@
                                     </div>
                                 </template>
                             </v-card-text>
-                    </v-card>
-                    <v-text-field 
-                        v-model="newMessage"
-                        placeholder="Type a message..." 
-                        type="text"
-                        solo
-                        clearable
-                        append-outer-icon="mdi-send"
-                        @click:append-outer="sendMessage"
-                        @keyup.enter="sendMessage"
-                        name="message"
-                        > 
-                    </v-text-field>
-
+                            <v-text-field 
+                                    ma-0 pa-0
+                                    v-model="newMessage"
+                                    placeholder="Type a message..." 
+                                    type="text"
+                                    regular
+                                    single-line
+                                    clearable
+                                    filled
+                                    append-icon="mdi-send"
+                                    @click:append="sendMessage"
+                                    @keyup.enter="sendMessage"
+                                    name="message"
+                                    > 
+                                </v-text-field>
+                        </v-card>
+                    </div>
                     <v-card class="scroll" flat  height="550">
                         <div class="row mt-5" id="video-row">
-                            <div class="col-12 video-container" v-if="callPlaced">
-                            <video
-                                id="video"
-                                ref="userVideo"
-                                muted
-                                playsinline
-                                autoplay
-                                class="cursor-pointer"
-                                :class="isFocusMyself === true ? 'user-video' : 'partner-video'"
-                                @click="toggleCameraArea"
-                            />
-                            <video
-                                ref="partnerVideo"
-                                playsinline
-                                autoplay
-                                class="cursor-pointer"
-                                :class="isFocusMyself === true ? 'partner-video' : 'user-video'"
-                                @click="toggleCameraArea"
-                                v-if="videoCallParams.callAccepted"
-                            />
-                            <div class="partner-video">
-                                <div class="column items-center q-pt-xl">
-                                <div class="col q-gutter-y-md text-center">
-                                    <p class="q-pt-md">
-                                        <strong>{{ callPartner }}</strong>
-                                    </p>
-                                    <p>calling...</p>
+                            <div class="col-12 video-container" v-if="callPlaced" id="vidCard">
+                                <video
+                                    id="video"
+                                    ref="userVideo"
+                                    muted
+                                    playsinline
+                                    autoplay
+                                    class="cursor-pointer"
+                                    :class="isFocusMyself === true ? 'user-video' : 'partner-video'"
+                                    @click="toggleCameraArea"
+                                />
+                                <video
+                                    ref="partnerVideo"
+                                    playsinline
+                                    autoplay
+                                    class="cursor-pointer"
+                                    :class="isFocusMyself === true ? 'partner-video' : 'user-video'"
+                                    @click="toggleCameraArea"
+                                    v-if="videoCallParams.callAccepted"
+                                />
+                                <div class="partner-video">
+                                    <div class="column items-center q-pt-xl">
+                                    <div class="col q-gutter-y-md text-center">
+                                        <p class="q-pt-md">
+                                            <strong>{{ callPartner }}</strong>
+                                        </p>
+                                        <p>calling...</p>
+                                    </div>
+                                    </div>
                                 </div>
+                                <div class="action-btns">
+                                    <!-- <button type="button" class="btn btn-info" @click="toggleMuteAudio">
+                                        {{ mutedAudio ? "Unmute" : "Mute" }}
+                                    </button> -->
+                                    <v-btn class="btn btn-info" color="#1565C0" @click="toggleMuteAudio">
+                                        <v-icon>{{ mutedAudio ? "mdi-microphone" : "mdi-microphone-off" }}</v-icon>
+                                    </v-btn>
+                                    <!-- <button type="button" class="btn btn-primary mx-4" @click="toggleMuteVideo">
+                                        {{ mutedVideo ? "ShowVideo" : "HideVideo" }}
+                                    </button> -->
+                                    <v-btn class="btn btn-primary mx-4" color="#1565C0" @click="toggleMuteVideo">
+                                        <v-icon>{{ mutedVideo ? "mdi-video" : "mdi-video-off" }}</v-icon>
+                                    </v-btn>
+                                    <!-- <button type="button" class="btn btn-danger" @click="endCall">
+                                        EndCall
+                                    </button> -->
+                                    <v-btn class="btn btn-danger" color="#C62828" @click="endCall">
+                                        <v-icon>mdi-phone-hangup</v-icon>
+                                    </v-btn>
                                 </div>
-                            </div>
-                            <div class="action-btns">
-                                <button type="button" class="btn btn-info" @click="toggleMuteAudio">
-                                    {{ mutedAudio ? "Unmute" : "Mute" }}
-                                </button>
-                                <button type="button" class="btn btn-primary mx-4" @click="toggleMuteVideo">
-                                    {{ mutedVideo ? "ShowVideo" : "HideVideo" }}
-                                </button>
-                                <button type="button" class="btn btn-danger" @click="endCall">
-                                    EndCall
-                                </button>
-                            </div>
                             </div>
                         </div>
 
@@ -114,8 +126,6 @@
                         <!-- End of Incoming Call  -->
                     </v-card>
             </v-card>
-
-            
         </div>
         <!-- Chat Messages **End** -->
 
@@ -148,7 +158,7 @@
                                         mdi-account-circle
                                     </v-icon>
                                 </v-list-item-avatar>
-                                <v-list-item-content v-on:click="getUserMessage(user.id, user.name, isOpenChat = !isOpenChat)">
+                                <v-list-item-content v-on:click="getUserMessage(user.id, user.name, componentKey++)">
                                     <v-list-item-title v-html="user.name">{{ user.name }}</v-list-item-title>
                                     <v-list-item-subtitle>
                                         <span class="badge badge-light">{{ getUserOnlineStatus(user.id) }}</span>
@@ -174,7 +184,8 @@
 <script>
 import Chat from "./Chat";
 import Peer from "simple-peer";
-import { getPermissions } from "../helpers";
+import { getPermissions } from "../helpers-video";
+import { getPermissions } from "../helpers-audio";
 
 export default {
     components: {
@@ -236,6 +247,7 @@ export default {
             }else{
                 return false;
             }
+
         },
 
         callerDetails() {
@@ -275,14 +287,19 @@ export default {
                 this.fetchMessages();
 
                 this.componentKey += 1;
+                this.openChat();
             })
             .catch(error => {
                 console.log(error);
             })
         },
 
+        openChat(){
+            document.getElementById("chat").style.display = "block";
+        },
+
         closeChat(){
-            this.isOpenChat = false;
+            document.getElementById("chat").style.display = "none";
         },
         
         fetchMessages(){
@@ -394,7 +411,8 @@ export default {
 
 
         // Start Placing Video Call
-        async placeVideoCall(id, name){
+        async placeVideoCall(id, name){ 
+            document.getElementById("chatCard").style.display = "none";
             this.callPlaced = true;
             this.callPartner = name;
 
@@ -504,11 +522,16 @@ export default {
         // Start Declining Video Call
         declineCall(){
             this.videoCallParams.receivingCall = false;
+            document.getElementById("chatCard").style.display = "block";
         },
         // End Declining Video Call
 
         // Start Ending Video Call
         endCall(){
+            document.getElementById("chatCard").style.display = "block";
+            document.getElementById("vidCard").style.display = "none";
+            document.getElementById("vidCard").style.display = "block";
+
             if(!this.mutedVideo) this.toggleMuteVideo();
             if(!this.mutedAudio) this.toggleMuteAudio();
 
@@ -525,6 +548,7 @@ export default {
             setTimeout(() => {
                 this.callPlaced = false;
             }, 3000);
+            
         },
         // End Ending Video Call
 
@@ -569,14 +593,10 @@ export default {
 </script>
 
 <style>
-.v-list{
-    height: 200px;
-    overflow-y: scroll;
-    bottom: 95px;
-}
 #video-row {
-  width: 700px;
-  max-width: 90vw;
+  width: 410px;
+  height: 500px;
+  margin: 0;
 }
 
 #incoming-call-card {
@@ -584,14 +604,12 @@ export default {
 }
 
 .video-container {
-  width: 700px;
+  width: 410px;
   height: 500px;
   max-width: 90vw;
   max-height: 50vh;
-  margin: 0 auto;
-  border: 1px solid #0acf83;
+  margin: 0;
   position: relative;
-  box-shadow: 1px 1px 11px #9e9e9e;
   background-color: #fff;
 }
 

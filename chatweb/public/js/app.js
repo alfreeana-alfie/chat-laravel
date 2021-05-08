@@ -1845,334 +1845,6 @@ module.exports = {
 
 /***/ }),
 
-/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Chat.vue?vue&type=script&lang=js&":
-/*!***********************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Chat.vue?vue&type=script&lang=js& ***!
-  \***********************************************************************************************************************************************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
-/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var simple_peer__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! simple-peer */ "./node_modules/simple-peer/index.js");
-/* harmony import */ var simple_peer__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(simple_peer__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _helpers__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../helpers */ "./resources/js/helpers.js");
-
-
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  props: ['chatID', 'currentID', 'userName', 'toUserId'],
-  data: function data() {
-    return {
-      messages: [],
-      newMessage: '',
-      chat_id: this.chatID,
-      to_user_id: this.toUserId,
-      allusers: [],
-      // Video Call data
-      isFocusMyself: true,
-      callPlaced: false,
-      callPartner: null,
-      mutedAudio: false,
-      mutedVideo: false,
-      videoCallParams: {
-        users: [],
-        channel: null,
-        stream: null,
-        receivingCall: false,
-        caller: null,
-        callerSignal: null,
-        callerAccepted: false,
-        peer1: null,
-        peer2: null
-      }
-    };
-  },
-  created: function created() {
-    var _this = this;
-
-    this.fetchMessages();
-    this.getUserSingle();
-    this.initializeChannel();
-    this.initializeCallListeners(); // console.log(this.to_user_id)
-
-    Echo.join('chat').listen('MessageSent', function (event) {
-      _this.messages.push(event.message);
-    });
-  },
-  methods: {
-    fetchMessages: function fetchMessages() {
-      var _this2 = this;
-
-      // console.log(this.chat_id)
-      axios.post('http://127.0.0.1:8000/api/chats', {
-        chat_id: this.chat_id
-      }).then(function (response) {
-        _this2.messages = response.data; // console.log(response.data)
-      });
-    },
-    sendMessage: function sendMessage() {
-      var _this3 = this;
-
-      this.messages.push({
-        body: this.newMessage
-      });
-      axios.post('send', {
-        body: this.newMessage,
-        chat_id: this.chat_id,
-        user_id: this.$userId
-      }).then(function (response) {
-        _this3.allusers = response.data; // console.log(response.data)
-      });
-      this.newMessage = '';
-    },
-    getUserOnlineStatus: function getUserOnlineStatus(id) {
-      var onlineUserIndex = this.videoCallParams.users.findIndex(function (data) {
-        return data.id === id;
-      }); // console.log(onlineUserIndex);
-
-      if (onlineUserIndex < 0) {
-        console.log("Offline");
-        return "Offline";
-      } else {
-        console.log("Online");
-        return "Online";
-      }
-    },
-    // Get Media permissions
-    getMediaPermission: function getMediaPermission() {
-      var _this4 = this;
-
-      return (0,_helpers__WEBPACK_IMPORTED_MODULE_2__.getPermissions)().then(function (stream) {
-        _this4.videoCallParams.stream = stream;
-
-        if (_this4.$refs.userVideo) {
-          _this4.$refs.userVideo.srcObject = stream;
-        }
-      })["catch"](function (error) {
-        console.log(error);
-      });
-    },
-    getUserSingle: function getUserSingle() {
-      var _this5 = this;
-
-      this.getUserOnlineStatus(this.toUserId);
-      axios.post('user-single', {
-        id: this.toUserId
-      }).then(function (response) {
-        _this5.allusers = response.data; // console.log(response.data)
-      });
-    },
-    // Start Initialize Channel & Call
-    initializeChannel: function initializeChannel() {
-      this.videoCallParams.channel = window.Echo.join("Demo"); // console.log(this.videoCallParams.channel);
-    },
-    initializeCallListeners: function initializeCallListeners() {
-      var _this6 = this;
-
-      this.videoCallParams.channel.here(function (users) {
-        _this6.videoCallParams.users = users;
-      });
-      this.videoCallParams.channel.joining(function (users) {
-        var joiningUserIndex = _this6.videoCallParams.users.findIndex(function (data) {
-          return data.id == user.id;
-        });
-
-        if (joiningUserIndex < 0) {
-          _this6.videoCallParams.users.push(user);
-        }
-      });
-      this.videoCallParams.channel.leaving(function (users) {
-        var leavingUserIndex = _this6.videoCallParams.users.findIndex(function (data) {
-          return data.id == user.id;
-        });
-
-        _this6.videoCallParams.users.splice(leavingUserIndex, 1);
-      }); // listen to incomming call
-
-      this.videoCallParams.channel.listen("StartVideoChat", function (_ref) {
-        var data = _ref.data;
-
-        // console.log(data);
-        if (data.type === "incomingCall") {
-          // add a new line to the sdp to take care of error
-          var updatedSignal = _objectSpread(_objectSpread({}, data.signalData), {}, {
-            sdp: "".concat(data.signalData.sdp, "\n")
-          });
-
-          _this6.videoCallParams.receivingCall = true;
-          _this6.videoCallParams.caller = data.from;
-          _this6.videoCallParams.callerSignal = updatedSignal;
-        }
-      }); // console.log(this.videoCallParams.users);
-    },
-    // End Initialize Channel & Call
-    // Start Placing Video Call
-    placeVideoCall: function placeVideoCall(id, name) {
-      var _this7 = this;
-
-      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                _this7.callPlaced = true;
-                _this7.callPartner = name;
-                _context.next = 4;
-                return _this7.getMediaPermission();
-
-              case 4:
-                _this7.videoCallParams.peer1 = new (simple_peer__WEBPACK_IMPORTED_MODULE_1___default())({
-                  initiator: true,
-                  trickle: false,
-                  stream: _this7.videoCallParams.stream
-                });
-
-                _this7.videoCallParams.peer1.on("signal", function (data) {
-                  axios.post("/video/call-user", {
-                    user_to_call: id,
-                    signal_data: data,
-                    from: _this7.authUserID
-                  }).then(function (response) {
-                    console.log(response);
-                  })["catch"](function (error) {
-                    console.log(error);
-                  });
-                });
-
-                _this7.videoCallParams.peer1.on("stream", function (stream) {
-                  console.log("Call Streaming...");
-
-                  if (_this7.$refs.partnerVideo) {
-                    _this7.$refs.partnerVideo.srcObject = stream;
-                  }
-                });
-
-                _this7.videoCallParams.peer1.on("connect", function () {
-                  console.log("Peer Connected!");
-                });
-
-                _this7.videoCallParams.peer1.on("error", function (error) {
-                  console.log(error);
-                });
-
-                _this7.videoCallParams.peer1.on("close", function () {
-                  console.log("Call Closed Caller");
-                });
-
-                _this7.videoCallParams.channel.listen("StartVideoChat", function (_ref2) {
-                  var data = _ref2.data;
-
-                  if (data.type == "callAccepted") {
-                    if (data.signal.renegotiate) {
-                      console.log("renegotating");
-                    }
-
-                    if (data.signal.sdp) {
-                      _this7.videoCallParams.callAccepted = true;
-
-                      var updateSignal = _objectSpread(_objectSpread({}, data.signal), {}, {
-                        sdp: "".concat(data.signal.sdp, "\n")
-                      });
-
-                      _this7.videoCallParams.peer1.signal(updateSignal);
-                    }
-                  }
-                });
-
-              case 11:
-              case "end":
-                return _context.stop();
-            }
-          }
-        }, _callee);
-      }))();
-    } // End Placing Video Call
-
-  }
-});
-
-/***/ }),
-
 /***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Main.vue?vue&type=script&lang=js&":
 /*!***********************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Main.vue?vue&type=script&lang=js& ***!
@@ -2268,610 +1940,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 /*!***************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/UserList.vue?vue&type=script&lang=js& ***!
   \***************************************************************************************************************************************************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ (() => {
 
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @babel/runtime/regenerator */ "./node_modules/@babel/runtime/regenerator/index.js");
-/* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var _Chat__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Chat */ "./resources/js/components/Chat.vue");
-/* harmony import */ var simple_peer__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! simple-peer */ "./node_modules/simple-peer/index.js");
-/* harmony import */ var simple_peer__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(simple_peer__WEBPACK_IMPORTED_MODULE_2__);
-/* harmony import */ var _helpers__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../helpers */ "./resources/js/helpers.js");
-
-
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
-
-function _asyncToGenerator(fn) { return function () { var self = this, args = arguments; return new Promise(function (resolve, reject) { var gen = fn.apply(self, args); function _next(value) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value); } function _throw(err) { asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err); } _next(undefined); }); }; }
-
-function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); keys.push.apply(keys, symbols); } return keys; }
-
-function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
-
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-
-
-
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  components: {
-    Chat: _Chat__WEBPACK_IMPORTED_MODULE_1__.default
-  },
-  props: ['authUserName', "authUserID"],
-  data: function data() {
-    return {
-      // Message data
-      messages: [],
-      newMessage: '',
-      // User data
-      currentID: this.$userId,
-      chatID: '',
-      userName: '',
-      toUserId: '',
-      allusers: [],
-      isOpenChat: false,
-      componentKey: 0,
-      model: 1,
-      // Video Call data
-      isFocusMyself: true,
-      callPlaced: false,
-      callPartner: null,
-      mutedAudio: false,
-      mutedVideo: false,
-      videoCallParams: {
-        users: [],
-        channel: null,
-        stream: null,
-        receivingCall: false,
-        caller: null,
-        callerSignal: null,
-        callerAccepted: false,
-        peer1: null,
-        peer2: null
-      }
-    };
-  },
-  mounted: function mounted() {
-    this.getUserList();
-    this.initializeChannel();
-    this.initializeCallListeners();
-  },
-  computed: {
-    incomingCallDialog: function incomingCallDialog() {
-      if (this.videoCallParams.receivingCall && this.videoCallParams.caller != this.authUserID) {
-        return true;
-      } else {
-        return false;
-      }
-    },
-    callerDetails: function callerDetails() {
-      var _this = this;
-
-      if (this.videoCallParams.caller && this.videoCallParams.caller != this.authUserID) {
-        var incomingCaller = this.allusers.filter(function (user) {
-          return user.id == _this.videoCallParams.caller;
-        });
-        return {
-          id: this.videoCallParams.caller,
-          name: "".concat(incomingCaller[0].name)
-        };
-      }
-
-      return null;
-    }
-  },
-  methods: {
-    getUserList: function getUserList() {
-      var _this2 = this;
-
-      axios.get('user-member').then(function (response) {
-        _this2.allusers = response.data;
-      });
-    },
-    // Get Chat Room ID for messages
-    getUserMessage: function getUserMessage(user_id, name, isOpenChat) {
-      var _this3 = this;
-
-      this.userName = name, this.toUserId = user_id;
-      axios.post('http://127.0.0.1:8000/api/chatID', {
-        user_id: this.$userId,
-        to_user_id: user_id
-      }).then(function (response) {
-        _this3.chatID = response.data.id;
-
-        _this3.fetchMessages();
-
-        _this3.componentKey += 1;
-      })["catch"](function (error) {
-        console.log(error);
-      });
-    },
-    closeChat: function closeChat() {
-      this.isOpenChat = false;
-    },
-    fetchMessages: function fetchMessages() {
-      var _this4 = this;
-
-      axios.post('http://127.0.0.1:8000/api/chats', {
-        chat_id: this.chatID
-      }).then(function (response) {
-        _this4.messages = response.data;
-        console.log(response.data);
-      })["catch"](function (error) {
-        console.log(error);
-      });
-    },
-    sendMessage: function sendMessage() {
-      var _this5 = this;
-
-      this.messages.push({
-        body: this.newMessage
-      });
-      axios.post('send', {
-        body: this.newMessage,
-        chat_id: this.chatID,
-        user_id: this.$userId
-      }).then(function (response) {
-        _this5.allusers = response.data;
-      })["catch"](function (error) {
-        console.log(error);
-      });
-      this.newMessage = '';
-    },
-    // Start Video Call Settings
-    getUserOnlineStatus: function getUserOnlineStatus(id) {
-      var onlineUserIndex = this.videoCallParams.users.findIndex(function (data) {
-        return data.id === id;
-      });
-
-      if (onlineUserIndex < 0) {
-        return "Offline";
-      } else {
-        return "Online";
-      }
-    },
-    // Get Media permissions
-    getMediaPermission: function getMediaPermission() {
-      var _this6 = this;
-
-      return (0,_helpers__WEBPACK_IMPORTED_MODULE_3__.getPermissions)().then(function (stream) {
-        _this6.videoCallParams.stream = stream;
-
-        if (_this6.$refs.userVideo) {
-          _this6.$refs.userVideo.srcObject = stream;
-        }
-      })["catch"](function (error) {
-        console.log(error);
-      });
-    },
-    // Start Initialize Channel & Call
-    initializeChannel: function initializeChannel() {
-      this.videoCallParams.channel = window.Echo.join("Demo"); // console.log(this.videoCallParams.channel);
-    },
-    initializeCallListeners: function initializeCallListeners() {
-      var _this7 = this;
-
-      this.videoCallParams.channel.here(function (users) {
-        _this7.videoCallParams.users = users;
-        console.log(users);
-      });
-      this.videoCallParams.channel.joining(function (users) {
-        var joiningUserIndex = _this7.videoCallParams.users.findIndex(function (data) {
-          return data.id == users.id;
-        });
-
-        if (joiningUserIndex < 0) {
-          _this7.videoCallParams.users.push(users);
-
-          console.log(users);
-        }
-      });
-      this.videoCallParams.channel.leaving(function (users) {
-        var leavingUserIndex = _this7.videoCallParams.users.findIndex(function (data) {
-          return data.id == users.id;
-        });
-
-        _this7.videoCallParams.users.splice(leavingUserIndex, 1);
-
-        console.log(users);
-      }); // listen to incomming call
-
-      this.videoCallParams.channel.listen("StartVideoChat", function (_ref) {
-        var data = _ref.data;
-        console.log(data);
-
-        if (data.type === "incomingCall") {
-          // add a new line to the sdp to take care of error
-          var updatedSignal = _objectSpread(_objectSpread({}, data.signalData), {}, {
-            sdp: "".concat(data.signalData.sdp, "\n")
-          });
-
-          _this7.videoCallParams.receivingCall = true;
-          _this7.videoCallParams.caller = data.from;
-          _this7.videoCallParams.callerSignal = updatedSignal;
-        }
-      }); // console.log(this.videoCallParams.channel);
-    },
-    // End Initialize Channel & Call
-    // Start Placing Video Call
-    placeVideoCall: function placeVideoCall(id, name) {
-      var _this8 = this;
-
-      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
-          while (1) {
-            switch (_context.prev = _context.next) {
-              case 0:
-                _this8.callPlaced = true;
-                _this8.callPartner = name;
-                _context.next = 4;
-                return _this8.getMediaPermission();
-
-              case 4:
-                _this8.videoCallParams.peer1 = new (simple_peer__WEBPACK_IMPORTED_MODULE_2___default())({
-                  initiator: true,
-                  trickle: false,
-                  stream: _this8.videoCallParams.stream
-                });
-
-                _this8.videoCallParams.peer1.on("signal", function (data) {
-                  axios.post("/video/call-user", {
-                    user_to_call: id,
-                    signal_data: data,
-                    from: _this8.authUserID
-                  }).then(function (response) {
-                    console.log(response);
-                  })["catch"](function (error) {
-                    console.log(error);
-                  });
-                });
-
-                _this8.videoCallParams.peer1.on("stream", function (stream) {
-                  console.log("Call Streaming...");
-
-                  if (_this8.$refs.partnerVideo) {
-                    _this8.$refs.partnerVideo.srcObject = stream;
-                  }
-                });
-
-                _this8.videoCallParams.peer1.on("connect", function () {
-                  console.log("Peer Connected!");
-                });
-
-                _this8.videoCallParams.peer1.on("error", function (error) {
-                  console.log(error);
-                });
-
-                _this8.videoCallParams.peer1.on("close", function () {
-                  console.log("Call Closed Caller");
-                });
-
-                _this8.videoCallParams.channel.listen("StartVideoChat", function (_ref2) {
-                  var data = _ref2.data;
-
-                  if (data.type == "callAccepted") {
-                    if (data.signal.renegotiate) {
-                      console.log("renegotating");
-                    }
-
-                    if (data.signal.sdp) {
-                      _this8.videoCallParams.callAccepted = true;
-
-                      var updateSignal = _objectSpread(_objectSpread({}, data.signal), {}, {
-                        sdp: "".concat(data.signal.sdp, "\n")
-                      });
-
-                      _this8.videoCallParams.peer1.signal(updateSignal);
-                    }
-                  }
-                });
-
-              case 11:
-              case "end":
-                return _context.stop();
-            }
-          }
-        }, _callee);
-      }))();
-    },
-    // End Placing Video Call
-    // Start Accepting Video Call
-    acceptCall: function acceptCall() {
-      var _this9 = this;
-
-      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2() {
-        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
-          while (1) {
-            switch (_context2.prev = _context2.next) {
-              case 0:
-                _this9.callPlaced = true;
-                _this9.videoCallParams.callAccepted = true;
-                _context2.next = 4;
-                return _this9.getMediaPermission();
-
-              case 4:
-                _this9.videoCallParams.peer2 = new (simple_peer__WEBPACK_IMPORTED_MODULE_2___default())({
-                  initiator: false,
-                  trickle: false,
-                  stream: _this9.videoCallParams.stream
-                });
-                _this9.videoCallParams.receivingCall = false;
-
-                _this9.videoCallParams.peer2.on("signal", function (data) {
-                  axios.post("/video/accept-call", {
-                    signal: data,
-                    to: _this9.videoCallParams.caller
-                  }).then(function (response) {
-                    console.log(response);
-                  })["catch"](function (error) {
-                    console.log(error);
-                  });
-                });
-
-                _this9.videoCallParams.peer2.on("stream", function (stream) {
-                  _this9.videoCallParams.callAccepted = true;
-                  _this9.$refs.partnerVideo.srcObject = stream;
-                });
-
-                _this9.videoCallParams.peer2.on("connect", function () {
-                  console.log("Peer02 Connected");
-                  _this9.videoCallParams.callAccepted = true;
-                });
-
-                _this9.videoCallParams.peer2.on("error", function (err) {
-                  console.log(err);
-                });
-
-                _this9.videoCallParams.peer2.on("close", function () {
-                  console.log("Call Closed Accepter");
-                });
-
-                _this9.videoCallParams.peer2.signal(_this9.videoCallParams.callerSignal);
-
-              case 12:
-              case "end":
-                return _context2.stop();
-            }
-          }
-        }, _callee2);
-      }))();
-    },
-    // End Accepting Video Call
-    // Start Declining Video Call
-    declineCall: function declineCall() {
-      this.videoCallParams.receivingCall = false;
-    },
-    // End Declining Video Call
-    // Start Ending Video Call
-    endCall: function endCall() {
-      var _this10 = this;
-
-      if (!this.mutedVideo) this.toggleMuteVideo();
-      if (!this.mutedAudio) this.toggleMuteAudio();
-      this.stopStreamedVideo(this.$refs.userVideo);
-
-      if (this.authuserid === this.videoCallParams.caller) {
-        this.videoCallParams.peer1.destroy();
-      } else {
-        this.videoCallParams.peer2.destroy();
-      }
-
-      this.videoCallParams.channel.pusher.channels.channels["presence-Demo"].disconnect();
-      setTimeout(function () {
-        _this10.callPlaced = false;
-      }, 3000);
-    },
-    // End Ending Video Call
-    toggleCameraArea: function toggleCameraArea() {
-      if (this.videoCallParams.callAccepted) {
-        this.isFocusMyself = !this.isFocusMyself;
-      }
-    },
-    toggleMuteAudio: function toggleMuteAudio() {
-      if (this.mutedAudio) {
-        this.$refs.userVideo.srcObject.getAudioTracks()[0].enabled = true;
-        this.mutedAudio = false;
-      } else {
-        this.$refs.userVideo.srcObject.getAudioTracks()[0].enabled = false;
-        this.mutedAudio = true;
-      }
-    },
-    toggleMuteVideo: function toggleMuteVideo() {
-      if (this.mutedVideo) {
-        this.$refs.userVideo.srcObject.getVideoTracks()[0].enabled = true;
-        this.mutedVideo = false;
-      } else {
-        this.$refs.userVideo.srcObject.getVideoTracks()[0].enabled = false;
-        this.mutedVideo = true;
-      }
-    },
-    stopStreamedVideo: function stopStreamedVideo(videoElem) {
-      var stream = videoElem.srcObject;
-      var tracks = stream.getTracks();
-      tracks.forEach(function (track) {
-        track.stop();
-      });
-      videoElem.srcObject = null;
-    } // End Video Call Settings
-
-  }
-});
+throw new Error("Module build failed (from ./node_modules/babel-loader/lib/index.js):\nSyntaxError: /Applications/MAMP/htdocs/chat-laravel/chatweb/resources/js/components/UserList.vue: Identifier 'getPermissions' has already been declared (188:9)\n\n\u001b[0m \u001b[90m 186 |\u001b[39m \u001b[36mimport\u001b[39m \u001b[33mPeer\u001b[39m \u001b[36mfrom\u001b[39m \u001b[32m\"simple-peer\"\u001b[39m\u001b[33m;\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 187 |\u001b[39m \u001b[36mimport\u001b[39m { getPermissions } \u001b[36mfrom\u001b[39m \u001b[32m\"../helpers_video\"\u001b[39m\u001b[33m;\u001b[39m\u001b[0m\n\u001b[0m\u001b[31m\u001b[1m>\u001b[22m\u001b[39m\u001b[90m 188 |\u001b[39m \u001b[36mimport\u001b[39m { getPermissions } \u001b[36mfrom\u001b[39m \u001b[32m\"../helpers_video\"\u001b[39m\u001b[33m;\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m     |\u001b[39m          \u001b[31m\u001b[1m^\u001b[22m\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 189 |\u001b[39m\u001b[0m\n\u001b[0m \u001b[90m 190 |\u001b[39m \u001b[36mexport\u001b[39m \u001b[36mdefault\u001b[39m {\u001b[0m\n\u001b[0m \u001b[90m 191 |\u001b[39m     components\u001b[33m:\u001b[39m {\u001b[0m\n    at Parser._raise (/Applications/MAMP/htdocs/chat-laravel/chatweb/node_modules/@babel/parser/lib/index.js:776:17)\n    at Parser.raiseWithData (/Applications/MAMP/htdocs/chat-laravel/chatweb/node_modules/@babel/parser/lib/index.js:769:17)\n    at Parser.raise (/Applications/MAMP/htdocs/chat-laravel/chatweb/node_modules/@babel/parser/lib/index.js:737:17)\n    at ScopeHandler.checkRedeclarationInScope (/Applications/MAMP/htdocs/chat-laravel/chatweb/node_modules/@babel/parser/lib/index.js:1453:12)\n    at ScopeHandler.declareName (/Applications/MAMP/htdocs/chat-laravel/chatweb/node_modules/@babel/parser/lib/index.js:1419:12)\n    at Parser.checkLVal (/Applications/MAMP/htdocs/chat-laravel/chatweb/node_modules/@babel/parser/lib/index.js:10261:24)\n    at Parser.parseImportSpecifier (/Applications/MAMP/htdocs/chat-laravel/chatweb/node_modules/@babel/parser/lib/index.js:13867:10)\n    at Parser.parseNamedImportSpecifiers (/Applications/MAMP/htdocs/chat-laravel/chatweb/node_modules/@babel/parser/lib/index.js:13844:12)\n    at Parser.parseImport (/Applications/MAMP/htdocs/chat-laravel/chatweb/node_modules/@babel/parser/lib/index.js:13675:39)\n    at Parser.parseStatementContent (/Applications/MAMP/htdocs/chat-laravel/chatweb/node_modules/@babel/parser/lib/index.js:12360:27)\n    at Parser.parseStatement (/Applications/MAMP/htdocs/chat-laravel/chatweb/node_modules/@babel/parser/lib/index.js:12260:17)\n    at Parser.parseBlockOrModuleBlockBody (/Applications/MAMP/htdocs/chat-laravel/chatweb/node_modules/@babel/parser/lib/index.js:12846:25)\n    at Parser.parseBlockBody (/Applications/MAMP/htdocs/chat-laravel/chatweb/node_modules/@babel/parser/lib/index.js:12837:10)\n    at Parser.parseProgram (/Applications/MAMP/htdocs/chat-laravel/chatweb/node_modules/@babel/parser/lib/index.js:12191:10)\n    at Parser.parseTopLevel (/Applications/MAMP/htdocs/chat-laravel/chatweb/node_modules/@babel/parser/lib/index.js:12182:25)\n    at Parser.parse (/Applications/MAMP/htdocs/chat-laravel/chatweb/node_modules/@babel/parser/lib/index.js:13893:10)");
 
 /***/ }),
 
@@ -2890,7 +1961,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0__);
 /* harmony import */ var simple_peer__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! simple-peer */ "./node_modules/simple-peer/index.js");
 /* harmony import */ var simple_peer__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(simple_peer__WEBPACK_IMPORTED_MODULE_1__);
-/* harmony import */ var _helpers__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../helpers */ "./resources/js/helpers.js");
+/* harmony import */ var _helpers_video__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../helpers-video */ "./resources/js/helpers-video.js");
 
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -3070,7 +2141,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     getMediaPermission: function getMediaPermission() {
       var _this3 = this;
 
-      return (0,_helpers__WEBPACK_IMPORTED_MODULE_2__.getPermissions)().then(function (stream) {
+      return (0,_helpers_video__WEBPACK_IMPORTED_MODULE_2__.getPermissions)().then(function (stream) {
         _this3.videoCallParams.stream = stream;
 
         if (_this3.$refs.userVideo) {
@@ -3436,10 +2507,10 @@ window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__.default({
 
 /***/ }),
 
-/***/ "./resources/js/helpers.js":
-/*!*********************************!*\
-  !*** ./resources/js/helpers.js ***!
-  \*********************************/
+/***/ "./resources/js/helpers-video.js":
+/*!***************************************!*\
+  !*** ./resources/js/helpers-video.js ***!
+  \***************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -9893,30 +8964,6 @@ function isnan (val) {
 
 /***/ }),
 
-/***/ "./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Chat.vue?vue&type=style&index=0&lang=css&":
-/*!*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Chat.vue?vue&type=style&index=0&lang=css& ***!
-  \*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
-/***/ ((module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
-/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__);
-// Imports
-
-var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
-// Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.v-card {\n  display: flex !important;\n  flex-direction: column;\n}\n.scroll {\n   overflow-y: scroll\n}\n", ""]);
-// Exports
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
-
-
-/***/ }),
-
 /***/ "./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Main.vue?vue&type=style&index=0&lang=css&":
 /*!*******************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Main.vue?vue&type=style&index=0&lang=css& ***!
@@ -9958,7 +9005,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n.v-list{\n    height: 200px;\n    overflow-y: scroll;\n    bottom: 95px;\n}\n#video-row {\n  width: 700px;\n  max-width: 90vw;\n}\n#incoming-call-card {\n  border: 1px solid #0acf83;\n}\n.video-container {\n  width: 700px;\n  height: 500px;\n  max-width: 90vw;\n  max-height: 50vh;\n  margin: 0 auto;\n  border: 1px solid #0acf83;\n  position: relative;\n  box-shadow: 1px 1px 11px #9e9e9e;\n  background-color: #fff;\n}\n.video-container .user-video {\n  width: 30%;\n  position: absolute;\n  left: 10px;\n  bottom: 10px;\n  border: 1px solid #fff;\n  border-radius: 6px;\n  z-index: 2;\n}\n.video-container .partner-video {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  top: 0;\n  z-index: 1;\n  margin: 0;\n  padding: 0;\n}\n.video-container .action-btns {\n  position: absolute;\n  bottom: 20px;\n  left: 50%;\n  margin-left: -50px;\n  z-index: 3;\n  display: flex;\n  flex-direction: row;\n}\n\n/* Mobiel Styles */\n@media only screen and (max-width: 768px) {\n.video-container {\n    height: 50vh;\n}\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n#video-row {\n  width: 410px;\n  height: 500px;\n  margin: 0;\n}\n#incoming-call-card {\n  border: 1px solid #0acf83;\n}\n.video-container {\n  width: 410px;\n  height: 500px;\n  max-width: 90vw;\n  max-height: 50vh;\n  margin: 0;\n  position: relative;\n  background-color: #fff;\n}\n.video-container .user-video {\n  width: 30%;\n  position: absolute;\n  left: 10px;\n  bottom: 10px;\n  border: 1px solid #fff;\n  border-radius: 6px;\n  z-index: 2;\n}\n.video-container .partner-video {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  top: 0;\n  z-index: 1;\n  margin: 0;\n  padding: 0;\n}\n.video-container .action-btns {\n  position: absolute;\n  bottom: 20px;\n  left: 50%;\n  margin-left: -50px;\n  z-index: 3;\n  display: flex;\n  flex-direction: row;\n}\n\n/* Mobiel Styles */\n@media only screen and (max-width: 768px) {\n.video-container {\n    height: 50vh;\n}\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -56402,47 +55449,6 @@ function config (name) {
 
 /***/ }),
 
-/***/ "./resources/js/components/Chat.vue":
-/*!******************************************!*\
-  !*** ./resources/js/components/Chat.vue ***!
-  \******************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _Chat_vue_vue_type_template_id_0d66c37a___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./Chat.vue?vue&type=template&id=0d66c37a& */ "./resources/js/components/Chat.vue?vue&type=template&id=0d66c37a&");
-/* harmony import */ var _Chat_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./Chat.vue?vue&type=script&lang=js& */ "./resources/js/components/Chat.vue?vue&type=script&lang=js&");
-/* harmony import */ var _Chat_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./Chat.vue?vue&type=style&index=0&lang=css& */ "./resources/js/components/Chat.vue?vue&type=style&index=0&lang=css&");
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
-
-
-
-;
-
-
-/* normalize component */
-
-var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__.default)(
-  _Chat_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__.default,
-  _Chat_vue_vue_type_template_id_0d66c37a___WEBPACK_IMPORTED_MODULE_0__.render,
-  _Chat_vue_vue_type_template_id_0d66c37a___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
-  false,
-  null,
-  null,
-  null
-  
-)
-
-/* hot reload */
-if (false) { var api; }
-component.options.__file = "resources/js/components/Chat.vue"
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
-
-/***/ }),
-
 /***/ "./resources/js/components/ExampleComponent.vue":
 /*!******************************************************!*\
   !*** ./resources/js/components/ExampleComponent.vue ***!
@@ -56603,22 +55609,6 @@ component.options.__file = "resources/js/components/VideoChatComponent.vue"
 
 /***/ }),
 
-/***/ "./resources/js/components/Chat.vue?vue&type=script&lang=js&":
-/*!*******************************************************************!*\
-  !*** ./resources/js/components/Chat.vue?vue&type=script&lang=js& ***!
-  \*******************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
-/* harmony export */ });
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Chat_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Chat.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Chat.vue?vue&type=script&lang=js&");
- /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_Chat_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__.default); 
-
-/***/ }),
-
 /***/ "./resources/js/components/Main.vue?vue&type=script&lang=js&":
 /*!*******************************************************************!*\
   !*** ./resources/js/components/Main.vue?vue&type=script&lang=js& ***!
@@ -56664,23 +55654,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_VideoChatComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./VideoChatComponent.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/VideoChatComponent.vue?vue&type=script&lang=js&");
  /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_VideoChatComponent_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__.default); 
-
-/***/ }),
-
-/***/ "./resources/js/components/Chat.vue?vue&type=template&id=0d66c37a&":
-/*!*************************************************************************!*\
-  !*** ./resources/js/components/Chat.vue?vue&type=template&id=0d66c37a& ***!
-  \*************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "render": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Chat_vue_vue_type_template_id_0d66c37a___WEBPACK_IMPORTED_MODULE_0__.render),
-/* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Chat_vue_vue_type_template_id_0d66c37a___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
-/* harmony export */ });
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_Chat_vue_vue_type_template_id_0d66c37a___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Chat.vue?vue&type=template&id=0d66c37a& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Chat.vue?vue&type=template&id=0d66c37a&");
-
 
 /***/ }),
 
@@ -56752,23 +55725,6 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./resources/js/components/Chat.vue?vue&type=style&index=0&lang=css&":
-/*!***************************************************************************!*\
-  !*** ./resources/js/components/Chat.vue?vue&type=style&index=0&lang=css& ***!
-  \***************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Chat_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-style-loader/index.js!../../../node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Chat.vue?vue&type=style&index=0&lang=css& */ "./node_modules/vue-style-loader/index.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Chat.vue?vue&type=style&index=0&lang=css&");
-/* harmony import */ var _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Chat_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Chat_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__);
-/* harmony reexport (unknown) */ var __WEBPACK_REEXPORT_OBJECT__ = {};
-/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Chat_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== "default") __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_Chat_vue_vue_type_style_index_0_lang_css___WEBPACK_IMPORTED_MODULE_0__[__WEBPACK_IMPORT_KEY__]
-/* harmony reexport (unknown) */ __webpack_require__.d(__webpack_exports__, __WEBPACK_REEXPORT_OBJECT__);
-
-
-/***/ }),
-
 /***/ "./resources/js/components/Main.vue?vue&type=style&index=0&lang=css&":
 /*!***************************************************************************!*\
   !*** ./resources/js/components/Main.vue?vue&type=style&index=0&lang=css& ***!
@@ -56816,188 +55772,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony reexport (unknown) */ var __WEBPACK_REEXPORT_OBJECT__ = {};
 /* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_VideoChatComponent_vue_vue_type_style_index_0_id_4fdd5c75_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== "default") __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_VideoChatComponent_vue_vue_type_style_index_0_id_4fdd5c75_scoped_true_lang_css___WEBPACK_IMPORTED_MODULE_0__[__WEBPACK_IMPORT_KEY__]
 /* harmony reexport (unknown) */ __webpack_require__.d(__webpack_exports__, __WEBPACK_REEXPORT_OBJECT__);
-
-
-/***/ }),
-
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Chat.vue?vue&type=template&id=0d66c37a&":
-/*!****************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Chat.vue?vue&type=template&id=0d66c37a& ***!
-  \****************************************************************************************************************************************************************************************************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
-
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "render": () => (/* binding */ render),
-/* harmony export */   "staticRenderFns": () => (/* binding */ staticRenderFns)
-/* harmony export */ });
-var render = function() {
-  var _vm = this
-  var _h = _vm.$createElement
-  var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    { attrs: { id: "chat" } },
-    [
-      _c(
-        "v-card",
-        { attrs: { width: "420", height: "550" } },
-        [
-          _c(
-            "v-toolbar",
-            { attrs: { dark: "" } },
-            [
-              _c("v-toolbar-title", [_vm._v(" " + _vm._s(_vm.userName))]),
-              _vm._v(" "),
-              _c("v-spacer"),
-              _vm._v(" "),
-              _c(
-                "v-btn",
-                { attrs: { icon: "" } },
-                [_c("v-icon", [_vm._v("mdi-phone")])],
-                1
-              ),
-              _vm._v(" "),
-              _c(
-                "v-btn",
-                { attrs: { icon: "" } },
-                [_c("v-icon", [_vm._v("mdi-video")])],
-                1
-              ),
-              _vm._v(" "),
-              _c(
-                "v-btn",
-                { attrs: { icon: "" } },
-                [_c("v-icon", [_vm._v("mdi-dots-vertical")])],
-                1
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c(
-            "v-card",
-            { staticClass: "scroll", attrs: { flat: "", height: "550" } },
-            [
-              _c(
-                "v-card-text",
-                { staticClass: "flex-grow-1 overflow-y-auto" },
-                [
-                  _vm._l(_vm.messages, function(message, index) {
-                    return [
-                      _c(
-                        "div",
-                        {
-                          key: index,
-                          class:
-                            message.user_id != _vm.currentID
-                              ? "d-flex flex-row"
-                              : "d-flex flex-row-reverse"
-                        },
-                        [
-                          _c("v-menu", {
-                            attrs: { "offset-y": "" },
-                            scopedSlots: _vm._u(
-                              [
-                                {
-                                  key: "activator",
-                                  fn: function(ref) {
-                                    var on = ref.on
-                                    return [
-                                      _c(
-                                        "v-hover",
-                                        [
-                                          _c(
-                                            "v-chip",
-                                            _vm._g(
-                                              {
-                                                staticClass: "pa-4 mb-2",
-                                                staticStyle: {
-                                                  height: "35px",
-                                                  "white-space": "normal"
-                                                },
-                                                attrs: {
-                                                  color:
-                                                    message.user_id !=
-                                                    _vm.currentID
-                                                      ? ""
-                                                      : "#1565C0",
-                                                  dark: ""
-                                                }
-                                              },
-                                              on
-                                            ),
-                                            [
-                                              _vm._v(
-                                                "\n                                           " +
-                                                  _vm._s(message.body) +
-                                                  "\n                                       "
-                                              )
-                                            ]
-                                          )
-                                        ],
-                                        1
-                                      )
-                                    ]
-                                  }
-                                }
-                              ],
-                              null,
-                              true
-                            )
-                          })
-                        ],
-                        1
-                      )
-                    ]
-                  })
-                ],
-                2
-              )
-            ],
-            1
-          ),
-          _vm._v(" "),
-          _c("v-text-field", {
-            attrs: {
-              placeholder: "Type a message...",
-              type: "text",
-              solo: "",
-              clearable: "",
-              "append-outer-icon": "mdi-send",
-              name: "message"
-            },
-            on: {
-              "click:append-outer": _vm.sendMessage,
-              keyup: function($event) {
-                if (
-                  !$event.type.indexOf("key") &&
-                  _vm._k($event.keyCode, "enter", 13, $event.key, "Enter")
-                ) {
-                  return null
-                }
-                return _vm.sendMessage($event)
-              }
-            },
-            model: {
-              value: _vm.newMessage,
-              callback: function($$v) {
-                _vm.newMessage = $$v
-              },
-              expression: "newMessage"
-            }
-          })
-        ],
-        1
-      )
-    ],
-    1
-  )
-}
-var staticRenderFns = []
-render._withStripped = true
-
 
 
 /***/ }),
@@ -57151,7 +55925,7 @@ var render = function() {
   return _c(
     "v-layout",
     [
-      _vm.isOpenChat
+      _vm.componentKey
         ? _c(
             "div",
             { attrs: { id: "chat" } },
@@ -57196,7 +55970,17 @@ var render = function() {
                       _vm._v(" "),
                       _c(
                         "v-btn",
-                        { attrs: { icon: "" } },
+                        {
+                          attrs: { icon: "" },
+                          on: {
+                            click: function($event) {
+                              return _vm.placeVideoCall(
+                                _vm.toUserId,
+                                _vm.userName
+                              )
+                            }
+                          }
+                        },
                         [_c("v-icon", [_vm._v("mdi-video")])],
                         1
                       ),
@@ -57212,128 +55996,138 @@ var render = function() {
                   ),
                   _vm._v(" "),
                   _c(
-                    "v-card",
-                    {
-                      staticClass: "scroll",
-                      attrs: { flat: "", height: "550", id: "MessageCard" }
-                    },
+                    "div",
+                    { attrs: { id: "chatCard" } },
                     [
                       _c(
-                        "v-card-text",
-                        { staticClass: "flex-grow-1 overflow-y-auto" },
+                        "v-card",
+                        { attrs: { flat: "", height: "550" } },
                         [
-                          _vm._l(_vm.messages, function(message, index) {
-                            return [
-                              _c(
-                                "div",
-                                {
-                                  key: index,
-                                  class:
-                                    message.user_id != _vm.currentID
-                                      ? "d-flex flex-row"
-                                      : "d-flex flex-row-reverse"
-                                },
-                                [
-                                  _c("v-menu", {
-                                    attrs: { "offset-y": "" },
-                                    scopedSlots: _vm._u(
-                                      [
-                                        {
-                                          key: "activator",
-                                          fn: function(ref) {
-                                            var on = ref.on
-                                            return [
-                                              _c(
-                                                "v-hover",
-                                                [
+                          _c(
+                            "v-card-text",
+                            { staticClass: "flex-grow-1 overflow-y-auto" },
+                            [
+                              _vm._l(_vm.messages, function(message, index) {
+                                return [
+                                  _c(
+                                    "div",
+                                    {
+                                      key: index,
+                                      class:
+                                        message.user_id != _vm.currentID
+                                          ? "d-flex flex-row"
+                                          : "d-flex flex-row-reverse"
+                                    },
+                                    [
+                                      _c("v-menu", {
+                                        attrs: { "offset-y": "" },
+                                        scopedSlots: _vm._u(
+                                          [
+                                            {
+                                              key: "activator",
+                                              fn: function(ref) {
+                                                var on = ref.on
+                                                return [
                                                   _c(
-                                                    "v-chip",
-                                                    _vm._g(
-                                                      {
-                                                        staticClass:
-                                                          "pa-4 mb-2",
-                                                        staticStyle: {
-                                                          height: "35px",
-                                                          "white-space":
-                                                            "normal"
-                                                        },
-                                                        attrs: {
-                                                          color:
-                                                            message.user_id !=
-                                                            _vm.currentID
-                                                              ? ""
-                                                              : "#1565C0",
-                                                          dark: ""
-                                                        }
-                                                      },
-                                                      on
-                                                    ),
+                                                    "v-hover",
                                                     [
-                                                      _vm._v(
-                                                        "\n                                                    " +
-                                                          _vm._s(message.body) +
-                                                          "\n                                                "
+                                                      _c(
+                                                        "v-chip",
+                                                        _vm._g(
+                                                          {
+                                                            staticClass:
+                                                              "pa-4 mb-2",
+                                                            staticStyle: {
+                                                              height: "35px",
+                                                              "white-space":
+                                                                "normal"
+                                                            },
+                                                            attrs: {
+                                                              color:
+                                                                message.user_id !=
+                                                                _vm.currentID
+                                                                  ? ""
+                                                                  : "#1565C0",
+                                                              dark: ""
+                                                            }
+                                                          },
+                                                          on
+                                                        ),
+                                                        [
+                                                          _vm._v(
+                                                            "\n                                                    " +
+                                                              _vm._s(
+                                                                message.body
+                                                              ) +
+                                                              "\n                                                "
+                                                          )
+                                                        ]
                                                       )
-                                                    ]
+                                                    ],
+                                                    1
                                                   )
-                                                ],
-                                                1
-                                              )
-                                            ]
-                                          }
-                                        }
-                                      ],
-                                      null,
-                                      true
-                                    )
-                                  })
-                                ],
-                                1
-                              )
-                            ]
+                                                ]
+                                              }
+                                            }
+                                          ],
+                                          null,
+                                          true
+                                        )
+                                      })
+                                    ],
+                                    1
+                                  )
+                                ]
+                              })
+                            ],
+                            2
+                          ),
+                          _vm._v(" "),
+                          _c("v-text-field", {
+                            attrs: {
+                              "ma-0": "",
+                              "pa-0": "",
+                              placeholder: "Type a message...",
+                              type: "text",
+                              regular: "",
+                              "single-line": "",
+                              clearable: "",
+                              filled: "",
+                              "append-icon": "mdi-send",
+                              name: "message"
+                            },
+                            on: {
+                              "click:append": _vm.sendMessage,
+                              keyup: function($event) {
+                                if (
+                                  !$event.type.indexOf("key") &&
+                                  _vm._k(
+                                    $event.keyCode,
+                                    "enter",
+                                    13,
+                                    $event.key,
+                                    "Enter"
+                                  )
+                                ) {
+                                  return null
+                                }
+                                return _vm.sendMessage($event)
+                              }
+                            },
+                            model: {
+                              value: _vm.newMessage,
+                              callback: function($$v) {
+                                _vm.newMessage = $$v
+                              },
+                              expression: "newMessage"
+                            }
                           })
                         ],
-                        2
+                        1
                       )
                     ],
                     1
                   ),
-                  _vm._v(" "),
-                  _c("v-text-field", {
-                    attrs: {
-                      placeholder: "Type a message...",
-                      type: "text",
-                      solo: "",
-                      clearable: "",
-                      "append-outer-icon": "mdi-send",
-                      name: "message"
-                    },
-                    on: {
-                      "click:append-outer": _vm.sendMessage,
-                      keyup: function($event) {
-                        if (
-                          !$event.type.indexOf("key") &&
-                          _vm._k(
-                            $event.keyCode,
-                            "enter",
-                            13,
-                            $event.key,
-                            "Enter"
-                          )
-                        ) {
-                          return null
-                        }
-                        return _vm.sendMessage($event)
-                      }
-                    },
-                    model: {
-                      value: _vm.newMessage,
-                      callback: function($$v) {
-                        _vm.newMessage = $$v
-                      },
-                      expression: "newMessage"
-                    }
-                  }),
                   _vm._v(" "),
                   _c(
                     "v-card",
@@ -57349,7 +56143,10 @@ var render = function() {
                           _vm.callPlaced
                             ? _c(
                                 "div",
-                                { staticClass: "col-12 video-container" },
+                                {
+                                  staticClass: "col-12 video-container",
+                                  attrs: { id: "vidCard" }
+                                },
                                 [
                                   _c("video", {
                                     ref: "userVideo",
@@ -57418,59 +56215,69 @@ var render = function() {
                                     )
                                   ]),
                                   _vm._v(" "),
-                                  _c("div", { staticClass: "action-btns" }, [
-                                    _c(
-                                      "button",
-                                      {
-                                        staticClass: "btn btn-info",
-                                        attrs: { type: "button" },
-                                        on: { click: _vm.toggleMuteAudio }
-                                      },
-                                      [
-                                        _vm._v(
-                                          "\n                                " +
-                                            _vm._s(
-                                              _vm.mutedAudio ? "Unmute" : "Mute"
-                                            ) +
-                                            "\n                            "
-                                        )
-                                      ]
-                                    ),
-                                    _vm._v(" "),
-                                    _c(
-                                      "button",
-                                      {
-                                        staticClass: "btn btn-primary mx-4",
-                                        attrs: { type: "button" },
-                                        on: { click: _vm.toggleMuteVideo }
-                                      },
-                                      [
-                                        _vm._v(
-                                          "\n                                " +
-                                            _vm._s(
-                                              _vm.mutedVideo
-                                                ? "ShowVideo"
-                                                : "HideVideo"
-                                            ) +
-                                            "\n                            "
-                                        )
-                                      ]
-                                    ),
-                                    _vm._v(" "),
-                                    _c(
-                                      "button",
-                                      {
-                                        staticClass: "btn btn-danger",
-                                        attrs: { type: "button" },
-                                        on: { click: _vm.endCall }
-                                      },
-                                      [
-                                        _vm._v(
-                                          "\n                                EndCall\n                            "
-                                        )
-                                      ]
-                                    )
-                                  ])
+                                  _c(
+                                    "div",
+                                    { staticClass: "action-btns" },
+                                    [
+                                      _c(
+                                        "v-btn",
+                                        {
+                                          staticClass: "btn btn-info",
+                                          attrs: { color: "#1565C0" },
+                                          on: { click: _vm.toggleMuteAudio }
+                                        },
+                                        [
+                                          _c("v-icon", [
+                                            _vm._v(
+                                              _vm._s(
+                                                _vm.mutedAudio
+                                                  ? "mdi-microphone"
+                                                  : "mdi-microphone-off"
+                                              )
+                                            )
+                                          ])
+                                        ],
+                                        1
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "v-btn",
+                                        {
+                                          staticClass: "btn btn-primary mx-4",
+                                          attrs: { color: "#1565C0" },
+                                          on: { click: _vm.toggleMuteVideo }
+                                        },
+                                        [
+                                          _c("v-icon", [
+                                            _vm._v(
+                                              _vm._s(
+                                                _vm.mutedVideo
+                                                  ? "mdi-video"
+                                                  : "mdi-video-off"
+                                              )
+                                            )
+                                          ])
+                                        ],
+                                        1
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "v-btn",
+                                        {
+                                          staticClass: "btn btn-danger",
+                                          attrs: { color: "#C62828" },
+                                          on: { click: _vm.endCall }
+                                        },
+                                        [
+                                          _c("v-icon", [
+                                            _vm._v("mdi-phone-hangup")
+                                          ])
+                                        ],
+                                        1
+                                      )
+                                    ],
+                                    1
+                                  )
                                 ]
                               )
                             : _vm._e()
@@ -57651,7 +56458,7 @@ var render = function() {
                                   return _vm.getUserMessage(
                                     user.id,
                                     user.name,
-                                    (_vm.isOpenChat = !_vm.isOpenChat)
+                                    _vm.componentKey++
                                   )
                                 }
                               }
@@ -58030,27 +56837,6 @@ function normalizeComponent (
   }
 }
 
-
-/***/ }),
-
-/***/ "./node_modules/vue-style-loader/index.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Chat.vue?vue&type=style&index=0&lang=css&":
-/*!************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-style-loader/index.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Chat.vue?vue&type=style&index=0&lang=css& ***!
-  \************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
-/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
-
-// style-loader: Adds some css to the DOM by adding a <style> tag
-
-// load the styles
-var content = __webpack_require__(/*! !!../../../node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./Chat.vue?vue&type=style&index=0&lang=css& */ "./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Chat.vue?vue&type=style&index=0&lang=css&");
-if(content.__esModule) content = content.default;
-if(typeof content === 'string') content = [[module.id, content, '']];
-if(content.locals) module.exports = content.locals;
-// add the styles to the DOM
-var add = __webpack_require__(/*! !../../../node_modules/vue-style-loader/lib/addStylesClient.js */ "./node_modules/vue-style-loader/lib/addStylesClient.js").default
-var update = add("5014ee07", content, false, {});
-// Hot Module Replacement
-if(false) {}
 
 /***/ }),
 
