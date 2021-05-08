@@ -154,22 +154,6 @@ export default {
             })
         },
 
-        checkOnline(id){
-            axios.post('check', 
-            {
-                id: id
-            })
-            .then(response => {
-                if(response.data == "Online") {
-                    return "Online";
-                }else{
-                    return "Offline";
-                }
-            }).catch(error => {
-                console.log(error)
-            })
-        },
-
         getUserOnlineStatus(id) {
             const onlineUserIndex = this.videoCallParams.users.findIndex(
                 (data) => data.id === id
@@ -199,24 +183,27 @@ export default {
         // Start Initialize Channel & Call
         initializeChannel() {
             this.videoCallParams.channel = window.Echo.join("Demo");
-            console.log(this.videoCallParams.channel);
+            // console.log(this.videoCallParams.channel);
         },
 
         initializeCallListeners() {
             this.videoCallParams.channel.here((users) => {
                 this.videoCallParams.users = users;
+                console.log(users)
             });
 
             this.videoCallParams.channel.joining((users) => {
                 const joiningUserIndex = this.videoCallParams.users.findIndex((data) => data.id == user.id);
                 if(joiningUserIndex < 0){
                     this.videoCallParams.users.push(user);
+                    console.log(users)
                 }
             });
 
             this.videoCallParams.channel.leaving((users) => {
                 const leavingUserIndex = this.videoCallParams.users.findIndex((data) => data.id == user.id);
                 this.videoCallParams.users.splice(leavingUserIndex, 1);
+                console.log(users)
             });
 
             // listen to incomming call
@@ -234,7 +221,7 @@ export default {
                 }
             });
 
-            console.log(this.videoCallParams.channel);
+            // console.log(this.videoCallParams.channel);
         },
         // End Initialize Channel & Call
 
