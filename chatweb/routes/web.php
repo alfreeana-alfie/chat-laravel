@@ -6,6 +6,7 @@ use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\VideoChatController;
+use App\Http\Controllers\AudioChatController;
 use App\Models\User;
 
 /*
@@ -73,5 +74,9 @@ Route::group(['middleware' => ['auth',  'online']], function () {
     // Endpoints to call or receive calls.
     Route::post('/video/call-user', [VideoChatController::class, 'callUser']);
     Route::post('/video/accept-call', [VideoChatController::class, 'acceptCall']);
+    
+    // Endpoints to call or receive calls.
+    Route::post('/audio/call-user', [AudioChatController::class, 'callUser']);
+    Route::post('/audio/accept-call', [AudioChatController::class, 'acceptCall']);
     
 });

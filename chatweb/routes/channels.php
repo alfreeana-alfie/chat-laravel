@@ -24,3 +24,7 @@ Broadcast::channel('chat', function ($user) {
 Broadcast::channel('Demo', function ($user) {
     return ['id' => $user->id, 'name' => $user->name];
 });
+
+Broadcast::channel('DemoAudio', function ($user) {
+    return ['id' => $user->id, 'name' => $user->name];
+});
