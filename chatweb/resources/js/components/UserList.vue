@@ -1,6 +1,6 @@
 <template>
     <v-layout>
-        <!-- Chat Messages **Start** -->
+        <!-- Chat Messages **START** -->
         <div id='chat' v-if="componentKey">
             <v-card width="420" height="550">
                     <v-toolbar dark>
@@ -9,7 +9,7 @@
                         </v-btn>
                         <v-toolbar-title> {{ userName }}</v-toolbar-title>
                         <v-spacer></v-spacer>
-                        <v-btn icon>
+                        <v-btn icon @click="placeAudioCall(toUserId, userName)">
                             <v-icon>mdi-phone</v-icon>
                         </v-btn>
                         <v-btn icon @click="placeVideoCall(toUserId, userName)">
@@ -60,83 +60,138 @@
                     </div>
                 </v-card>
         </div>
+        <!-- Chat Messages **END** -->
 
         <!-- Video Call **START**  -->
-        <div id="video" v-if="callPlaced">
+        <div id="video" v-if="videoCallPlaced">
             <v-card width="420" height="550">
                 <v-toolbar dark flat>
                     <v-btn icon @click="closeChat"> 
                         <v-icon>mdi-close</v-icon>
                     </v-btn>
-                    <v-toolbar-title>{{callPartner}}</v-toolbar-title>
+                    <v-toolbar-title>{{videoCallPartner}}</v-toolbar-title>
                 </v-toolbar>
                 <div class="row mt-5" id="video-row">
                     <div class="col-12 video-container" >
-                            <video
+                        <video
                             ref="userVideo"
                             muted
                             playsinline
                             autoplay
                             class="cursor-pointer"
-                            :class="isFocusMyself === true ? 'user-video' : 'partner-video'"
-                            @click="toggleCameraArea"
-                            />
-                            <video
-                                ref="partnerVideo"
-                                playsinline
-                                autoplay
-                                class="cursor-pointer"
-                                :class="isFocusMyself === true ? 'partner-video' : 'user-video'"
-                                @click="toggleCameraArea"
-                                v-if="videoCallParams.callAccepted"
-                            />
-                            <v-card-text v-else>
-                                <div class="partner-video" >
-                                    <div v-if="callPartner" class="column items-center q-pt-xl">
-                                    <div class="col q-gutter-y-md text-center">
-                                        <p class="q-pt-md">
-                                        <strong>{{ callPartner }}</strong>
-                                        </p>
-                                        <p>calling...</p>
-                                    </div>
-                                    </div>
+                            :class="isVideoFocusMyself === true ? 'user-video' : 'partner-video'"
+                            @click="toggleVideoCameraArea"
+                        />
+                        <video
+                            ref="partnerVideo"
+                            playsinline
+                            autoplay
+                            class="cursor-pointer"
+                            :class="isVideoFocusMyself === true ? 'partner-video' : 'user-video'"
+                            @click="toggleVideoCameraArea"
+                            v-if="videoCallParams.callAccepted"
+                        />
+                        <v-card-text v-else>
+                            <div class="partner-video" >
+                                <div v-if="videoCallPartner" class="column items-center q-pt-xl">
+                                <div class="col q-gutter-y-md text-center">
+                                    <p class="q-pt-md">
+                                    <strong>{{ videoCallPartner }}</strong>
+                                    </p>
+                                    <p>calling...</p>
                                 </div>
-                            </v-card-text>
-                            <div class="action-btns">
-                                <v-btn class="btn btn-info" color="#1565C0" @click="toggleMuteAudio">
-                                    <v-icon>{{ mutedAudio ? "mdi-microphone" : "mdi-microphone-off" }}</v-icon>
-                                </v-btn>
-                                <v-btn class="btn btn-primary mx-4" color="#1565C0" @click="toggleMuteVideo">
-                                    <v-icon>{{ mutedVideo ? "mdi-video" : "mdi-video-off" }}</v-icon>
-                                </v-btn>
-                                <v-btn class="btn btn-danger" color="#C62828" @click="endCall">
-                                    <v-icon>mdi-phone-hangup</v-icon>
-                                </v-btn>
+                                </div>
                             </div>
-                        
+                        </v-card-text>
+                        <div class="action-btns">
+                            <v-btn class="btn btn-info" color="#1565C0" @click="toggleVideoMuteAudio">
+                                <v-icon>{{ videoMutedAudio ? "mdi-microphone" : "mdi-microphone-off" }}</v-icon>
+                            </v-btn>
+                            <v-btn class="btn btn-primary mx-4" color="#1565C0" @click="toggleVideoMuteVideo">
+                                <v-icon>{{ videoMutedVideo ? "mdi-video" : "mdi-video-off" }}</v-icon>
+                            </v-btn>
+                            <v-btn class="btn btn-danger" color="#C62828" @click="endVideoCall">
+                                <v-icon>mdi-phone-hangup</v-icon>
+                            </v-btn>
+                        </div>
                     </div>
                 </div>
             </v-card>
         </div>
         <!-- Video Call **END**  -->
 
+        <!-- Incoming Video Call **START** -->
         <div id="incomingVideoReq">
             <v-card>
-                <div class="row" v-if="incomingCallDialog">
+                <div class="row" v-if="incomingVideoCallDialog">
                     <div class="col"> 
-                        <p>Incoming Call from <strong>{{ callerDetails.name }}</strong></p>
+                        <p>Incoming Video Call from <strong>{{ videoCallerDetails.name }}</strong></p>
                         <div class="btn-group" role="group">
-                            <button type="button" class="btn btn-danger" data-dismiss="modal" @click="declineCall">Decline</button>
-                            <button type="button" class="btn btn-success ml-5" @click="acceptCall(callerDetails.name)">Accept</button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal" @click="declineVideoCall">Decline</button>
+                            <button type="button" class="btn btn-success ml-5" @click="acceptVideoCall(videoCallerDetails.name)">Accept</button>
                         </div>
                     </div>
                 </div>
             </v-card>
         </div>
+        <!-- Incoming Video Call **END** -->
 
-        <!-- Chat Messages **End** -->
+        <!-- Audio Call **START**  -->
+        <div id="audio" v-if="audioCallPlaced">
+            <v-card width="420" height="550">
+                <v-toolbar dark flat>
+                    <v-btn icon @click="closeChat"> 
+                        <v-icon>mdi-close</v-icon>
+                    </v-btn>
+                    <v-toolbar-title>{{ audioCallPartner }}</v-toolbar-title>
+                </v-toolbar>
+                <div class="row mt-5" id="video-row">
+                    <div class="col-12 video-container" >
+                        <video
+                            ref="userAudio"
+                            muted
+                            playsinline
+                            autoplay
+                            class="cursor-pointer"
+                            :class="isAudioFocusMyself === true ? 'user-audio' : 'partner-audio'"
+                            @click="toggleVideoCameraArea"
+                        />
+                        <video
+                            ref="partnerAudio"
+                            playsinline
+                            autoplay
+                            class="cursor-pointer"
+                            :class="isAudioFocusMyself === true ? 'partner-audio' : 'user-audio'"
+                            @click="toggleVideoCameraArea"
+                            v-if="audioCallParams.callAccepted"
+                        />
+                        <v-card-text v-else>
+                            <div class="partner-audio" >
+                                <div v-if="audioCallPartner" class="column items-center q-pt-xl">
+                                <div class="col q-gutter-y-md text-center">
+                                    <p class="q-pt-md">
+                                    <strong>{{ audioCallPartner }}</strong>
+                                    </p>
+                                    <p>calling...</p>
+                                </div>
+                                </div>
+                            </div>
+                        </v-card-text>
+                        <div class="action-btns">
+                            <v-btn class="btn btn-info" color="#1565C0" @click="toggleVideoMuteAudio">
+                                <v-icon>{{ audioMutedAudio ? "mdi-microphone" : "mdi-microphone-off" }}</v-icon>
+                            </v-btn>
+                            <v-btn class="btn btn-danger" color="#C62828" @click="endVideoCall">
+                                <v-icon>mdi-phone-hangup</v-icon>
+                            </v-btn>
+                        </div>
+                    </div>
+                </div>
+            </v-card>
+        </div>
+        <!-- Audio Call **END**  -->
 
-        <!-- All Members **Start** -->
+        <!-- All Members **START** -->
         <v-card width="420" height="550" class="pa-0">
             <v-card-text class="pa-0">
                 <v-row no-gutters align="center">
@@ -181,9 +236,7 @@
             </v-list>
 
         </v-card>
-        <!-- All Members **End** -->
-
-        
+        <!-- All Members **END** -->
     </v-layout>
 </template>
 
@@ -191,7 +244,8 @@
 <script>
 import Chat from "./Chat";
 import Peer from "simple-peer";
-import { getPermissionsVideo } from "../helpers-video";
+import { getVideoPermissions } from "../helpers-video";
+import { getAudioPermissions } from "../helpers-audio";
 
 export default {
     components: {
@@ -205,11 +259,11 @@ export default {
 
     data(){
         return{
-            // Message data
+            // Message
             messages: [],
             newMessage: '',
 
-            // User data
+            // User
             currentID: this.$userId,
             chatID: '',
             userName: '', 
@@ -219,12 +273,12 @@ export default {
             componentKey: 0, 
             model: 1,
 
-            // Video Call data
-            isFocusMyself: true,
-            callPlaced: false,
-            callPartner: null,
-            mutedAudio: false,
-            mutedVideo: false,
+            // Video Call
+            isVideoFocusMyself: true,
+            videoCallPlaced: false,
+            videoCallPartner: null,
+            videoMutedAudio: false,
+            videoMutedVideo: false,
             videoCallParams: {
                 users: [],
                 stream: null,
@@ -236,8 +290,24 @@ export default {
                 peer1: null,
                 peer2: null,
             },
-
-            dialog: false,
+            
+            // Video Call
+            isAudioFocusMyself: true,
+            audioCallPlaced: false,
+            audioCallPartner: null,
+            audioMutedAudio: false,
+            audioMutedVideo: false,
+            audioCallParams: {
+                users: [],
+                stream: null,
+                receivingCall: false,
+                caller: null,
+                callerSignal: null,
+                callAccepted: false,
+                channel: null,
+                peer1: null,
+                peer2: null,
+            },
         }
     },
 
@@ -249,7 +319,8 @@ export default {
     },
 
     computed: {
-        incomingCallDialog() {
+        // Video Computed
+        incomingVideoCallDialog() {
         if (
             this.videoCallParams.receivingCall &&
             this.videoCallParams.caller !== this.authuserid
@@ -258,7 +329,8 @@ export default {
         }
         return false;
         },
-        callerDetails() {
+
+        videoCallerDetails() {
         if (
             this.videoCallParams.caller &&
             this.videoCallParams.caller !== this.authuserid
@@ -268,6 +340,33 @@ export default {
             );
             return {
             id: this.videoCallParams.caller,
+            name: `${incomingCaller[0].name}`,
+            };
+        }
+        return null;
+        },
+
+        // Audio computed
+        incomingAudioCallDialog() {
+        if (
+            this.audioCallParams.receivingCall &&
+            this.audioCallParams.caller !== this.authuserid
+        ) {
+            return true;
+        }
+        return false;
+        },
+
+        audioCallerDetails() {
+        if (
+            this.audioCallParams.caller &&
+            this.audioCallParams.caller !== this.authuserid
+        ) {
+            const incomingCaller = this.allusers.filter(
+            (user) => user.id === this.audioCallParams.caller
+            );
+            return {
+            id: this.audioCallParams.caller,
             name: `${incomingCaller[0].name}`,
             };
         }
@@ -364,8 +463,8 @@ export default {
             this.videoCallParams.channel = window.Echo.join("Demo");
         },
 
-        getMediaPermission() {
-        return getPermissionsVideo()
+        getVideoMediaPermission() {
+        return getVideoPermissions()
             .then((stream) => {
             this.videoCallParams.stream = stream;
             if (this.$refs.userVideo) {
@@ -415,12 +514,11 @@ export default {
         },
 
         async placeVideoCall(id, name){ 
-            this.dialog = true;
-            this.callPlaced = true;
-            this.callPartner = name;
+            this.videoCallPlaced = true;
+            this.videoCallPartner = name;
             console.log(name);
 
-            await this.getMediaPermission();
+            await this.getVideoMediaPermission();
             this.videoCallParams.peer1 = new Peer({
                 initiator: true,
                 trickle: false,
@@ -476,14 +574,14 @@ export default {
             document.getElementById("chat").style.display = "none";
         },
 
-        async acceptCall(name) {
+        async acceptVideoCall(name) {
             
-            this.callPlaced = true;
+            this.videoCallPlaced = true;
             this.videoCallParams.callAccepted = true;
-            this.callPartner = name;
+            this.videoCallPartner = name;
             console.log(name);
 
-            await this.getMediaPermission();
+            await this.getVideoMediaPermission();
 
             this.videoCallParams.peer2 = new Peer({
                 initiator: false,
@@ -526,16 +624,16 @@ export default {
             document.getElementById("chat").style.display = "none";
         },
 
-        declineCall(){
+        declineVideoCall(){
             this.videoCallParams.receivingCall = false;
             document.getElementById("chatCard").style.display = "block";
         },
 
-        endCall(){
-            if(!this.mutedVideo) this.toggleMuteVideo();
-            if(!this.mutedAudio) this.toggleMuteAudio();
+        endVideoCall(){
+            if(!this.videoMutedVideo) this.toggleVideoMuteVideo();
+            if(!this.videoMutedAudio) this.toggleVideoMuteAudio();
 
-            this.stopStreamedVideo(this.$refs.userVideo);
+            this.stopStreamedVideoCall(this.$refs.userVideo);
             if (this.authuserid === this.videoCallParams.caller) {
                 this.videoCallParams.peer1.destroy();
             } else {
@@ -546,39 +644,39 @@ export default {
             ].disconnect();
 
             setTimeout(() => {
-                this.callPlaced = false;
+                this.videoCallPlaced = false;
             }, 3000);
             
             
         },
 
-        toggleCameraArea() {
+        toggleVideoCameraArea() {
             if (this.videoCallParams.callAccepted) {
-                this.isFocusMyself = !this.isFocusMyself;
+                this.isVideoFocusMyself = !this.isVideoFocusMyself;
             }
         },
 
-        toggleMuteAudio(){
-            if(this.mutedAudio){
+        toggleVideoMuteAudio(){
+            if(this.videoMutedAudio){
                 this.$refs.userVideo.srcObject.getAudioTracks()[0].enabled = true;
-                this.mutedAudio = false;
+                this.videoMutedAudio = false;
             }else{
                 this.$refs.userVideo.srcObject.getAudioTracks()[0].enabled = false;
-                this.mutedAudio = true;
+                this.videoMutedAudio = true;
             }
         },
 
-        toggleMuteVideo(){
-            if (this.mutedVideo) {
+        toggleVideoMuteVideo(){
+            if (this.videoMutedVideo) {
                 this.$refs.userVideo.srcObject.getVideoTracks()[0].enabled = true;
-                this.mutedVideo = false;
+                this.videoMutedVideo = false;
             } else {
                 this.$refs.userVideo.srcObject.getVideoTracks()[0].enabled = false;
-                this.mutedVideo = true;
+                this.videoMutedVideo = true;
             }
         },
 
-        stopStreamedVideo(videoElem) {
+        stopStreamedVideoCall(videoElem) {
             const stream = videoElem.srcObject;
             const tracks = stream.getTracks();
             tracks.forEach((track) => {
@@ -589,6 +687,236 @@ export default {
             document.getElementById("chat").style.display = "block";
         },
         /* Video Call --END-- */
+
+        /* Audio Call --START-- */
+        initializeAudioChannel() {
+            this.audioCallParams.channel = window.Echo.join("DemoAudio");
+        },
+
+        getAudioMediaPermission() {
+        return getAudioPermissions()
+            .then((stream) => {
+                this.audioCallParams.stream = stream;
+            if (this.$refs.userAudio) {
+                this.$refs.userAudio.srcObject = stream;
+            }
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+        },
+
+        initializeVideoCallListeners() {
+            this.videoCallParams.channel.here((users) => {
+                this.videoCallParams.users = users;
+            });
+
+            this.videoCallParams.channel.joining((user) => {
+                // check user availability
+                const joiningUserIndex = this.videoCallParams.users.findIndex(
+                    (data) => data.id === user.id
+                );
+                if (joiningUserIndex < 0) {
+                    this.videoCallParams.users.push(user);
+                }
+            });
+            this.videoCallParams.channel.leaving((user) => {
+                const leavingUserIndex = this.videoCallParams.users.findIndex(
+                    (data) => data.id === user.id
+                );
+                    this.videoCallParams.users.splice(leavingUserIndex, 1);
+            });
+
+            // listen to incomming call
+            this.videoCallParams.channel.listen("StartVideoChat", ({ data }) => {
+                console.log(data);
+                if (data.type === "incomingCall") {
+                // add a new line to the sdp to take care of error
+                const updatedSignal = {
+                    ...data.signalData,
+                    sdp: `${data.signalData.sdp}\n`,
+                };
+                this.videoCallParams.receivingCall = true;
+                this.videoCallParams.caller = data.from;
+                this.videoCallParams.callerSignal = updatedSignal;
+                }
+            });
+        },
+
+        async placeVideoCall(id, name){ 
+            this.videoCallPlaced = true;
+            this.videoCallPartner = name;
+            console.log(name);
+
+            await this.getVideoMediaPermission();
+            this.videoCallParams.peer1 = new Peer({
+                initiator: true,
+                trickle: false,
+                stream: this.videoCallParams.stream,
+            });
+
+            this.videoCallParams.peer1.on("signal", (data) => {
+                axios.post("/video/call-user", {
+                    user_to_call: id,
+                    signal_data: data,
+                    from: this.authUserID,
+                }).then((response) => {
+                    console.log(response);
+                }).catch((error) => {
+                    console.log(error);
+                });
+            });
+
+            this.videoCallParams.peer1.on("stream", (stream) => {
+                console.log("Call Streaming...");
+                if (this.$refs.partnerVideo){
+                    this.$refs.partnerVideo.srcObject = stream;
+                }
+            });
+
+            this.videoCallParams.peer1.on("connect", () => {
+                console.log("Peer Connected!")
+            });
+
+            this.videoCallParams.peer1.on("error", (error) => {
+                console.log(error);
+            });
+
+            this.videoCallParams.peer1.on("close", () => {
+                console.log("Call Closed Caller");
+            });
+
+            this.videoCallParams.channel.listen("StartVideoChat", ({data}) => {
+                if(data.type == "callAccepted"){
+                    if (data.signal.renegotiate) {
+                        console.log("renegotating");
+                    }
+                    if(data.signal.sdp){
+                        this.videoCallParams.callAccepted = true;
+                        const updateSignal = {
+                            ...data.signal,
+                            sdp: `${data.signal.sdp}\n`,
+                        };
+                        this.videoCallParams.peer1.signal(updateSignal);
+                    }
+                }
+            });
+            document.getElementById("chat").style.display = "none";
+        },
+
+        async acceptVideoCall(name) {
+            
+            this.videoCallPlaced = true;
+            this.videoCallParams.callAccepted = true;
+            this.videoCallPartner = name;
+            console.log(name);
+
+            await this.getVideoMediaPermission();
+
+            this.videoCallParams.peer2 = new Peer({
+                initiator: false,
+                trickle: false,
+                stream: this.videoCallParams.stream,
+            });
+
+            this.videoCallParams.receivingCall = false;
+            this.videoCallParams.peer2.on("signal", (data) => {
+                axios.post("/video/accept-call", {
+                    signal: data,
+                    to: this.videoCallParams.caller,
+                }).then((response) => {
+                    console.log(response);
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+            });
+
+            this.videoCallParams.peer2.on("stream", (stream) => {
+                this.videoCallParams.callAccepted = true;
+                this.$refs.partnerVideo.srcObject = stream;
+            });
+
+            this.videoCallParams.peer2.on("connect", () => {
+                console.log("Peer02 Connected");
+                this.videoCallParams.callAccepted = true;
+            });
+
+            this.videoCallParams.peer2.on("error", (err) => {
+                console.log(err);
+            });
+
+            this.videoCallParams.peer2.on("close", () => {
+                console.log("Call Closed Accepter");
+            });
+
+            this.videoCallParams.peer2.signal(this.videoCallParams.callerSignal);
+            document.getElementById("chat").style.display = "none";
+        },
+
+        declineVideoCall(){
+            this.videoCallParams.receivingCall = false;
+            document.getElementById("chatCard").style.display = "block";
+        },
+
+        endVideoCall(){
+            if(!this.videoMutedVideo) this.toggleVideoMuteVideo();
+            if(!this.videoMutedAudio) this.toggleVideoMuteAudio();
+
+            this.stopStreamedVideoCall(this.$refs.userVideo);
+            if (this.authuserid === this.videoCallParams.caller) {
+                this.videoCallParams.peer1.destroy();
+            } else {
+                this.videoCallParams.peer2.destroy();
+            }
+            this.videoCallParams.channel.pusher.channels.channels[
+                "presence-Demo"
+            ].disconnect();
+
+            setTimeout(() => {
+                this.videoCallPlaced = false;
+            }, 3000);
+            
+            
+        },
+
+        toggleVideoCameraArea() {
+            if (this.videoCallParams.callAccepted) {
+                this.isVideoFocusMyself = !this.isVideoFocusMyself;
+            }
+        },
+
+        toggleVideoMuteAudio(){
+            if(this.videoMutedAudio){
+                this.$refs.userVideo.srcObject.getAudioTracks()[0].enabled = true;
+                this.videoMutedAudio = false;
+            }else{
+                this.$refs.userVideo.srcObject.getAudioTracks()[0].enabled = false;
+                this.videoMutedAudio = true;
+            }
+        },
+
+        toggleVideoMuteVideo(){
+            if (this.videoMutedVideo) {
+                this.$refs.userVideo.srcObject.getVideoTracks()[0].enabled = true;
+                this.videoMutedVideo = false;
+            } else {
+                this.$refs.userVideo.srcObject.getVideoTracks()[0].enabled = false;
+                this.videoMutedVideo = true;
+            }
+        },
+
+        stopStreamedVideoCall(videoElem) {
+            const stream = videoElem.srcObject;
+            const tracks = stream.getTracks();
+            tracks.forEach((track) => {
+                track.stop();
+            });
+            videoElem.srcObject = null;
+            document.getElementById("video").style.display = "none";
+            document.getElementById("chat").style.display = "block";
+        },
+        /* Audio Call --END-- */
     }
 }
 </script>
