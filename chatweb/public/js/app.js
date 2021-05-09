@@ -2557,6 +2557,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
 
 
 
@@ -10416,7 +10417,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n#video-row {\n  width: 410px;\n  height: 500px;\n  margin: 0;\n}\n#incoming-call-card {\n  border: 1px solid #0acf83;\n}\n.video-container {\n  width: 410px;\n  height: 500px;\n  max-width: 90vw;\n  max-height: 50vh;\n  margin: 0;\n  position: relative;\n  background-color: #fff;\n}\n.video-container .user-video {\n  width: 30%;\n  position: absolute;\n  left: 10px;\n  bottom: 10px;\n  border: 1px solid #fff;\n  border-radius: 6px;\n  z-index: 2;\n}\n.video-container .partner-video {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  top: 0;\n  z-index: 1;\n  margin: 0;\n  padding: 0;\n}\n.video-container .action-btns {\n  position: absolute;\n  bottom: 20px;\n  left: 50%;\n  margin-left: -50px;\n  z-index: 3;\n  display: flex;\n  flex-direction: row;\n}\n\n/* Mobiel Styles */\n@media only screen and (max-width: 768px) {\n.video-container {\n    height: 50vh;\n}\n}\n#audio-row {\n  width: 410px;\n  height: 500px;\n  margin: 0;\n}\n#incoming-call-card {\n  border: 1px solid #0acf83;\n}\n.audio-container {\n  width: 410px;\n  height: 500px;\n  max-width: 90vw;\n  max-height: 50vh;\n  margin: 0;\n  position: relative;\n  background-color: #fff;\n}\n.audio-container .user-audio {\n  width: 30%;\n  position: absolute;\n  left: 10px;\n  bottom: 10px;\n  border: 1px solid #fff;\n  border-radius: 6px;\n  z-index: 2;\n}\n.audio-container .partner-audio {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  top: 0;\n  z-index: 1;\n  margin: 0;\n  padding: 0;\n}\n.audio-container .action-btns {\n  position: absolute;\n  bottom: 20px;\n  left: 50%;\n  margin-left: -50px;\n  z-index: 3;\n  display: flex;\n  flex-direction: row;\n}\n\n/* Mobiel Styles */\n@media only screen and (max-width: 768px) {\n.audio-container {\n    height: 50vh;\n}\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n#video-row {\n  width: 410px;\n  height: 500px;\n  margin: 0;\n}\n#incoming-call-card {\n  border: 1px solid #0acf83;\n}\n.video-container {\n  width: 410px;\n  height: 500px;\n  max-width: 90vw;\n  max-height: 50vh;\n  margin: 0;\n  position: relative;\n  background-color: #fff;\n}\n.video-container .user-video {\n  width: 30%;\n  position: absolute;\n  left: 10px;\n  bottom: 10px;\n  border: 1px solid #fff;\n  border-radius: 6px;\n  z-index: 2;\n}\n.video-container .partner-video {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  top: 0;\n  z-index: 1;\n  margin: 0;\n  padding: 0;\n}\n.video-container .action-btns {\n  position: absolute;\n  bottom: 20px;\n  left: 50%;\n  margin-left: -50px;\n  z-index: 3;\n  display: flex;\n  flex-direction: row;\n}\n\n/* Mobiel Styles */\n@media only screen and (max-width: 768px) {\n.video-container {\n    height: 50vh;\n}\n}\n#audio-row {\n  width: 410px;\n  height: 500px;\n  margin: 0;\n}\n.audio-container {\n  width: 410px;\n  height: 500px;\n  max-width: 90vw;\n  max-height: 50vh;\n  margin: 0;\n  position: relative;\n  background-color: #fff;\n}\n.audio-container .user-audio {\n  width: 30%;\n  position: absolute;\n  left: 10px;\n  bottom: 10px;\n  border: 1px solid #fff;\n  border-radius: 6px;\n  z-index: 2;\n}\n.audio-container .partner-audio {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  top: 0;\n  z-index: 1;\n  margin: 0;\n  padding: 0;\n}\n.audio-container .action-btns {\n  position: absolute;\n  bottom: 20px;\n  left: 50%;\n  margin-left: -50px;\n  z-index: 3;\n  display: flex;\n  flex-direction: row;\n}\n\n/* Mobiel Styles */\n@media only screen and (max-width: 768px) {\n.audio-container {\n    height: 50vh;\n}\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -57820,6 +57821,156 @@ var render = function() {
           )
         : _vm._e(),
       _vm._v(" "),
+      _c(
+        "div",
+        [
+          _c("v-card", [
+            _vm.incomingAudioCallDialog
+              ? _c(
+                  "div",
+                  {
+                    staticClass: "row",
+                    staticStyle: {
+                      width: "280px",
+                      height: "130px",
+                      padding: "10px"
+                    }
+                  },
+                  [
+                    _c("div", { staticClass: "col" }, [
+                      _c("p", { staticStyle: { "text-align": "center" } }, [
+                        _vm._v("Incoming Audio Call from "),
+                        _c("strong", [
+                          _vm._v(_vm._s(_vm.audioCallerDetails.name))
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        {
+                          staticClass: "btn-group",
+                          staticStyle: {
+                            display: "flex",
+                            "justify-content": "center",
+                            padding: "10px"
+                          },
+                          attrs: { role: "group" }
+                        },
+                        [
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-danger",
+                              attrs: {
+                                type: "button",
+                                "data-dismiss": "modal"
+                              },
+                              on: { click: _vm.declineAudioCall }
+                            },
+                            [_vm._v("Decline")]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-success ml-5",
+                              attrs: { type: "button" },
+                              on: {
+                                click: function($event) {
+                                  return _vm.acceptAudioCall(
+                                    _vm.audioCallerDetails.name
+                                  )
+                                }
+                              }
+                            },
+                            [_vm._v("Accept")]
+                          )
+                        ]
+                      )
+                    ])
+                  ]
+                )
+              : _vm._e()
+          ])
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        [
+          _c("v-card", [
+            _vm.incomingVideoCallDialog
+              ? _c(
+                  "div",
+                  {
+                    staticClass: "row",
+                    staticStyle: {
+                      width: "280px",
+                      height: "130px",
+                      padding: "10px"
+                    }
+                  },
+                  [
+                    _c("div", { staticClass: "col" }, [
+                      _c("p", { staticStyle: { "text-align": "center" } }, [
+                        _vm._v("Incoming Video Call from "),
+                        _c("strong", [
+                          _vm._v(_vm._s(_vm.videoCallerDetails.name))
+                        ])
+                      ]),
+                      _vm._v(" "),
+                      _c(
+                        "div",
+                        {
+                          staticClass: "btn-group",
+                          staticStyle: {
+                            display: "flex",
+                            "justify-content": "center",
+                            padding: "10px"
+                          },
+                          attrs: { role: "group" }
+                        },
+                        [
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-danger",
+                              attrs: {
+                                type: "button",
+                                "data-dismiss": "modal"
+                              },
+                              on: { click: _vm.declineVideoCall }
+                            },
+                            [_vm._v("Decline")]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-success ml-5",
+                              attrs: { type: "button" },
+                              on: {
+                                click: function($event) {
+                                  return _vm.acceptVideoCall(
+                                    _vm.videoCallerDetails.name
+                                  )
+                                }
+                              }
+                            },
+                            [_vm._v("Accept")]
+                          )
+                        ]
+                      )
+                    ])
+                  ]
+                )
+              : _vm._e()
+          ])
+        ],
+        1
+      ),
+      _vm._v(" "),
       _vm.audioCallPlaced
         ? _c(
             "div",
@@ -57925,7 +58076,7 @@ var render = function() {
                               _c(
                                 "v-btn",
                                 {
-                                  staticClass: "btn btn-info",
+                                  staticClass: "btn btn-primary mx-4",
                                   attrs: { color: "#1565C0" },
                                   on: { click: _vm.toggleAudioMuteAudio }
                                 },
@@ -57968,59 +58119,6 @@ var render = function() {
             1
           )
         : _vm._e(),
-      _vm._v(" "),
-      _c(
-        "div",
-        [
-          _c("v-card", [
-            _vm.incomingAudioCallDialog
-              ? _c("div", { staticClass: "row" }, [
-                  _c("div", { staticClass: "col" }, [
-                    _c("p", [
-                      _vm._v("Incoming Video Call from "),
-                      _c("strong", [
-                        _vm._v(_vm._s(_vm.audioCallerDetails.name))
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c(
-                      "div",
-                      { staticClass: "btn-group", attrs: { role: "group" } },
-                      [
-                        _c(
-                          "button",
-                          {
-                            staticClass: "btn btn-danger",
-                            attrs: { type: "button", "data-dismiss": "modal" },
-                            on: { click: _vm.declineAudioCall }
-                          },
-                          [_vm._v("Decline")]
-                        ),
-                        _vm._v(" "),
-                        _c(
-                          "button",
-                          {
-                            staticClass: "btn btn-success ml-5",
-                            attrs: { type: "button" },
-                            on: {
-                              click: function($event) {
-                                return _vm.acceptAudioCall(
-                                  _vm.audioCallerDetails.name
-                                )
-                              }
-                            }
-                          },
-                          [_vm._v("Accept")]
-                        )
-                      ]
-                    )
-                  ])
-                ])
-              : _vm._e()
-          ])
-        ],
-        1
-      ),
       _vm._v(" "),
       _vm.videoCallPlaced
         ? _c(
@@ -58191,59 +58289,6 @@ var render = function() {
             1
           )
         : _vm._e(),
-      _vm._v(" "),
-      _c(
-        "div",
-        [
-          _c("v-card", [
-            _vm.incomingVideoCallDialog
-              ? _c("div", { staticClass: "row" }, [
-                  _c("div", { staticClass: "col" }, [
-                    _c("p", [
-                      _vm._v("Incoming Video Call from "),
-                      _c("strong", [
-                        _vm._v(_vm._s(_vm.videoCallerDetails.name))
-                      ])
-                    ]),
-                    _vm._v(" "),
-                    _c(
-                      "div",
-                      { staticClass: "btn-group", attrs: { role: "group" } },
-                      [
-                        _c(
-                          "button",
-                          {
-                            staticClass: "btn btn-danger",
-                            attrs: { type: "button", "data-dismiss": "modal" },
-                            on: { click: _vm.declineVideoCall }
-                          },
-                          [_vm._v("Decline")]
-                        ),
-                        _vm._v(" "),
-                        _c(
-                          "button",
-                          {
-                            staticClass: "btn btn-success ml-5",
-                            attrs: { type: "button" },
-                            on: {
-                              click: function($event) {
-                                return _vm.acceptVideoCall(
-                                  _vm.videoCallerDetails.name
-                                )
-                              }
-                            }
-                          },
-                          [_vm._v("Accept")]
-                        )
-                      ]
-                    )
-                  ])
-                ])
-              : _vm._e()
-          ])
-        ],
-        1
-      ),
       _vm._v(" "),
       _c(
         "v-card",
