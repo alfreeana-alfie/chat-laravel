@@ -63,49 +63,60 @@
 
         <!-- Video Call **START**  -->
         <div id="video" v-if="callPlaced">
-            <div class="row mt-5" id="video-row">
-                <div class="col-12 video-container" >
-                    <video
-                        ref="userVideo"
-                        muted
-                        playsinline
-                        autoplay
-                        class="cursor-pointer"
-                        :class="isFocusMyself === true ? 'user-video' : 'partner-video'"
-                        @click="toggleCameraArea"
-                    />
-                    <video
-                        ref="partnerVideo"
-                        playsinline
-                        autoplay
-                        class="cursor-pointer"
-                        :class="isFocusMyself === true ? 'partner-video' : 'user-video'"
-                        @click="toggleCameraArea"
-                        v-if="videoCallParams.callAccepted"
-                    />
-                    <div class="partner-video" v-else>
-                        <div v-if="callPartner" class="column items-center q-pt-xl">
-                        <div class="col q-gutter-y-md text-center">
-                            <p class="q-pt-md">
-                            <strong>{{ callPartner }}</strong>
-                            </p>
-                            <p>calling...</p>
-                        </div>
-                        </div>
-                    </div>
-                    <div class="action-btns">
-                        <v-btn class="btn btn-info" color="#1565C0" @click="toggleMuteAudio">
-                            <v-icon>{{ mutedAudio ? "mdi-microphone" : "mdi-microphone-off" }}</v-icon>
-                        </v-btn>
-                        <v-btn class="btn btn-primary mx-4" color="#1565C0" @click="toggleMuteVideo">
-                            <v-icon>{{ mutedVideo ? "mdi-video" : "mdi-video-off" }}</v-icon>
-                        </v-btn>
-                        <v-btn class="btn btn-danger" color="#C62828" @click="endCall">
-                            <v-icon>mdi-phone-hangup</v-icon>
-                        </v-btn>
+            <v-card width="420" height="550">
+                <v-toolbar dark flat>
+                    <v-btn icon @click="closeChat"> 
+                        <v-icon>mdi-close</v-icon>
+                    </v-btn>
+                    <v-toolbar-title>{{callPartner}}</v-toolbar-title>
+                </v-toolbar>
+                <div class="row mt-5" id="video-row">
+                    <div class="col-12 video-container" >
+                            <video
+                            ref="userVideo"
+                            muted
+                            playsinline
+                            autoplay
+                            class="cursor-pointer"
+                            :class="isFocusMyself === true ? 'user-video' : 'partner-video'"
+                            @click="toggleCameraArea"
+                            />
+                            <video
+                                ref="partnerVideo"
+                                playsinline
+                                autoplay
+                                class="cursor-pointer"
+                                :class="isFocusMyself === true ? 'partner-video' : 'user-video'"
+                                @click="toggleCameraArea"
+                                v-if="videoCallParams.callAccepted"
+                            />
+                            <v-card-text v-else>
+                                <div class="partner-video" >
+                                    <div v-if="callPartner" class="column items-center q-pt-xl">
+                                    <div class="col q-gutter-y-md text-center">
+                                        <p class="q-pt-md">
+                                        <strong>{{ callPartner }}</strong>
+                                        </p>
+                                        <p>calling...</p>
+                                    </div>
+                                    </div>
+                                </div>
+                            </v-card-text>
+                            <div class="action-btns">
+                                <v-btn class="btn btn-info" color="#1565C0" @click="toggleMuteAudio">
+                                    <v-icon>{{ mutedAudio ? "mdi-microphone" : "mdi-microphone-off" }}</v-icon>
+                                </v-btn>
+                                <v-btn class="btn btn-primary mx-4" color="#1565C0" @click="toggleMuteVideo">
+                                    <v-icon>{{ mutedVideo ? "mdi-video" : "mdi-video-off" }}</v-icon>
+                                </v-btn>
+                                <v-btn class="btn btn-danger" color="#C62828" @click="endCall">
+                                    <v-icon>mdi-phone-hangup</v-icon>
+                                </v-btn>
+                            </div>
+                        
                     </div>
                 </div>
-            </div>
+            </v-card>
         </div>
         <!-- Video Call **END**  -->
 
@@ -116,7 +127,7 @@
                         <p>Incoming Call from <strong>{{ callerDetails.name }}</strong></p>
                         <div class="btn-group" role="group">
                             <button type="button" class="btn btn-danger" data-dismiss="modal" @click="declineCall">Decline</button>
-                            <button type="button" class="btn btn-success ml-5" @click="acceptCall">Accept</button>
+                            <button type="button" class="btn btn-success ml-5" @click="acceptCall(callerDetails.name)">Accept</button>
                         </div>
                     </div>
                 </div>
@@ -408,6 +419,7 @@ export default {
             this.dialog = true;
             this.callPlaced = true;
             this.callPartner = name;
+            console.log(name);
 
             await this.getMediaPermission();
             this.videoCallParams.peer1 = new Peer({
@@ -468,10 +480,13 @@ export default {
         // End Placing Video Call
 
         // Start Accepting Video Call
-        async acceptCall() {
+        async acceptCall(name) {
             
             this.callPlaced = true;
             this.videoCallParams.callAccepted = true;
+            this.callPartner = name;
+            console.log(name);
+
             await this.getMediaPermission();
 
             this.videoCallParams.peer2 = new Peer({
@@ -526,10 +541,8 @@ export default {
 
         // Start Ending Video Call
         endCall(){
-            document.getElementById("chatCard").style.display = "block";
-            document.getElementById("vidCard").style.display = "none";
-            document.getElementById("vidCard").style.display = "block";
-
+            document.getElementById("video").style.display = "none";
+            document.getElementById("chat").style.display = "block";
             if(!this.mutedVideo) this.toggleMuteVideo();
             if(!this.mutedAudio) this.toggleMuteAudio();
 
@@ -543,6 +556,7 @@ export default {
                 "presence-Demo"
             ].disconnect();
 
+            
             setTimeout(() => {
                 this.callPlaced = false;
             }, 3000);

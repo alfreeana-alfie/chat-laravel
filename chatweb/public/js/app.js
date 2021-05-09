@@ -2472,6 +2472,17 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -2688,10 +2699,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                 _this8.dialog = true;
                 _this8.callPlaced = true;
                 _this8.callPartner = name;
-                _context.next = 5;
+                console.log(name);
+                _context.next = 6;
                 return _this8.getMediaPermission();
 
-              case 5:
+              case 6:
                 _this8.videoCallParams.peer1 = new (simple_peer__WEBPACK_IMPORTED_MODULE_2___default())({
                   initiator: true,
                   trickle: false,
@@ -2752,7 +2764,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
                 document.getElementById("chat").style.display = "none"; // document.getElementById("video").style.display = "inline";
 
-              case 13:
+              case 14:
               case "end":
                 return _context.stop();
             }
@@ -2762,7 +2774,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     // End Placing Video Call
     // Start Accepting Video Call
-    acceptCall: function acceptCall() {
+    acceptCall: function acceptCall(name) {
       var _this9 = this;
 
       return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2() {
@@ -2772,10 +2784,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
               case 0:
                 _this9.callPlaced = true;
                 _this9.videoCallParams.callAccepted = true;
-                _context2.next = 4;
+                _this9.callPartner = name;
+                console.log(name);
+                _context2.next = 6;
                 return _this9.getMediaPermission();
 
-              case 4:
+              case 6:
                 _this9.videoCallParams.peer2 = new (simple_peer__WEBPACK_IMPORTED_MODULE_2___default())({
                   initiator: false,
                   trickle: false,
@@ -2816,7 +2830,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
                 document.getElementById("chat").style.display = "none"; // document.getElementById("video").style.display = "inline";
 
-              case 13:
+              case 15:
               case "end":
                 return _context2.stop();
             }
@@ -2835,9 +2849,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     endCall: function endCall() {
       var _this10 = this;
 
-      document.getElementById("chatCard").style.display = "block";
-      document.getElementById("vidCard").style.display = "none";
-      document.getElementById("vidCard").style.display = "block";
+      document.getElementById("video").style.display = "none";
+      document.getElementById("chat").style.display = "block";
       if (!this.mutedVideo) this.toggleMuteVideo();
       if (!this.mutedAudio) this.toggleMuteAudio();
       this.stopStreamedVideo(this.$refs.userVideo);
@@ -57362,116 +57375,169 @@ var render = function() {
         : _vm._e(),
       _vm._v(" "),
       _vm.callPlaced
-        ? _c("div", { attrs: { id: "video" } }, [
-            _c("div", { staticClass: "row mt-5", attrs: { id: "video-row" } }, [
-              _c("div", { staticClass: "col-12 video-container" }, [
-                _c("video", {
-                  ref: "userVideo",
-                  staticClass: "cursor-pointer",
-                  class:
-                    _vm.isFocusMyself === true ? "user-video" : "partner-video",
-                  attrs: { muted: "", playsinline: "", autoplay: "" },
-                  domProps: { muted: true },
-                  on: { click: _vm.toggleCameraArea }
-                }),
-                _vm._v(" "),
-                _vm.videoCallParams.callAccepted
-                  ? _c("video", {
-                      ref: "partnerVideo",
-                      staticClass: "cursor-pointer",
-                      class:
-                        _vm.isFocusMyself === true
-                          ? "partner-video"
-                          : "user-video",
-                      attrs: { playsinline: "", autoplay: "" },
-                      on: { click: _vm.toggleCameraArea }
-                    })
-                  : _c("div", { staticClass: "partner-video" }, [
-                      _vm.callPartner
-                        ? _c(
+        ? _c(
+            "div",
+            { attrs: { id: "video" } },
+            [
+              _c(
+                "v-card",
+                { attrs: { width: "420", height: "550" } },
+                [
+                  _c(
+                    "v-toolbar",
+                    { attrs: { dark: "", flat: "" } },
+                    [
+                      _c(
+                        "v-btn",
+                        { attrs: { icon: "" }, on: { click: _vm.closeChat } },
+                        [_c("v-icon", [_vm._v("mdi-close")])],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c("v-toolbar-title", [_vm._v(_vm._s(_vm.callPartner))])
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    { staticClass: "row mt-5", attrs: { id: "video-row" } },
+                    [
+                      _c(
+                        "div",
+                        { staticClass: "col-12 video-container" },
+                        [
+                          _c("video", {
+                            ref: "userVideo",
+                            staticClass: "cursor-pointer",
+                            class:
+                              _vm.isFocusMyself === true
+                                ? "user-video"
+                                : "partner-video",
+                            attrs: { muted: "", playsinline: "", autoplay: "" },
+                            domProps: { muted: true },
+                            on: { click: _vm.toggleCameraArea }
+                          }),
+                          _vm._v(" "),
+                          _vm.videoCallParams.callAccepted
+                            ? _c("video", {
+                                ref: "partnerVideo",
+                                staticClass: "cursor-pointer",
+                                class:
+                                  _vm.isFocusMyself === true
+                                    ? "partner-video"
+                                    : "user-video",
+                                attrs: { playsinline: "", autoplay: "" },
+                                on: { click: _vm.toggleCameraArea }
+                              })
+                            : _c("v-card-text", [
+                                _c("div", { staticClass: "partner-video" }, [
+                                  _vm.callPartner
+                                    ? _c(
+                                        "div",
+                                        {
+                                          staticClass:
+                                            "column items-center q-pt-xl"
+                                        },
+                                        [
+                                          _c(
+                                            "div",
+                                            {
+                                              staticClass:
+                                                "col q-gutter-y-md text-center"
+                                            },
+                                            [
+                                              _c(
+                                                "p",
+                                                { staticClass: "q-pt-md" },
+                                                [
+                                                  _c("strong", [
+                                                    _vm._v(
+                                                      _vm._s(_vm.callPartner)
+                                                    )
+                                                  ])
+                                                ]
+                                              ),
+                                              _vm._v(" "),
+                                              _c("p", [_vm._v("calling...")])
+                                            ]
+                                          )
+                                        ]
+                                      )
+                                    : _vm._e()
+                                ])
+                              ]),
+                          _vm._v(" "),
+                          _c(
                             "div",
-                            { staticClass: "column items-center q-pt-xl" },
+                            { staticClass: "action-btns" },
                             [
                               _c(
-                                "div",
+                                "v-btn",
                                 {
-                                  staticClass: "col q-gutter-y-md text-center"
+                                  staticClass: "btn btn-info",
+                                  attrs: { color: "#1565C0" },
+                                  on: { click: _vm.toggleMuteAudio }
                                 },
                                 [
-                                  _c("p", { staticClass: "q-pt-md" }, [
-                                    _c("strong", [
-                                      _vm._v(_vm._s(_vm.callPartner))
-                                    ])
-                                  ]),
-                                  _vm._v(" "),
-                                  _c("p", [_vm._v("calling...")])
-                                ]
+                                  _c("v-icon", [
+                                    _vm._v(
+                                      _vm._s(
+                                        _vm.mutedAudio
+                                          ? "mdi-microphone"
+                                          : "mdi-microphone-off"
+                                      )
+                                    )
+                                  ])
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "v-btn",
+                                {
+                                  staticClass: "btn btn-primary mx-4",
+                                  attrs: { color: "#1565C0" },
+                                  on: { click: _vm.toggleMuteVideo }
+                                },
+                                [
+                                  _c("v-icon", [
+                                    _vm._v(
+                                      _vm._s(
+                                        _vm.mutedVideo
+                                          ? "mdi-video"
+                                          : "mdi-video-off"
+                                      )
+                                    )
+                                  ])
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "v-btn",
+                                {
+                                  staticClass: "btn btn-danger",
+                                  attrs: { color: "#C62828" },
+                                  on: { click: _vm.endCall }
+                                },
+                                [_c("v-icon", [_vm._v("mdi-phone-hangup")])],
+                                1
                               )
-                            ]
+                            ],
+                            1
                           )
-                        : _vm._e()
-                    ]),
-                _vm._v(" "),
-                _c(
-                  "div",
-                  { staticClass: "action-btns" },
-                  [
-                    _c(
-                      "v-btn",
-                      {
-                        staticClass: "btn btn-info",
-                        attrs: { color: "#1565C0" },
-                        on: { click: _vm.toggleMuteAudio }
-                      },
-                      [
-                        _c("v-icon", [
-                          _vm._v(
-                            _vm._s(
-                              _vm.mutedAudio
-                                ? "mdi-microphone"
-                                : "mdi-microphone-off"
-                            )
-                          )
-                        ])
-                      ],
-                      1
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "v-btn",
-                      {
-                        staticClass: "btn btn-primary mx-4",
-                        attrs: { color: "#1565C0" },
-                        on: { click: _vm.toggleMuteVideo }
-                      },
-                      [
-                        _c("v-icon", [
-                          _vm._v(
-                            _vm._s(
-                              _vm.mutedVideo ? "mdi-video" : "mdi-video-off"
-                            )
-                          )
-                        ])
-                      ],
-                      1
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "v-btn",
-                      {
-                        staticClass: "btn btn-danger",
-                        attrs: { color: "#C62828" },
-                        on: { click: _vm.endCall }
-                      },
-                      [_c("v-icon", [_vm._v("mdi-phone-hangup")])],
-                      1
-                    )
-                  ],
-                  1
-                )
-              ])
-            ])
-          ])
+                        ],
+                        1
+                      )
+                    ]
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
         : _vm._e(),
       _vm._v(" "),
       _c(
@@ -57506,7 +57572,11 @@ var render = function() {
                           {
                             staticClass: "btn btn-success ml-5",
                             attrs: { type: "button" },
-                            on: { click: _vm.acceptCall }
+                            on: {
+                              click: function($event) {
+                                return _vm.acceptCall(_vm.callerDetails.name)
+                              }
+                            }
                           },
                           [_vm._v("Accept")]
                         )
