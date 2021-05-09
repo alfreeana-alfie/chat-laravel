@@ -2527,8 +2527,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   mounted: function mounted() {
     this.getUserList();
-    this.initializeChannel();
-    this.initializeCallListeners();
+    this.initializeVideoChannel();
+    this.initializeVideoCallListeners();
   },
   computed: {
     incomingCallDialog: function incomingCallDialog() {
@@ -2617,7 +2617,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       });
       this.newMessage = '';
     },
-    // Start Video Call Settings
     getUserOnlineStatus: function getUserOnlineStatus(id) {
       var onlineUserIndex = this.videoCallParams.users.findIndex(function (data) {
         return data.id === id;
@@ -2629,14 +2628,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         return "Online";
       }
     },
-    initializeChannel: function initializeChannel() {
+
+    /* Video Call --START-- */
+    initializeVideoChannel: function initializeVideoChannel() {
       this.videoCallParams.channel = window.Echo.join("Demo");
     },
-    // Get Media permissions
     getMediaPermission: function getMediaPermission() {
       var _this6 = this;
 
-      return (0,_helpers_video__WEBPACK_IMPORTED_MODULE_3__.getPermissions)().then(function (stream) {
+      return (0,_helpers_video__WEBPACK_IMPORTED_MODULE_3__.getPermissionsVideo)().then(function (stream) {
         _this6.videoCallParams.stream = stream;
 
         if (_this6.$refs.userVideo) {
@@ -2646,7 +2646,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         console.log(error);
       });
     },
-    initializeCallListeners: function initializeCallListeners() {
+    initializeVideoCallListeners: function initializeVideoCallListeners() {
       var _this7 = this;
 
       this.videoCallParams.channel.here(function (users) {
@@ -2686,8 +2686,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         }
       });
     },
-    // End Initialize Channel & Call
-    // Start Placing Video Call
     placeVideoCall: function placeVideoCall(id, name) {
       var _this8 = this;
 
@@ -2762,7 +2760,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
                   }
                 });
 
-                document.getElementById("chat").style.display = "none"; // document.getElementById("video").style.display = "inline";
+                document.getElementById("chat").style.display = "none";
 
               case 14:
               case "end":
@@ -2772,8 +2770,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         }, _callee);
       }))();
     },
-    // End Placing Video Call
-    // Start Accepting Video Call
     acceptCall: function acceptCall(name) {
       var _this9 = this;
 
@@ -2828,7 +2824,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
                 _this9.videoCallParams.peer2.signal(_this9.videoCallParams.callerSignal);
 
-                document.getElementById("chat").style.display = "none"; // document.getElementById("video").style.display = "inline";
+                document.getElementById("chat").style.display = "none";
 
               case 15:
               case "end":
@@ -2838,19 +2834,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         }, _callee2);
       }))();
     },
-    // End Accepting Video Call
-    // Start Declining Video Call
     declineCall: function declineCall() {
       this.videoCallParams.receivingCall = false;
       document.getElementById("chatCard").style.display = "block";
     },
-    // End Declining Video Call
-    // Start Ending Video Call
     endCall: function endCall() {
       var _this10 = this;
 
-      document.getElementById("video").style.display = "none";
-      document.getElementById("chat").style.display = "block";
       if (!this.mutedVideo) this.toggleMuteVideo();
       if (!this.mutedAudio) this.toggleMuteAudio();
       this.stopStreamedVideo(this.$refs.userVideo);
@@ -2866,7 +2856,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         _this10.callPlaced = false;
       }, 3000);
     },
-    // End Ending Video Call
     toggleCameraArea: function toggleCameraArea() {
       if (this.videoCallParams.callAccepted) {
         this.isFocusMyself = !this.isFocusMyself;
@@ -2897,7 +2886,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         track.stop();
       });
       videoElem.srcObject = null;
-    } // End Video Call Settings
+      document.getElementById("video").style.display = "none";
+      document.getElementById("chat").style.display = "block";
+    }
+    /* Video Call --END-- */
 
   }
 });
@@ -3467,9 +3459,9 @@ window.Echo = new laravel_echo__WEBPACK_IMPORTED_MODULE_0__.default({
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "getPermissions": () => (/* binding */ getPermissions)
+/* harmony export */   "getPermissionsVideo": () => (/* binding */ getPermissionsVideo)
 /* harmony export */ });
-var getPermissions = function getPermissions() {
+var getPermissionsVideo = function getPermissionsVideo() {
   // Older browsers might not implement mediaDevices at all, so we set an empty object first
   if (navigator.mediaDevices === undefined) {
     navigator.mediaDevices = {};

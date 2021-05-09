@@ -191,7 +191,7 @@
 <script>
 import Chat from "./Chat";
 import Peer from "simple-peer";
-import { getPermissions } from "../helpers-video";
+import { getPermissionsVideo } from "../helpers-video";
 
 export default {
     components: {
@@ -243,8 +243,9 @@ export default {
 
     mounted(){
         this.getUserList();
-        this.initializeChannel();
-        this.initializeCallListeners(); 
+
+        this.initializeVideoChannel();
+        this.initializeVideoCallListeners(); 
     },
 
     computed: {
@@ -346,7 +347,6 @@ export default {
             this.newMessage = ''
         },
 
-        // Start Video Call Settings
         getUserOnlineStatus(id) {
             const onlineUserIndex = this.videoCallParams.users.findIndex(
                 (data) => data.id === id
@@ -358,13 +358,14 @@ export default {
             }
         },
 
-        initializeChannel() {
+        
+        /* Video Call --START-- */
+        initializeVideoChannel() {
             this.videoCallParams.channel = window.Echo.join("Demo");
         },
 
-        // Get Media permissions
         getMediaPermission() {
-        return getPermissions()
+        return getPermissionsVideo()
             .then((stream) => {
             this.videoCallParams.stream = stream;
             if (this.$refs.userVideo) {
@@ -376,10 +377,11 @@ export default {
             });
         },
 
-        initializeCallListeners() {
+        initializeVideoCallListeners() {
             this.videoCallParams.channel.here((users) => {
                 this.videoCallParams.users = users;
             });
+
             this.videoCallParams.channel.joining((user) => {
                 // check user availability
                 const joiningUserIndex = this.videoCallParams.users.findIndex(
@@ -395,6 +397,7 @@ export default {
                 );
                     this.videoCallParams.users.splice(leavingUserIndex, 1);
             });
+
             // listen to incomming call
             this.videoCallParams.channel.listen("StartVideoChat", ({ data }) => {
                 console.log(data);
@@ -410,12 +413,8 @@ export default {
                 }
             });
         },
-        // End Initialize Channel & Call
 
-
-        // Start Placing Video Call
         async placeVideoCall(id, name){ 
-            
             this.dialog = true;
             this.callPlaced = true;
             this.callPartner = name;
@@ -475,11 +474,8 @@ export default {
                 }
             });
             document.getElementById("chat").style.display = "none";
-            // document.getElementById("video").style.display = "inline";
         },
-        // End Placing Video Call
 
-        // Start Accepting Video Call
         async acceptCall(name) {
             
             this.callPlaced = true;
@@ -528,21 +524,14 @@ export default {
 
             this.videoCallParams.peer2.signal(this.videoCallParams.callerSignal);
             document.getElementById("chat").style.display = "none";
-            // document.getElementById("video").style.display = "inline";
         },
-        // End Accepting Video Call
 
-        // Start Declining Video Call
         declineCall(){
             this.videoCallParams.receivingCall = false;
             document.getElementById("chatCard").style.display = "block";
         },
-        // End Declining Video Call
 
-        // Start Ending Video Call
         endCall(){
-            document.getElementById("video").style.display = "none";
-            document.getElementById("chat").style.display = "block";
             if(!this.mutedVideo) this.toggleMuteVideo();
             if(!this.mutedAudio) this.toggleMuteAudio();
 
@@ -556,13 +545,12 @@ export default {
                 "presence-Demo"
             ].disconnect();
 
-            
             setTimeout(() => {
                 this.callPlaced = false;
             }, 3000);
             
+            
         },
-        // End Ending Video Call
 
         toggleCameraArea() {
             if (this.videoCallParams.callAccepted) {
@@ -597,9 +585,10 @@ export default {
                 track.stop();
             });
             videoElem.srcObject = null;
+            document.getElementById("video").style.display = "none";
+            document.getElementById("chat").style.display = "block";
         },
-
-        // End Video Call Settings
+        /* Video Call --END-- */
     }
 }
 </script>
