@@ -1,7 +1,7 @@
 <template>
     <v-layout>
         <!-- Chat Messages **Start** -->
-         <div id='chat' v-if="componentKey">
+        <div id='chat' v-if="componentKey">
             <v-card width="420" height="550">
                     <v-toolbar dark>
                         <v-btn icon @click="closeChat"> 
@@ -9,7 +9,7 @@
                         </v-btn>
                         <v-toolbar-title> {{ userName }}</v-toolbar-title>
                         <v-spacer></v-spacer>
-                        <v-btn icon @click="placeVideoCall(toUserId, userName)">
+                        <v-btn icon>
                             <v-icon>mdi-phone</v-icon>
                         </v-btn>
                         <v-btn icon @click="placeVideoCall(toUserId, userName)">
@@ -58,75 +58,71 @@
                                 </v-text-field>
                         </v-card>
                     </div>
-                    <v-card class="scroll" flat  height="550">
-                        <div class="row mt-5" id="video-row">
-                            <div class="col-12 video-container" v-if="callPlaced" id="vidCard">
-                                <video
-                                    id="video"
-                                    ref="userVideo"
-                                    muted
-                                    playsinline
-                                    autoplay
-                                    class="cursor-pointer"
-                                    :class="isFocusMyself === true ? 'user-video' : 'partner-video'"
-                                    @click="toggleCameraArea"
-                                />
-                                <video
-                                    ref="partnerVideo"
-                                    playsinline
-                                    autoplay
-                                    class="cursor-pointer"
-                                    :class="isFocusMyself === true ? 'partner-video' : 'user-video'"
-                                    @click="toggleCameraArea"
-                                    v-if="videoCallParams.callAccepted"
-                                />
-                                <div class="partner-video">
-                                    <div class="column items-center q-pt-xl">
-                                    <div class="col q-gutter-y-md text-center">
-                                        <p class="q-pt-md">
-                                            <strong>{{ callPartner }}</strong>
-                                        </p>
-                                        <p>calling...</p>
-                                    </div>
-                                    </div>
-                                </div>
-                                <div class="action-btns">
-                                    <!-- <button type="button" class="btn btn-info" @click="toggleMuteAudio">
-                                        {{ mutedAudio ? "Unmute" : "Mute" }}
-                                    </button> -->
-                                    <v-btn class="btn btn-info" color="#1565C0" @click="toggleMuteAudio">
-                                        <v-icon>{{ mutedAudio ? "mdi-microphone" : "mdi-microphone-off" }}</v-icon>
-                                    </v-btn>
-                                    <!-- <button type="button" class="btn btn-primary mx-4" @click="toggleMuteVideo">
-                                        {{ mutedVideo ? "ShowVideo" : "HideVideo" }}
-                                    </button> -->
-                                    <v-btn class="btn btn-primary mx-4" color="#1565C0" @click="toggleMuteVideo">
-                                        <v-icon>{{ mutedVideo ? "mdi-video" : "mdi-video-off" }}</v-icon>
-                                    </v-btn>
-                                    <!-- <button type="button" class="btn btn-danger" @click="endCall">
-                                        EndCall
-                                    </button> -->
-                                    <v-btn class="btn btn-danger" color="#C62828" @click="endCall">
-                                        <v-icon>mdi-phone-hangup</v-icon>
-                                    </v-btn>
-                                </div>
-                            </div>
-                        </div>
+                </v-card>
+        </div>
 
-                        <!-- Incoming Call  -->
-                        <div class="row" v-if="incomingCallDialog">
-                            <div class="col"> 
-                                <p>Incoming Call from <strong>{{ callerDetails.name }}</strong></p>
-                                <div class="btn-group" role="group">
-                                    <button type="button" class="btn btn-danger" data-dismiss="modal" @click="declineCall">Decline</button>
-                                    <button type="button" class="btn btn-success ml-5" @click="acceptCall">Accept</button>
-                                </div>
-                            </div>
+        <!-- Video Call **START**  -->
+        <div id="video" v-if="callPlaced">
+            <div class="row mt-5" id="video-row">
+                <div class="col-12 video-container" >
+                    <video
+                        ref="userVideo"
+                        muted
+                        playsinline
+                        autoplay
+                        class="cursor-pointer"
+                        :class="isFocusMyself === true ? 'user-video' : 'partner-video'"
+                        @click="toggleCameraArea"
+                    />
+                    <video
+                        ref="partnerVideo"
+                        playsinline
+                        autoplay
+                        class="cursor-pointer"
+                        :class="isFocusMyself === true ? 'partner-video' : 'user-video'"
+                        @click="toggleCameraArea"
+                        v-if="videoCallParams.callAccepted"
+                    />
+                    <div class="partner-video" v-else>
+                        <div v-if="callPartner" class="column items-center q-pt-xl">
+                        <div class="col q-gutter-y-md text-center">
+                            <p class="q-pt-md">
+                            <strong>{{ callPartner }}</strong>
+                            </p>
+                            <p>calling...</p>
                         </div>
-                        <!-- End of Incoming Call  -->
-                    </v-card>
+                        </div>
+                    </div>
+                    <div class="action-btns">
+                        <v-btn class="btn btn-info" color="#1565C0" @click="toggleMuteAudio">
+                            <v-icon>{{ mutedAudio ? "mdi-microphone" : "mdi-microphone-off" }}</v-icon>
+                        </v-btn>
+                        <v-btn class="btn btn-primary mx-4" color="#1565C0" @click="toggleMuteVideo">
+                            <v-icon>{{ mutedVideo ? "mdi-video" : "mdi-video-off" }}</v-icon>
+                        </v-btn>
+                        <v-btn class="btn btn-danger" color="#C62828" @click="endCall">
+                            <v-icon>mdi-phone-hangup</v-icon>
+                        </v-btn>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Video Call **END**  -->
+
+        <div id="incomingVideoReq">
+            <v-card>
+                <div class="row" v-if="incomingCallDialog">
+                    <div class="col"> 
+                        <p>Incoming Call from <strong>{{ callerDetails.name }}</strong></p>
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal" @click="declineCall">Decline</button>
+                            <button type="button" class="btn btn-success ml-5" @click="acceptCall">Accept</button>
+                        </div>
+                    </div>
+                </div>
             </v-card>
         </div>
+
         <!-- Chat Messages **End** -->
 
         <!-- All Members **Start** -->
@@ -185,7 +181,6 @@
 import Chat from "./Chat";
 import Peer from "simple-peer";
 import { getPermissions } from "../helpers-video";
-import { getPermissions } from "../helpers-audio";
 
 export default {
     components: {
@@ -219,18 +214,19 @@ export default {
             callPartner: null,
             mutedAudio: false,
             mutedVideo: false,
-
             videoCallParams: {
                 users: [],
-                channel: null,
                 stream: null,
                 receivingCall: false,
                 caller: null,
                 callerSignal: null,
-                callerAccepted: false,
+                callAccepted: false,
+                channel: null,
                 peer1: null,
-                peer2: null
-            }
+                peer2: null,
+            },
+
+            dialog: false,
         }
     },
 
@@ -242,27 +238,29 @@ export default {
 
     computed: {
         incomingCallDialog() {
-            if(this.videoCallParams.receivingCall && this.videoCallParams.caller != this.authUserID){
-                return true;
-            }else{
-                return false;
-            }
-
-        },
-
-        callerDetails() {
-            if(this.videoCallParams.caller && this.videoCallParams.caller != this.authUserID){
-                const incomingCaller = this.allusers.filter(
-                    (user) => user.id == this.videoCallParams.caller
-                );
-
-                return {
-                    id: this.videoCallParams.caller,
-                    name: `${incomingCaller[0].name}`,
-                };
-            }
-            return null;
+        if (
+            this.videoCallParams.receivingCall &&
+            this.videoCallParams.caller !== this.authuserid
+        ) {
+            return true;
         }
+        return false;
+        },
+        callerDetails() {
+        if (
+            this.videoCallParams.caller &&
+            this.videoCallParams.caller !== this.authuserid
+        ) {
+            const incomingCaller = this.allusers.filter(
+            (user) => user.id === this.videoCallParams.caller
+            );
+            return {
+            id: this.videoCallParams.caller,
+            name: `${incomingCaller[0].name}`,
+            };
+        }
+        return null;
+        },
     },
 
     methods: {
@@ -349,6 +347,10 @@ export default {
             }
         },
 
+        initializeChannel() {
+            this.videoCallParams.channel = window.Echo.join("Demo");
+        },
+
         // Get Media permissions
         getMediaPermission() {
         return getPermissions()
@@ -363,33 +365,25 @@ export default {
             });
         },
 
-
-        // Start Initialize Channel & Call
-        initializeChannel() {
-            this.videoCallParams.channel = window.Echo.join("Demo");
-            // console.log(this.videoCallParams.channel);
-        },
-
         initializeCallListeners() {
             this.videoCallParams.channel.here((users) => {
                 this.videoCallParams.users = users;
-                console.log(users)
             });
-
-            this.videoCallParams.channel.joining((users) => {
-                const joiningUserIndex = this.videoCallParams.users.findIndex((data) => data.id == users.id);
-                if(joiningUserIndex < 0){
-                    this.videoCallParams.users.push(users);
-                    console.log(users)
+            this.videoCallParams.channel.joining((user) => {
+                // check user availability
+                const joiningUserIndex = this.videoCallParams.users.findIndex(
+                    (data) => data.id === user.id
+                );
+                if (joiningUserIndex < 0) {
+                    this.videoCallParams.users.push(user);
                 }
             });
-
-            this.videoCallParams.channel.leaving((users) => {
-                const leavingUserIndex = this.videoCallParams.users.findIndex((data) => data.id == users.id);
-                this.videoCallParams.users.splice(leavingUserIndex, 1);
-                console.log(users)
+            this.videoCallParams.channel.leaving((user) => {
+                const leavingUserIndex = this.videoCallParams.users.findIndex(
+                    (data) => data.id === user.id
+                );
+                    this.videoCallParams.users.splice(leavingUserIndex, 1);
             });
-
             // listen to incomming call
             this.videoCallParams.channel.listen("StartVideoChat", ({ data }) => {
                 console.log(data);
@@ -404,15 +398,14 @@ export default {
                 this.videoCallParams.callerSignal = updatedSignal;
                 }
             });
-
-            // console.log(this.videoCallParams.channel);
         },
         // End Initialize Channel & Call
 
 
         // Start Placing Video Call
         async placeVideoCall(id, name){ 
-            document.getElementById("chatCard").style.display = "none";
+            
+            this.dialog = true;
             this.callPlaced = true;
             this.callPartner = name;
 
@@ -469,11 +462,14 @@ export default {
                     }
                 }
             });
+            document.getElementById("chat").style.display = "none";
+            // document.getElementById("video").style.display = "inline";
         },
         // End Placing Video Call
 
         // Start Accepting Video Call
         async acceptCall() {
+            
             this.callPlaced = true;
             this.videoCallParams.callAccepted = true;
             await this.getMediaPermission();
@@ -516,6 +512,8 @@ export default {
             });
 
             this.videoCallParams.peer2.signal(this.videoCallParams.callerSignal);
+            document.getElementById("chat").style.display = "none";
+            // document.getElementById("video").style.display = "inline";
         },
         // End Accepting Video Call
 
