@@ -7,6 +7,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\VideoChatController;
 use App\Http\Controllers\AudioChatController;
+use App\Http\Controllers\FriendController;
 use App\Models\User;
 
 /*
@@ -78,5 +79,8 @@ Route::group(['middleware' => ['auth',  'online']], function () {
     // Endpoints to call or receive calls.
     Route::post('/audio/call-user', [AudioChatController::class, 'callUser']);
     Route::post('/audio/accept-call', [AudioChatController::class, 'acceptCall']);
+
+    // Friend routes
+    Route::post('/sendRequest', [FriendController::class, 'store']);
     
 });

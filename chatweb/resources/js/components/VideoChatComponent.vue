@@ -101,7 +101,7 @@
 
 <script>
 import Peer from "simple-peer";
-import { getPermissions } from "../helpers-video";
+import { getVideoPermissions } from "../helpers-video";
 
 export default {
     props: [
@@ -184,7 +184,7 @@ export default {
       this.videoCallParams.channel = window.Echo.join("Demo");
     },
     getMediaPermission() {
-      return getPermissions()
+      return getVideoPermissions()
         .then((stream) => {
           this.videoCallParams.stream = stream;
           if (this.$refs.userVideo) {

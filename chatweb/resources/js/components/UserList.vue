@@ -211,51 +211,76 @@
         <!-- Incoming Video Call **END** -->
 
         <!-- All Members **START** -->
-        <v-card width="420" height="550" class="pa-0">
-            <v-card-text class="pa-0">
-                <v-row no-gutters align="center">
-                    <v-col cols="6" md="4">
-                        <v-card-text>
-                            <v-icon>mdi-account-circle</v-icon> {{ authUserName }} </v-card-text>
-                    </v-col>
-                    <v-col cols="12" md="8">
-                        <v-chip-group column>
-                            <v-chip class="ma-1" small> All Members </v-chip>
-                            <v-chip class="ma-1" small> Friend List </v-chip>
-                            <v-chip class="ma-1" small> Group List </v-chip>
-                            <v-chip class="ma-1" small> Friend Request </v-chip>
-                            <v-chip class="ma-1" small> Merchant </v-chip>
-                        </v-chip-group>
-                    </v-col>
-                </v-row>
-            </v-card-text>
+        <v-card>
+            <v-card width="420" height="550" class="pa-0">
+                <v-card-text class="pa-0">
+                    <v-row no-gutters align="center">
+                        <v-col cols="6" md="4">
+                            <v-card-text>
+                                <v-icon>mdi-account-circle</v-icon> {{ authUserName }} </v-card-text>
+                        </v-col>
+                        <v-col cols="12" md="8">
+                            <v-chip-group column>
+                                <v-chip class="ma-1" small v-on:click="openAllMembers()"> All Members </v-chip>
+                                <v-chip class="ma-1" small> Friend List </v-chip>
+                                <v-chip class="ma-1" small> Group List </v-chip>
+                                <v-chip class="ma-1" small> Friend Request </v-chip>
+                                <v-chip class="ma-1" small v-on:click="openMerchant()"> Merchant </v-chip>
+                            </v-chip-group>
+                        </v-col>
+                    </v-row>
+                </v-card-text>
 
-            <v-list>
-                <v-list-item-group color="#1976D2" v-model="model">
-                    <template v-for="(user, index) in allusers" >
-                            <v-list-item :key="index"> 
-                                <v-list-item-avatar>
-                                    <v-icon>
-                                        mdi-account-circle
-                                    </v-icon>
-                                </v-list-item-avatar>
-                                <v-list-item-content v-on:click="getUserMessage(user.id, user.name, componentKey++)">
-                                    <v-list-item-title v-html="user.name">{{ user.name }}</v-list-item-title>
-                                    <v-list-item-subtitle>
-                                        <span class="badge badge-light">{{ getUserOnlineStatus(user.id) }}</span>
-                                        <span class="badge badge-light" style="display:none;">{{ getUserOnlineStatusVideo(user.id) }}</span>
-                                    </v-list-item-subtitle>
-                                </v-list-item-content>
-                                    <v-list-item-action>
-                                        <v-btn icon v-on:click="sentFriendRequest(user.id)"><v-icon>mdi-account-plus</v-icon></v-btn>
-                                    </v-list-item-action>
-                            </v-list-item>
-                            <v-divider v-if="user.divider" :key="user.name"></v-divider>
-                    </template>
-                </v-list-item-group>
-            </v-list>
+                <v-list v-if="userVlist">
+                    <v-list-item-group color="#1976D2" v-model="model">
+                        <template v-for="(user, index) in allusers" >
+                                <v-list-item :key="index"> 
+                                    <v-list-item-avatar>
+                                        <v-icon>
+                                            mdi-account-circle
+                                        </v-icon>
+                                    </v-list-item-avatar>
+                                    <v-list-item-content v-on:click="getUserMessage(user.id, user.name, componentKey++)">
+                                        <v-list-item-title v-html="user.name">{{ user.name }}</v-list-item-title>
+                                        <v-list-item-subtitle>
+                                            <span class="badge badge-light">{{ getUserOnlineStatus(user.id) }}</span>
+                                            <span class="badge badge-light" style="display:none;">{{ getUserOnlineStatusVideo(user.id) }}</span>
+                                        </v-list-item-subtitle>
+                                    </v-list-item-content>
+                                        <v-list-item-action>
+                                            <v-btn icon v-on:click="sentFriendRequest(user.id)"><v-icon>mdi-account-plus</v-icon></v-btn>
+                                            <v-card-text v-if="sentRequest">Sent</v-card-text>
+                                        </v-list-item-action>
+                                </v-list-item>
+                                <v-divider v-if="user.divider" :key="user.name"></v-divider>
+                        </template>
+                    </v-list-item-group>
+                </v-list>
 
+                 <v-list v-if="merchantVlist">
+                    <v-list-item-group color="#1976D2" v-model="model">
+                        <template v-for="(user, index) in allmerchants" >
+                                <v-list-item :key="index"> 
+                                    <v-list-item-avatar>
+                                        <v-icon>
+                                            mdi-account-circle
+                                        </v-icon>
+                                    </v-list-item-avatar>
+                                    <v-list-item-content v-on:click="getUserMessage(user.id, user.name, componentKey++)">
+                                        <v-list-item-title v-html="user.name">{{ user.name }}</v-list-item-title>
+                                        <v-list-item-subtitle>
+                                            <span class="badge badge-light">{{ getUserOnlineStatus(user.id) }}</span>
+                                            <span class="badge badge-light" style="display:none;">{{ getUserOnlineStatusVideo(user.id) }}</span>
+                                        </v-list-item-subtitle>
+                                    </v-list-item-content>
+                                </v-list-item>
+                                <v-divider v-if="user.divider" :key="user.name"></v-divider>
+                        </template>
+                    </v-list-item-group>
+                </v-list>
+            </v-card> 
         </v-card>
+        
         <!-- All Members **END** -->
     </v-layout>
 </template>
@@ -279,6 +304,10 @@ export default {
 
     data(){
         return{
+            userVlist: true,
+            merchantVlist: false,
+            sentRequest: false,
+
             // Message
             messages: [],
             newMessage: '',
@@ -289,6 +318,7 @@ export default {
             userName: '', 
             toUserId: '',
             allusers: [],
+            allmerchants: [],
             isOpenChat: false,
             componentKey: 0, 
             model: 1,
@@ -333,6 +363,7 @@ export default {
 
     mounted(){
         this.getUserList();
+        this.getMerchantList();
 
         this.initializeVideoChannel();
         this.initializeVideoCallListeners(); 
@@ -402,6 +433,22 @@ export default {
             axios.get('user-member').then(response => {
                 this.allusers = response.data;
             })
+        },
+
+        getMerchantList(){
+            axios.get('user-merchant').then(response => {
+                this.allmerchants = response.data;
+            })
+        },
+
+        openAllMembers(){
+            this.userVlist = true;
+            this.merchantVlist = false;
+        },
+
+        openMerchant(){
+            this.merchantVlist = true;
+            this.userVlist = false;        
         },
 
         // Get Chat Room ID for messages
@@ -489,6 +536,22 @@ export default {
             }else{
                 return "Online";
             }
+        },
+
+        sentFriendRequest(){
+            axios.post('sendRequest', 
+            {
+                user_id: this.$userId, 
+                to_user_id: this.toUserId,
+                status: 'Pending'
+            })
+            .then(response => {
+                console.log(response);
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+
         },
         
         /* Video Call --START-- */
