@@ -62,39 +62,7 @@
         </div>
         <!-- Chat Messages **END** -->
 
-        <!-- Incoming Audio Call **START** -->
-        <div>
-            <v-card>
-                <div class="row" v-if="incomingAudioCallDialog" style="width: 280px; height: 130px; padding: 10px;">
-                    <div class="col"> 
-                        <p style="text-align:center;">Incoming Audio Call from <strong>{{ audioCallerDetails.name }}</strong></p>
-                        <div class="btn-group" role="group" style="display:flex; justify-content:center; padding: 10px;">
-                            <button type="button" class="btn btn-danger" data-dismiss="modal" @click="declineAudioCall">Decline</button>
-                            <button type="button" class="btn btn-success ml-5" @click="acceptAudioCall(audioCallerDetails.name)">Accept</button>
-                        </div>
-                    </div>
-                </div>
-            </v-card>
-        </div>
-        <!-- Incoming Audio Call **END** -->
-
-        <!-- Incoming Video Call **START** -->
-        <div>
-            <v-card>
-                <div class="row" v-if="incomingVideoCallDialog" style="width: 280px; height: 130px; padding: 10px;">
-                    <div class="col"> 
-                        <p style="text-align:center;">Incoming Video Call from <strong>{{ videoCallerDetails.name }}</strong></p>
-                        <div class="btn-group" role="group" style="display:flex; justify-content:center; padding: 10px;">
-                            <button type="button" class="btn btn-danger" data-dismiss="modal" @click="declineVideoCall">Decline</button>
-                            <button type="button" class="btn btn-success ml-5" @click="acceptVideoCall(videoCallerDetails.name)">Accept</button>
-                        </div>
-                    </div>
-                </div>
-            </v-card>
-        </div>
-        <!-- Incoming Video Call **END** -->
-
-        <!-- Audio Call **START**  -->
+        <!-- Video Call **START**  -->
         <div id="audio" v-if="audioCallPlaced">
             <v-card width="420" height="550">
                 <v-toolbar dark flat>
@@ -136,10 +104,9 @@
                             </div>
                         </v-card-text>
                         <div class="action-btns">
-                            <v-btn class="btn btn-primary mx-4" color="#1565C0" @click="toggleAudioMuteAudio">
+                            <v-btn class="btn btn-info" color="#1565C0" @click="toggleAudioMuteAudio">
                                 <v-icon>{{ audioMutedAudio ? "mdi-microphone" : "mdi-microphone-off" }}</v-icon>
                             </v-btn>
-
                             <!-- <v-btn class="btn btn-primary mx-4" color="#1565C0" @click="toggleAudioMuteVideo">
                                 <v-icon>{{ audioMutedVideo ? "mdi-video" : "mdi-video-off" }}</v-icon>
                             </v-btn> -->
@@ -151,7 +118,23 @@
                 </div>
             </v-card>
         </div>
-        <!-- Audio Call **END**  -->
+        <!-- Video Call **END**  -->
+
+        <!-- Incoming Video Call **START** -->
+        <div>
+            <v-card>
+                <div class="row" v-if="incomingAudioCallDialog">
+                    <div class="col"> 
+                        <p>Incoming Video Call from <strong>{{ audioCallerDetails.name }}</strong></p>
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal" @click="declineAudioCall">Decline</button>
+                            <button type="button" class="btn btn-success ml-5" @click="acceptAudioCall(audioCallerDetails.name)">Accept</button>
+                        </div>
+                    </div>
+                </div>
+            </v-card>
+        </div>
+        <!-- Incoming Video Call **END** -->
 
         <!-- Video Call **START**  -->
         <div id="video" v-if="videoCallPlaced">
@@ -210,6 +193,22 @@
             </v-card>
         </div>
         <!-- Video Call **END**  -->
+
+        <!-- Incoming Video Call **START** -->
+        <div>
+            <v-card>
+                <div class="row" v-if="incomingVideoCallDialog">
+                    <div class="col"> 
+                        <p>Incoming Video Call from <strong>{{ videoCallerDetails.name }}</strong></p>
+                        <div class="btn-group" role="group">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal" @click="declineVideoCall">Decline</button>
+                            <button type="button" class="btn btn-success ml-5" @click="acceptVideoCall(videoCallerDetails.name)">Accept</button>
+                        </div>
+                    </div>
+                </div>
+            </v-card>
+        </div>
+        <!-- Incoming Video Call **END** -->
 
         <!-- All Members **START** -->
         <v-card width="420" height="550" class="pa-0">
@@ -1017,6 +1016,10 @@ export default {
   width: 410px;
   height: 500px;
   margin: 0;
+}
+
+#incoming-call-card {
+  border: 1px solid #0acf83;
 }
 
 .audio-container {
