@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Friend;
+use App\Models\User;
+
 use Illuminate\Http\Request;
 
 class FriendController extends Controller
@@ -35,13 +37,58 @@ class FriendController extends Controller
      */
     public function store(Request $request)
     {
-        $friend = Friend::create([
-            'user_id' => $request['user_id'],
+        // $message = auth()->user()->messages()->create([
+        //     'body' => $request->input('body'),
+        //     'chat_id' => $request['chat_id'],
+        //     'user_id' => auth()->user()->id
+        // ]);
+
+        // broadcast(new MessageSent($message->load('user')))->toOthers();
+
+        // return $message;
+        
+        // $friend = Friend::create([
+        //     'user_id' => $request['user_id'],
+        //     'to_user_id' => $request['to_user_id'],
+        //     'status' => $request['status']
+        // ]);
+
+        $friend = auth()->user()->friends()->create([
+            'user_id' => auth()->user()->id,
             'to_user_id' => $request['to_user_id'],
             'status' => $request['status']
         ]);
 
+        
+
         return $friend;
+    }
+
+    public function getFriendRequest(Request $request){
+        $friend = Friend::where(['to_user_id' => $request['to_user_id']])->pluck('id');
+
+        foreach($friend as $f){
+            $user = User::where(['id' => $f])->get();
+
+            $newArr[] = $f;
+        }
+        
+        return $newArr;
+    }
+
+    public function getSentFriendRequest(Request $request){
+
+        $friend = Friend::where(['user_id' => $request['user_id']])->pluck('to_user_id');
+
+        foreach($friend as $f){
+            $user = User::where(['id' => $f])->first();
+
+            $newArr[] = $user;
+        }
+
+        return $newArr;
+
+        $count = count($newArr);
     }
 
     /**
@@ -86,6 +133,10 @@ class FriendController extends Controller
      */
     public function destroy(Friend $friend)
     {
-        //
+        $friend = Friend::where('to_user_id', $friend->to_user_id)
+        ->where('user_id', $friend->user_id)
+        ->delete();
+
+        return $friend;
     }
 }

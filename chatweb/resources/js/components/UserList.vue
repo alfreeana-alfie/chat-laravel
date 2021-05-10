@@ -222,9 +222,9 @@
                         <v-col cols="12" md="8">
                             <v-chip-group column>
                                 <v-chip class="ma-1" small v-on:click="openAllMembers()"> All Members </v-chip>
-                                <v-chip class="ma-1" small> Friend List </v-chip>
+                                <v-chip class="ma-1" small > Friend List </v-chip>
                                 <v-chip class="ma-1" small> Group List </v-chip>
-                                <v-chip class="ma-1" small> Friend Request </v-chip>
+                                <v-chip class="ma-1" small v-on:click="openSentFriendRequest()"> Friend Request </v-chip>
                                 <v-chip class="ma-1" small v-on:click="openMerchant()"> Merchant </v-chip>
                             </v-chip-group>
                         </v-col>
@@ -257,7 +257,7 @@
                     </v-list-item-group>
                 </v-list>
 
-                 <v-list v-if="merchantVlist">
+                <v-list v-if="merchantVlist">
                     <v-list-item-group color="#1976D2" v-model="model">
                         <template v-for="(user, index) in allmerchants" >
                                 <v-list-item :key="index"> 
@@ -273,6 +273,31 @@
                                             <span class="badge badge-light" style="display:none;">{{ getUserOnlineStatusVideo(user.id) }}</span>
                                         </v-list-item-subtitle>
                                     </v-list-item-content>
+                                </v-list-item>
+                                <v-divider v-if="user.divider" :key="user.name"></v-divider>
+                        </template>
+                    </v-list-item-group>
+                </v-list>
+
+                <v-list v-if="friendRequestVlist">
+                    <v-list-item-group color="#1976D2" v-model="model">
+                        <template v-for="(user, index) in allFriendRequest" >
+                                <v-list-item :key="index"> 
+                                    <v-list-item-avatar>
+                                        <v-icon>
+                                            mdi-account-circle
+                                        </v-icon>
+                                    </v-list-item-avatar>
+                                    <v-list-item-content v-on:click="getUserMessage(user.id, user.name, componentKey++)">
+                                        <v-list-item-title v-html="user.name">{{ user.name }}</v-list-item-title>
+                                        <v-list-item-subtitle>
+                                            <span class="badge badge-light">{{ getUserOnlineStatus(user.id) }}</span>
+                                            <span class="badge badge-light" style="display:none;">{{ getUserOnlineStatusVideo(user.id) }}</span>
+                                        </v-list-item-subtitle>
+                                    </v-list-item-content>
+                                    <v-list-item-action>
+                                            <v-card-text>Sent</v-card-text>
+                                        </v-list-item-action>
                                 </v-list-item>
                                 <v-divider v-if="user.divider" :key="user.name"></v-divider>
                         </template>
@@ -306,6 +331,7 @@ export default {
         return{
             userVlist: true,
             merchantVlist: false,
+            friendRequestVlist: false,
             sentRequest: false,
 
             // Message
@@ -319,6 +345,7 @@ export default {
             toUserId: '',
             allusers: [],
             allmerchants: [],
+            allFriendRequest: [],
             isOpenChat: false,
             componentKey: 0, 
             model: 1,
@@ -364,6 +391,7 @@ export default {
     mounted(){
         this.getUserList();
         this.getMerchantList();
+        this.getSentFriendRequest();
 
         this.initializeVideoChannel();
         this.initializeVideoCallListeners(); 
@@ -444,11 +472,19 @@ export default {
         openAllMembers(){
             this.userVlist = true;
             this.merchantVlist = false;
+            this.friendRequestVlist = false;
         },
 
         openMerchant(){
             this.merchantVlist = true;
-            this.userVlist = false;        
+            this.userVlist = false; 
+            this.friendRequestVlist = false;       
+        },
+
+        openSentFriendRequest(){
+            this.merchantVlist = false;
+            this.userVlist = false; 
+            this.friendRequestVlist = true;   
         },
 
         // Get Chat Room ID for messages
@@ -516,6 +552,20 @@ export default {
             this.newMessage = ''
         },
 
+        getSentFriendRequest() {
+            axios.post('getSentFriendRequest', 
+            {
+                user_id: this.$userId,
+            })
+            .then(response => {
+                this.allFriendRequest = response.data;
+                console.log(response.data);
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+        },
+
         getUserOnlineStatus(id) {
             const onlineUserIndex = this.audioCallParams.users.findIndex(
                 (data) => data.id === id
@@ -538,11 +588,15 @@ export default {
             }
         },
 
-        sentFriendRequest(){
+        sentFriendRequest(userID){
+            this.messages.push({
+                body: this.newMessage
+            });
+            
             axios.post('sendRequest', 
             {
                 user_id: this.$userId, 
-                to_user_id: this.toUserId,
+                to_user_id: userID,
                 status: 'Pending'
             })
             .then(response => {

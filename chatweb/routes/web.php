@@ -49,7 +49,6 @@ Route::group(['middleware' => ['auth',  'online']], function () {
         return view('conversation', ['users' => $users]);
     });
 
-
     // Group routes
     // Route::get('/group-user', [GroupController::class, 'index']);
     // Route::post('/group-message', [GroupController::class, 'fetchGroup']);
@@ -58,29 +57,24 @@ Route::group(['middleware' => ['auth',  'online']], function () {
     // Route::post('/group', [GroupController::class, 'getGroup']);
     // Route::post('/sendGroup', [GroupController::class, 'sendGroupMessage']);
 
-    // Chat routes
-    // Route::get('/conversation', [ConversationController::class, 'index']);
-
+    // Message routes
+    Route::post('/send', [ConversationController::class, 'sendMessage']);
     Route::get('/chats/{from_user_id}', [ConversationController::class, 'fetchPersonal']);
-
     Route::get('/messages', [ConversationController::class, 'fetchMessages']);
     Route::post('/messages', 'ChatsController@sendMessage');
 
-    // Message routes
-    Route::post('/send', [ConversationController::class, 'sendMessage']);
-
-    //Video routes
+    // Video routes
     Route::post('/check', [UserController::class, 'userOnlineStatus']);
 
-    // Endpoints to call or receive calls.
+    // Personal Message routes
     Route::post('/video/call-user', [VideoChatController::class, 'callUser']);
     Route::post('/video/accept-call', [VideoChatController::class, 'acceptCall']);
     
-    // Endpoints to call or receive calls.
     Route::post('/audio/call-user', [AudioChatController::class, 'callUser']);
     Route::post('/audio/accept-call', [AudioChatController::class, 'acceptCall']);
 
     // Friend routes
     Route::post('/sendRequest', [FriendController::class, 'store']);
-    
+    Route::post('/getFriendRequest', [FriendController::class, 'getFriendRequest']);
+    Route::post('/getSentFriendRequest', [FriendController::class, 'getSentFriendRequest']);
 });

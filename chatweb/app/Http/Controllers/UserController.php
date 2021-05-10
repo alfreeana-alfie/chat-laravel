@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
-use DB;
-use Cache;
 
 
 class UserController extends Controller
@@ -66,5 +64,11 @@ class UserController extends Controller
                 return "Offline";
             }
         }
+    }
+
+    public function getFriendDetails(Request $request){
+        $user = User::where('id', $request['id'])->get();
+
+        return $user;
     }
 }

@@ -52,7 +52,7 @@ class User extends Authenticatable
     return Cache::has('user-is-online-' . $this->id);
     }
 
-    public function friend(){
+    public function friends(){
         return $this->hasMany(Friend::class);
     }
 }
