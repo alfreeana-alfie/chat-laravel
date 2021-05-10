@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Friend;
 use App\Models\User;
 use App\Events\FriendRequestSent;
+use App\Events\FriendRequestAccept;
+use App\Events\FriendRequestReject;
+
 
 use Illuminate\Http\Request;
 
@@ -82,6 +85,8 @@ class FriendController extends Controller
         $friend = Friend::where(['to_user_id' => $request['to_user_id']])
         ->where(['user_id' => $request['user_id']])->update(['status' => 'Accept']);
 
+        broadcast(new FriendRequestAccept($friend->load('user')))->toOthers();
+
         return $friend;
     }
 
@@ -130,6 +135,8 @@ class FriendController extends Controller
         $friend = Friend::where('to_user_id', $friend->to_user_id)
         ->where('user_id', $friend->user_id)
         ->delete();
+
+        broadcast(new FriendRequestReject($friend->load('user')))->toOthers();
 
         return $friend;
     }

@@ -9,8 +9,9 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use App\Models\Friend;
 
-class FriendRequestReject
+class FriendRequestReject implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
