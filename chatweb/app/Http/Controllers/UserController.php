@@ -14,6 +14,7 @@ class UserController extends Controller
         return $user;
     }
 
+    // Merchant List
     public function merchantID(){
         $user = User::where('id', '!=', auth()->user()->id)
         ->where('type', '=', '1')
@@ -22,11 +23,14 @@ class UserController extends Controller
         return $user;
     }
 
+    // All Members List
     public function memberID(){
         
         $user = User::where('id', '!=', auth()->user()->id)
         ->where('type', '=', '0')
         ->get();
+
+        
         
         return $user;
     }
