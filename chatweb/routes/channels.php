@@ -25,6 +25,14 @@ Broadcast::channel('request', function ($user) {
     return $user->name;
 });
 
+Broadcast::channel('accept-friend', function ($user) {
+    return $user->name;
+});
+
+Broadcast::channel('reject-friend', function ($user) {
+    return $user->name;
+});
+
 Broadcast::channel('Demo', function ($user) {
     return ['id' => $user->id, 'name' => $user->name];
 });
