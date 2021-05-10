@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Friend;
 use App\Models\User;
+use App\Events\FriendRequestSent;
 
 use Illuminate\Http\Request;
 
@@ -37,43 +38,29 @@ class FriendController extends Controller
      */
     public function store(Request $request)
     {
-        // $message = auth()->user()->messages()->create([
-        //     'body' => $request->input('body'),
-        //     'chat_id' => $request['chat_id'],
-        //     'user_id' => auth()->user()->id
-        // ]);
-
-        // broadcast(new MessageSent($message->load('user')))->toOthers();
-
-        // return $message;
-        
-        // $friend = Friend::create([
-        //     'user_id' => $request['user_id'],
-        //     'to_user_id' => $request['to_user_id'],
-        //     'status' => $request['status']
-        // ]);
-
         $friend = auth()->user()->friends()->create([
             'user_id' => auth()->user()->id,
             'to_user_id' => $request['to_user_id'],
             'status' => $request['status']
         ]);
 
-        
+        broadcast(new FriendRequestSent($friend->load('user')))->toOthers();
 
         return $friend;
     }
 
-    public function getFriendRequest(Request $request){
-        $friend = Friend::where(['to_user_id' => $request['to_user_id']])->pluck('id');
+    public function getFriendList(Request $request){
+        $friend = Friend::where(['to_user_id' => $request['to_user_id']])->pluck('user_id');
 
         foreach($friend as $f){
-            $user = User::where(['id' => $f])->get();
+            $user = User::where(['id' => $f])->first();
 
-            $newArr[] = $f;
+            $newArr[] = $user;
         }
-        
+
         return $newArr;
+
+        $count = count($newArr);
     }
 
     public function getSentFriendRequest(Request $request){
@@ -89,6 +76,13 @@ class FriendController extends Controller
         return $newArr;
 
         $count = count($newArr);
+    }
+
+    public function acceptFriend(Request $request){
+        $friend = Friend::where(['to_user_id' => $request['to_user_id']])
+        ->where(['user_id' => $request['user_id']])->update(['status' => 'Accept']);
+
+        return $friend;
     }
 
     /**

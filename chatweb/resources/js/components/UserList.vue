@@ -222,7 +222,7 @@
                         <v-col cols="12" md="8">
                             <v-chip-group column>
                                 <v-chip class="ma-1" small v-on:click="openAllMembers()"> All Members </v-chip>
-                                <v-chip class="ma-1" small > Friend List </v-chip>
+                                <v-chip class="ma-1" small v-on:click="openFriendList()"> Friend List </v-chip>
                                 <v-chip class="ma-1" small> Group List </v-chip>
                                 <v-chip class="ma-1" small v-on:click="openSentFriendRequest()"> Friend Request </v-chip>
                                 <v-chip class="ma-1" small v-on:click="openMerchant()"> Merchant </v-chip>
@@ -248,7 +248,7 @@
                                         </v-list-item-subtitle>
                                     </v-list-item-content>
                                         <v-list-item-action>
-                                            <v-btn icon v-on:click="sentFriendRequest(user.id)"><v-icon>mdi-account-plus</v-icon></v-btn>
+                                            <v-btn icon v-on:click="sentFriendRequest(user.id, user.name)"><v-icon>mdi-account-plus</v-icon></v-btn>
                                             <v-card-text v-if="sentRequest">Sent</v-card-text>
                                         </v-list-item-action>
                                 </v-list-item>
@@ -303,6 +303,34 @@
                         </template>
                     </v-list-item-group>
                 </v-list>
+
+                <v-list v-if="friendVlist">
+                    <v-list-item-group color="#1976D2" v-model="model">
+                        <template v-for="(user, index) in allFriendList">
+                                <v-list-item :key="index"> 
+                                    <v-list-item-avatar>
+                                        <v-icon>
+                                            mdi-account-circle
+                                        </v-icon>
+                                    </v-list-item-avatar>
+                                    <v-list-item-content v-on:click="getUserMessage(user.id, user.name, componentKey++)">
+                                        <v-list-item-title v-html="user.name">{{ user.name }}</v-list-item-title>
+                                        <v-list-item-subtitle>
+                                            <span class="badge badge-light">{{ getUserOnlineStatus(user.id) }}</span>
+                                            <span class="badge badge-light" style="display:none;">{{ getUserOnlineStatusVideo(user.id) }}</span>
+                                        </v-list-item-subtitle>
+                                    </v-list-item-content>
+                                    <v-list-item-action>
+                                        <v-col>
+                                            <v-btn v-on:click="acceptFriend(user.id)">Accept</v-btn>
+                                            <v-btn>Reject</v-btn>
+                                        </v-col>
+                                    </v-list-item-action>
+                                </v-list-item>
+                                <v-divider v-if="user.divider" :key="user.name"></v-divider>
+                        </template>
+                    </v-list-item-group>
+                </v-list>
             </v-card> 
         </v-card>
         
@@ -332,6 +360,7 @@ export default {
             userVlist: true,
             merchantVlist: false,
             friendRequestVlist: false,
+            friendVlist: false,
             sentRequest: false,
 
             // Message
@@ -346,6 +375,7 @@ export default {
             allusers: [],
             allmerchants: [],
             allFriendRequest: [],
+            allFriendList: [],
             isOpenChat: false,
             componentKey: 0, 
             model: 1,
@@ -392,6 +422,7 @@ export default {
         this.getUserList();
         this.getMerchantList();
         this.getSentFriendRequest();
+        this.getFriendList();
 
         this.initializeVideoChannel();
         this.initializeVideoCallListeners(); 
@@ -473,18 +504,28 @@ export default {
             this.userVlist = true;
             this.merchantVlist = false;
             this.friendRequestVlist = false;
+            this.friendVlist = false;
         },
 
         openMerchant(){
             this.merchantVlist = true;
             this.userVlist = false; 
-            this.friendRequestVlist = false;       
+            this.friendRequestVlist = false;  
+            this.friendVlist = false;     
         },
 
         openSentFriendRequest(){
             this.merchantVlist = false;
             this.userVlist = false; 
             this.friendRequestVlist = true;   
+            this.friendVlist = false;
+        },
+
+        openFriendList(){
+            this.merchantVlist = false;
+            this.userVlist = false; 
+            this.friendRequestVlist = false;
+            this.friendVlist = true;  
         },
 
         // Get Chat Room ID for messages
@@ -532,10 +573,6 @@ export default {
         },
 
         sendMessage(){
-            this.messages.push({
-                body: this.newMessage
-            });
-
             axios.post('send', 
             {
                 body: this.newMessage, 
@@ -549,6 +586,11 @@ export default {
                 console.log(error);
             })
 
+            this.messages.push({
+                user_id: this.$userId,
+                body: this.newMessage
+            });
+
             this.newMessage = ''
         },
 
@@ -559,6 +601,20 @@ export default {
             })
             .then(response => {
                 this.allFriendRequest = response.data;
+                console.log(response.data);
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+        },
+
+        getFriendList(){
+            axios.post('getFriendList', 
+            {
+                to_user_id: this.$userId,
+            })
+            .then(response => {
+                this.allFriendList = response.data;
                 console.log(response.data);
             })
             .catch((error) => {
@@ -588,11 +644,11 @@ export default {
             }
         },
 
-        sentFriendRequest(userID){
-            this.messages.push({
-                body: this.newMessage
+        sentFriendRequest(userID, name){
+            this.allFriendRequest.push({
+                name: name
             });
-            
+
             axios.post('sendRequest', 
             {
                 user_id: this.$userId, 
@@ -606,6 +662,20 @@ export default {
                 console.log(error);
             })
 
+        },
+
+        acceptFriend(userID){
+            axios.post('acceptFriend', 
+            {
+                to_user_id: this.$userId,
+                user_id: userID, 
+            })
+            .then(response => {
+                console.log(response);
+            })
+            .catch((error) => {
+                console.log(error);
+            })  
         },
         
         /* Video Call --START-- */
