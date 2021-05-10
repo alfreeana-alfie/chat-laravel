@@ -2481,6 +2481,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       friendRequestVlist: false,
       friendVlist: false,
       sentRequest: false,
+      colFriendStatus: true,
       // Message
       messages: [],
       newMessage: '',
@@ -2709,6 +2710,48 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         console.log(error);
       });
     },
+    sentFriendRequest: function sentFriendRequest(userID, name) {
+      this.allFriendRequest.push({
+        name: name
+      });
+      axios.post('sendRequest', {
+        user_id: this.$userId,
+        to_user_id: userID,
+        status: 'Pending'
+      }).then(function (response) {
+        console.log(response);
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    acceptFriend: function acceptFriend(userID, name) {
+      // this.allFriendList.push({
+      //     name: name
+      // });
+      axios.post('acceptFriend', {
+        to_user_id: this.$userId,
+        user_id: userID
+      }).then(function (response) {
+        console.log(response);
+      })["catch"](function (error) {
+        console.log(error);
+      });
+      this.colFriendStatus = false;
+    },
+    rejectFriend: function rejectFriend(userID, name) {
+      // this.allFriendList.push({
+      //     name: name
+      // });
+      axios.post('rejectFriend', {
+        to_user_id: this.$userId,
+        user_id: userID
+      }).then(function (response) {
+        console.log(response);
+      })["catch"](function (error) {
+        console.log(error);
+      });
+      this.colFriendStatus = false;
+    },
     getUserOnlineStatus: function getUserOnlineStatus(id) {
       var onlineUserIndex = this.audioCallParams.users.findIndex(function (data) {
         return data.id === id;
@@ -2730,30 +2773,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       } else {
         return "Online";
       }
-    },
-    sentFriendRequest: function sentFriendRequest(userID, name) {
-      this.allFriendRequest.push({
-        name: name
-      });
-      axios.post('sendRequest', {
-        user_id: this.$userId,
-        to_user_id: userID,
-        status: 'Pending'
-      }).then(function (response) {
-        console.log(response);
-      })["catch"](function (error) {
-        console.log(error);
-      });
-    },
-    acceptFriend: function acceptFriend(userID) {
-      axios.post('acceptFriend', {
-        to_user_id: this.$userId,
-        user_id: userID
-      }).then(function (response) {
-        console.log(response);
-      })["catch"](function (error) {
-        console.log(error);
-      });
     },
 
     /* Video Call --START-- */
@@ -58817,27 +58836,41 @@ var render = function() {
                                   _c(
                                     "v-list-item-action",
                                     [
-                                      _c(
-                                        "v-col",
-                                        [
-                                          _c(
-                                            "v-btn",
-                                            {
-                                              on: {
-                                                click: function($event) {
-                                                  return _vm.acceptFriend(
-                                                    user.id
-                                                  )
-                                                }
-                                              }
-                                            },
-                                            [_vm._v("Accept")]
-                                          ),
-                                          _vm._v(" "),
-                                          _c("v-btn", [_vm._v("Reject")])
-                                        ],
-                                        1
-                                      )
+                                      _vm.colFriendStatus
+                                        ? _c(
+                                            "v-col",
+                                            [
+                                              _c(
+                                                "v-btn",
+                                                {
+                                                  on: {
+                                                    click: function($event) {
+                                                      return _vm.acceptFriend(
+                                                        user.id
+                                                      )
+                                                    }
+                                                  }
+                                                },
+                                                [_vm._v("Accept")]
+                                              ),
+                                              _vm._v(" "),
+                                              _c(
+                                                "v-btn",
+                                                {
+                                                  on: {
+                                                    click: function($event) {
+                                                      return _vm.rejectFriend(
+                                                        user.id
+                                                      )
+                                                    }
+                                                  }
+                                                },
+                                                [_vm._v("Reject")]
+                                              )
+                                            ],
+                                            1
+                                          )
+                                        : _vm._e()
                                     ],
                                     1
                                   )

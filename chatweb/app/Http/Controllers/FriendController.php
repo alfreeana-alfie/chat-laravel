@@ -90,6 +90,15 @@ class FriendController extends Controller
         return $friend;
     }
 
+    public function rejectFriend(Request $request){
+        $friend = Friend::where(['to_user_id' => $request['to_user_id']])
+        ->where(['user_id' => $request['user_id']])->delete();
+
+        broadcast(new FriendRequestAccept($friend->load('user')))->toOthers();
+
+        return $friend;
+    }
+
     /**
      * Display the specified resource.
      *

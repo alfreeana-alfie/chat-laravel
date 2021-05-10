@@ -321,9 +321,9 @@
                                         </v-list-item-subtitle>
                                     </v-list-item-content>
                                     <v-list-item-action>
-                                        <v-col>
+                                        <v-col v-if="colFriendStatus">
                                             <v-btn v-on:click="acceptFriend(user.id)">Accept</v-btn>
-                                            <v-btn>Reject</v-btn>
+                                            <v-btn v-on:click="rejectFriend(user.id)">Reject</v-btn>
                                         </v-col>
                                     </v-list-item-action>
                                 </v-list-item>
@@ -362,6 +362,7 @@ export default {
             friendRequestVlist: false,
             friendVlist: false,
             sentRequest: false,
+            colFriendStatus: true,
 
             // Message
             messages: [],
@@ -622,6 +623,65 @@ export default {
             })
         },
 
+        sentFriendRequest(userID, name){
+            this.allFriendRequest.push({
+                name: name
+            });
+
+            axios.post('sendRequest', 
+            {
+                user_id: this.$userId, 
+                to_user_id: userID,
+                status: 'Pending'
+            })
+            .then(response => {
+                console.log(response);
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+        },
+
+        acceptFriend(userID, name){
+            // this.allFriendList.push({
+            //     name: name
+            // });
+
+            axios.post('acceptFriend', 
+            {
+                to_user_id: this.$userId,
+                user_id: userID, 
+            })
+            .then(response => {
+                console.log(response);
+            })
+            .catch((error) => {
+                console.log(error);
+            })  
+
+            this.colFriendStatus = false;
+        },
+
+        rejectFriend(userID, name){
+            // this.allFriendList.push({
+            //     name: name
+            // });
+
+            axios.post('rejectFriend', 
+            {
+                to_user_id: this.$userId,
+                user_id: userID, 
+            })
+            .then(response => {
+                console.log(response);
+            })
+            .catch((error) => {
+                console.log(error);
+            })  
+
+            this.colFriendStatus = false;
+        },
+
         getUserOnlineStatus(id) {
             const onlineUserIndex = this.audioCallParams.users.findIndex(
                 (data) => data.id === id
@@ -644,39 +704,6 @@ export default {
             }
         },
 
-        sentFriendRequest(userID, name){
-            this.allFriendRequest.push({
-                name: name
-            });
-
-            axios.post('sendRequest', 
-            {
-                user_id: this.$userId, 
-                to_user_id: userID,
-                status: 'Pending'
-            })
-            .then(response => {
-                console.log(response);
-            })
-            .catch((error) => {
-                console.log(error);
-            })
-
-        },
-
-        acceptFriend(userID){
-            axios.post('acceptFriend', 
-            {
-                to_user_id: this.$userId,
-                user_id: userID, 
-            })
-            .then(response => {
-                console.log(response);
-            })
-            .catch((error) => {
-                console.log(error);
-            })  
-        },
         
         /* Video Call --START-- */
         initializeVideoChannel() {

@@ -78,4 +78,5 @@ Route::group(['middleware' => ['auth',  'online']], function () {
     Route::post('/getFriendList', [FriendController::class, 'getFriendList']);
     Route::post('/getSentFriendRequest', [FriendController::class, 'getSentFriendRequest']);
     Route::post('/acceptFriend', [FriendController::class, 'acceptFriend']);
+    Route::post('/rejectFriend', [FriendController::class, 'rejectFriend']);
 });
