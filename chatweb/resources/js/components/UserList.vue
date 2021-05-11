@@ -19,9 +19,9 @@
                             <v-icon>mdi-dots-vertical</v-icon>
                         </v-btn>
                     </v-toolbar>
-                    <div id="chatCard">
+                    <div id="chatCard" flat height="550">
                         <v-card flat height="550">
-                            <v-card-text class="flex-grow-1 overflow-y-auto">
+                            <v-card-text class="flex-grow-1 overflow-y-auto" style="height: 550px;">
                                 <template v-for="(message, index) in messages" >
                                     <div :class="message.user_id != currentID ? 'd-flex flex-row' : 'd-flex flex-row-reverse'" :key="index">
                                         <v-menu offset-y>
@@ -41,7 +41,7 @@
                                     </div>
                                 </template>
                             </v-card-text>
-                            <v-text-field 
+                            <v-text-field
                                     ma-0 pa-0
                                     v-model="newMessage"
                                     placeholder="Type a message..." 
@@ -210,7 +210,6 @@
         </div>
         <!-- Incoming Video Call **END** -->
 
-        <!-- All Members **START** -->
         <v-card>
             <v-card width="420" height="550" class="pa-0">
                 <v-card-text class="pa-0">
@@ -223,7 +222,7 @@
                             <v-chip-group column>
                                 <v-chip class="ma-1" small v-on:click="openAllMembers()"> All Members </v-chip>
                                 <v-chip class="ma-1" small v-on:click="openFriendList()"> Friend List </v-chip>
-                                <v-chip class="ma-1" small> Group List </v-chip>
+                                <v-chip class="ma-1" small v-on:click="openGroupList()"> Group List </v-chip>
                                 <v-chip class="ma-1" small v-on:click="openSentFriendRequest()"> Friend Request </v-chip>
                                 <v-chip class="ma-1" small v-on:click="openMerchant()"> Merchant </v-chip>
                             </v-chip-group>
@@ -231,6 +230,7 @@
                     </v-row>
                 </v-card-text>
 
+        <!-- All Members **START** -->
                 <v-list v-if="userVlist">
                     <v-list-item-group color="#1976D2" v-model="model">
                         <template v-for="(user, index) in allusers" >
@@ -256,7 +256,9 @@
                         </template>
                     </v-list-item-group>
                 </v-list>
+        <!-- All Members **END** -->
 
+        <!-- Merchants **START** -->
                 <v-list v-if="merchantVlist">
                     <v-list-item-group color="#1976D2" v-model="model">
                         <template v-for="(user, index) in allmerchants" >
@@ -278,7 +280,9 @@
                         </template>
                     </v-list-item-group>
                 </v-list>
+            <!-- Merchants **END** -->
 
+            <!-- Friend Request **START** -->
                 <v-list v-if="friendRequestVlist">
                     <v-list-item-group color="#1976D2" v-model="model">
                         <template v-for="(user, index) in allFriendRequest" >
@@ -303,7 +307,9 @@
                         </template>
                     </v-list-item-group>
                 </v-list>
+            <!-- Friend Request **END** -->
 
+            <!-- Friend List **START** -->
                 <v-list v-if="friendVlist">
                     <v-list-item-group color="#1976D2" v-model="model">
                         <template v-for="(user, index) in allFriendList">
@@ -331,10 +337,48 @@
                         </template>
                     </v-list-item-group>
                 </v-list>
+            <!-- Friend List **END** -->
+
+            <!-- Group List **START** -->
+                <v-list v-if="groupVlist">
+                    <v-card flat>
+                        <v-card-text>
+                            <v-col>
+                                <v-icon>mdi-account-group</v-icon>
+                                <v-btn text> Add Group</v-btn>
+                            </v-col>
+                        </v-card-text>
+                    </v-card>
+                    <v-list-item-group color="#1976D2" v-model="model">
+                        <template v-for="(user, index) in allusers">
+                                <v-list-item :key="index"> 
+                                    <v-list-item-avatar>
+                                        <v-icon>
+                                            mdi-account-circle
+                                        </v-icon>
+                                    </v-list-item-avatar>
+                                    <v-list-item-content v-on:click="getUserMessage(user.id, user.name, componentKey++)">
+                                        <v-list-item-title v-html="user.name">{{ user.name }}</v-list-item-title>
+                                        <v-list-item-subtitle>
+                                            <span class="badge badge-light">{{ getUserOnlineStatus(user.id) }}</span>
+                                            <span class="badge badge-light" style="display:none;">{{ getUserOnlineStatusVideo(user.id) }}</span>
+                                        </v-list-item-subtitle>
+                                    </v-list-item-content>
+                                    <v-list-item-action>
+                                        <v-col v-if="colFriendStatus">
+                                            <v-btn v-on:click="acceptFriend(user.id)">Accept</v-btn>
+                                            <v-btn v-on:click="rejectFriend(user.id)">Reject</v-btn>
+                                        </v-col>
+                                    </v-list-item-action>
+                                </v-list-item>
+                                <v-divider v-if="user.divider" :key="user.name"></v-divider>
+                        </template>
+                    </v-list-item-group>
+                </v-list>
+            <!-- Group List **END** -->
             </v-card> 
         </v-card>
         
-        <!-- All Members **END** -->
     </v-layout>
 </template>
 
@@ -361,6 +405,7 @@ export default {
             merchantVlist: false,
             friendRequestVlist: false,
             friendVlist: false,
+            groupVlist: false,
             sentRequest: false,
             colFriendStatus: true,
 
@@ -377,6 +422,7 @@ export default {
             allmerchants: [],
             allFriendRequest: [],
             allFriendList: [],
+            allGroups: [],
             isOpenChat: false,
             componentKey: 0, 
             model: 1,
@@ -513,13 +559,15 @@ export default {
             this.merchantVlist = false;
             this.friendRequestVlist = false;
             this.friendVlist = false;
+            this.groupVlist = false;
         },
 
         openMerchant(){
             this.merchantVlist = true;
             this.userVlist = false; 
             this.friendRequestVlist = false;  
-            this.friendVlist = false;     
+            this.friendVlist = false;    
+            this.groupVlist = false;
         },
 
         openSentFriendRequest(){
@@ -527,13 +575,23 @@ export default {
             this.userVlist = false; 
             this.friendRequestVlist = true;   
             this.friendVlist = false;
+            this.groupVlist = false;
         },
 
         openFriendList(){
             this.merchantVlist = false;
             this.userVlist = false; 
             this.friendRequestVlist = false;
-            this.friendVlist = true;  
+            this.friendVlist = true; 
+            this.groupVlist = false; 
+        },
+
+        openGroupList(){
+            this.merchantVlist = false;
+            this.userVlist = false; 
+            this.friendRequestVlist = false;
+            this.friendVlist = false; 
+            this.groupVlist = true; 
         },
 
         // Get Chat Room ID for messages

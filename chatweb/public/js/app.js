@@ -2465,6 +2465,50 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 
@@ -2480,6 +2524,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       merchantVlist: false,
       friendRequestVlist: false,
       friendVlist: false,
+      groupVlist: false,
       sentRequest: false,
       colFriendStatus: true,
       // Message
@@ -2494,6 +2539,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       allmerchants: [],
       allFriendRequest: [],
       allFriendList: [],
+      allGroups: [],
       isOpenChat: false,
       componentKey: 0,
       model: 1,
@@ -2618,24 +2664,35 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.merchantVlist = false;
       this.friendRequestVlist = false;
       this.friendVlist = false;
+      this.groupVlist = false;
     },
     openMerchant: function openMerchant() {
       this.merchantVlist = true;
       this.userVlist = false;
       this.friendRequestVlist = false;
       this.friendVlist = false;
+      this.groupVlist = false;
     },
     openSentFriendRequest: function openSentFriendRequest() {
       this.merchantVlist = false;
       this.userVlist = false;
       this.friendRequestVlist = true;
       this.friendVlist = false;
+      this.groupVlist = false;
     },
     openFriendList: function openFriendList() {
       this.merchantVlist = false;
       this.userVlist = false;
       this.friendRequestVlist = false;
       this.friendVlist = true;
+      this.groupVlist = false;
+    },
+    openGroupList: function openGroupList() {
+      this.merchantVlist = false;
+      this.userVlist = false;
+      this.friendRequestVlist = false;
+      this.friendVlist = false;
+      this.groupVlist = true;
     },
     // Get Chat Room ID for messages
     getUserMessage: function getUserMessage(user_id, name, isOpenChat) {
@@ -57704,7 +57761,7 @@ var render = function() {
                   _vm._v(" "),
                   _c(
                     "div",
-                    { attrs: { id: "chatCard" } },
+                    { attrs: { id: "chatCard", flat: "", height: "550" } },
                     [
                       _c(
                         "v-card",
@@ -57712,7 +57769,10 @@ var render = function() {
                         [
                           _c(
                             "v-card-text",
-                            { staticClass: "flex-grow-1 overflow-y-auto" },
+                            {
+                              staticClass: "flex-grow-1 overflow-y-auto",
+                              staticStyle: { height: "550px" }
+                            },
                             [
                               _vm._l(_vm.messages, function(message, index) {
                                 return [
@@ -58337,7 +58397,15 @@ var render = function() {
                               _vm._v(" "),
                               _c(
                                 "v-chip",
-                                { staticClass: "ma-1", attrs: { small: "" } },
+                                {
+                                  staticClass: "ma-1",
+                                  attrs: { small: "" },
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.openGroupList()
+                                    }
+                                  }
+                                },
                                 [_vm._v(" Group List ")]
                               ),
                               _vm._v(" "),
@@ -58763,6 +58831,182 @@ var render = function() {
                         },
                         [
                           _vm._l(_vm.allFriendList, function(user, index) {
+                            return [
+                              _c(
+                                "v-list-item",
+                                { key: index },
+                                [
+                                  _c(
+                                    "v-list-item-avatar",
+                                    [
+                                      _c("v-icon", [
+                                        _vm._v(
+                                          "\n                                        mdi-account-circle\n                                    "
+                                        )
+                                      ])
+                                    ],
+                                    1
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "v-list-item-content",
+                                    {
+                                      on: {
+                                        click: function($event) {
+                                          return _vm.getUserMessage(
+                                            user.id,
+                                            user.name,
+                                            _vm.componentKey++
+                                          )
+                                        }
+                                      }
+                                    },
+                                    [
+                                      _c(
+                                        "v-list-item-title",
+                                        {
+                                          domProps: {
+                                            innerHTML: _vm._s(user.name)
+                                          }
+                                        },
+                                        [_vm._v(_vm._s(user.name))]
+                                      ),
+                                      _vm._v(" "),
+                                      _c("v-list-item-subtitle", [
+                                        _c(
+                                          "span",
+                                          { staticClass: "badge badge-light" },
+                                          [
+                                            _vm._v(
+                                              _vm._s(
+                                                _vm.getUserOnlineStatus(user.id)
+                                              )
+                                            )
+                                          ]
+                                        ),
+                                        _vm._v(" "),
+                                        _c(
+                                          "span",
+                                          {
+                                            staticClass: "badge badge-light",
+                                            staticStyle: { display: "none" }
+                                          },
+                                          [
+                                            _vm._v(
+                                              _vm._s(
+                                                _vm.getUserOnlineStatusVideo(
+                                                  user.id
+                                                )
+                                              )
+                                            )
+                                          ]
+                                        )
+                                      ])
+                                    ],
+                                    1
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "v-list-item-action",
+                                    [
+                                      _vm.colFriendStatus
+                                        ? _c(
+                                            "v-col",
+                                            [
+                                              _c(
+                                                "v-btn",
+                                                {
+                                                  on: {
+                                                    click: function($event) {
+                                                      return _vm.acceptFriend(
+                                                        user.id
+                                                      )
+                                                    }
+                                                  }
+                                                },
+                                                [_vm._v("Accept")]
+                                              ),
+                                              _vm._v(" "),
+                                              _c(
+                                                "v-btn",
+                                                {
+                                                  on: {
+                                                    click: function($event) {
+                                                      return _vm.rejectFriend(
+                                                        user.id
+                                                      )
+                                                    }
+                                                  }
+                                                },
+                                                [_vm._v("Reject")]
+                                              )
+                                            ],
+                                            1
+                                          )
+                                        : _vm._e()
+                                    ],
+                                    1
+                                  )
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              user.divider
+                                ? _c("v-divider", { key: user.name })
+                                : _vm._e()
+                            ]
+                          })
+                        ],
+                        2
+                      )
+                    ],
+                    1
+                  )
+                : _vm._e(),
+              _vm._v(" "),
+              _vm.groupVlist
+                ? _c(
+                    "v-list",
+                    [
+                      _c(
+                        "v-card",
+                        { attrs: { flat: "" } },
+                        [
+                          _c(
+                            "v-card-text",
+                            [
+                              _c(
+                                "v-col",
+                                [
+                                  _c("v-icon", [_vm._v("mdi-account-group")]),
+                                  _vm._v(" "),
+                                  _c("v-btn", { attrs: { text: "" } }, [
+                                    _vm._v(" Add Group")
+                                  ])
+                                ],
+                                1
+                              )
+                            ],
+                            1
+                          )
+                        ],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "v-list-item-group",
+                        {
+                          attrs: { color: "#1976D2" },
+                          model: {
+                            value: _vm.model,
+                            callback: function($$v) {
+                              _vm.model = $$v
+                            },
+                            expression: "model"
+                          }
+                        },
+                        [
+                          _vm._l(_vm.allusers, function(user, index) {
                             return [
                               _c(
                                 "v-list-item",
