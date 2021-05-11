@@ -61,14 +61,22 @@ class GroupController extends Controller
         return $message;
     }
 
-    public function fetchGroup(Request $request){
-        $message = GroupChat::where(['group_id' => $request['group_id']])->get();
+    public function fetchGroupMessages(Request $request){
+        $messages = GroupChat::where('group_id', $request['group_id'])->get();
+        return $messages;
+    }
 
-        return $message;
+    public function fetchGroup(Request $request){
+        foreach($request['groupID'] as $group){
+            $grouplist = Group::where(['id' => $group])->first();
+
+            $newArr[] = $grouplist;
+        }
+        return $newArr;
     }
 
     public function getGroup(Request $request){
-        $groupUser = GroupUser::where(['user_id' => $request['user_id']])->get();
+        $groupUser = GroupUser::where(['user_id' => $request['user_id']])->pluck('group_id');
 
         return $groupUser;
     }

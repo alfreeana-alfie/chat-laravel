@@ -75,4 +75,8 @@ Route::group(['middleware' => ['auth',  'online']], function () {
 
     // Group routes
     Route::post('/add-group', [GroupController::class, 'store']);
+    Route::post('/group', [GroupController::class, 'getGroup']);
+    Route::post('/getGroupName', [GroupController::class, 'fetchGroup']);
+
+    Route::post('/fetchMessages-group', [GroupController::class, 'fetchGroupMessages']);
 });

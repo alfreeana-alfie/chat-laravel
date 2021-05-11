@@ -2112,8 +2112,6 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var simple_peer__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(simple_peer__WEBPACK_IMPORTED_MODULE_2__);
 /* harmony import */ var _helpers_video__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ../helpers-video */ "./resources/js/helpers-video.js");
 /* harmony import */ var _helpers_audio__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ../helpers-audio */ "./resources/js/helpers-audio.js");
-var _methods;
-
 
 
 function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) { try { var info = gen[key](arg); var value = info.value; } catch (error) { reject(error); return; } if (info.done) { resolve(value); } else { Promise.resolve(value).then(_next, _throw); } }
@@ -2126,6 +2124,75 @@ function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { va
 
 function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
 
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 //
 //
 //
@@ -2565,6 +2632,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       allGroups: [],
       isOpenChat: false,
       componentKey: 0,
+      componentKeyGroup: 0,
       model: 1,
       // Video Call
       isVideoFocusMyself: true,
@@ -2600,7 +2668,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         peer1: null,
         peer2: null
       },
-      chosenUserID: []
+      chosenUserID: [],
+      newGroupName: '',
+      groupMessages: [],
+      groupName: ''
     };
   },
   created: function created() {
@@ -2615,6 +2686,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     this.getMerchantList();
     this.getSentFriendRequest();
     this.getFriendList();
+    this.getGroupList();
     this.initializeVideoChannel();
     this.initializeVideoCallListeners();
     this.initializeAudioChannel();
@@ -2679,23 +2751,65 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }
     }
   },
-  methods: (_methods = {
-    checkboxUpdated: function checkboxUpdated(newValue) {
-      console.log(this.chosenUserID);
-    },
-    addGroup: function addGroup(name) {},
-    getUserList: function getUserList() {
+  methods: {
+    createGroup: function createGroup(groupName) {
       var _this4 = this;
 
+      console.log(this.chosenUserID);
+      console.log(groupName);
+      this.chosenUserID.push(this.$userId);
+      axios.post('add-group', {
+        name: this.groupName,
+        users: this.chosenUserID
+      }).then(function (response) {
+        _this4.messages = response.data;
+        console.log(response.data);
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    getUserList: function getUserList() {
+      var _this5 = this;
+
       axios.get('user-member').then(function (response) {
-        _this4.allusers = response.data;
+        _this5.allusers = response.data;
+      });
+    },
+    fetchGroupMessage: function fetchGroupMessage(groupID, groupName) {
+      var _this6 = this;
+
+      this.groupName = groupName; // fetchMessages-group
+
+      axios.post('fetchMessages-group', {
+        group_id: groupID
+      }).then(function (response) {
+        _this6.groupMessages = response.data;
+        _this6.componentKeyGroup += 1;
+        console.log(response.data);
+      })["catch"](function (error) {
+        console.log(error);
       });
     },
     getMerchantList: function getMerchantList() {
-      var _this5 = this;
+      var _this7 = this;
 
       axios.get('user-merchant').then(function (response) {
-        _this5.allmerchants = response.data;
+        _this7.allmerchants = response.data;
+      });
+    },
+    getGroupList: function getGroupList() {
+      var _this8 = this;
+
+      axios.post('group', {
+        user_id: this.$userId
+      }).then(function (response) {
+        console.log(response.data);
+        axios.post('getGroupName', {
+          groupID: response.data
+        }).then(function (response) {
+          _this8.allGroups = response.data;
+          console.log(response.data);
+        });
       });
     },
     openAllMembers: function openAllMembers() {
@@ -2735,20 +2849,20 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     // Get Chat Room ID for messages
     getUserMessage: function getUserMessage(user_id, name, isOpenChat) {
-      var _this6 = this;
+      var _this9 = this;
 
       this.userName = name, this.toUserId = user_id;
       axios.post('http://127.0.0.1:8000/api/chatID', {
         user_id: this.$userId,
         to_user_id: user_id
       }).then(function (response) {
-        _this6.chatID = response.data.id;
+        _this9.chatID = response.data.id;
 
-        _this6.fetchMessages();
+        _this9.fetchMessages();
 
-        _this6.componentKey += 1;
+        _this9.componentKey += 1;
 
-        _this6.openChat();
+        _this9.openChat();
       })["catch"](function (error) {
         console.log(error);
       });
@@ -2760,12 +2874,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       document.getElementById("chat").style.display = "none";
     },
     fetchMessages: function fetchMessages() {
-      var _this7 = this;
+      var _this10 = this;
 
       axios.post('http://127.0.0.1:8000/api/chats', {
         chat_id: this.chatID
       }).then(function (response) {
-        _this7.messages = response.data;
+        _this10.messages = response.data;
         console.log(response.data);
       })["catch"](function (error) {
         console.log(error);
@@ -2788,24 +2902,24 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.newMessage = '';
     },
     getSentFriendRequest: function getSentFriendRequest() {
-      var _this8 = this;
+      var _this11 = this;
 
       axios.post('getSentFriendRequest', {
         user_id: this.$userId
       }).then(function (response) {
-        _this8.allFriendRequest = response.data;
+        _this11.allFriendRequest = response.data;
         console.log(response.data);
       })["catch"](function (error) {
         console.log(error);
       });
     },
     getFriendList: function getFriendList() {
-      var _this9 = this;
+      var _this12 = this;
 
       axios.post('getFriendList', {
         to_user_id: this.$userId
       }).then(function (response) {
-        _this9.allFriendList = response.data;
+        _this12.allFriendList = response.data;
         console.log(response.data);
       })["catch"](function (error) {
         console.log(error);
@@ -2877,504 +2991,535 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     checkGroup: function checkGroup(groupChecked) {
       return groupChecked;
-    }
-  }, _defineProperty(_methods, "addGroup", function addGroup(groupChecked) {
-    return groupChecked;
-  }), _defineProperty(_methods, "initializeVideoChannel", function initializeVideoChannel() {
-    this.videoCallParams.channel = window.Echo.join("Demo");
-  }), _defineProperty(_methods, "getVideoMediaPermission", function getVideoMediaPermission() {
-    var _this10 = this;
+    },
+    addGroup: function addGroup(groupChecked) {
+      return groupChecked;
+    },
 
-    return (0,_helpers_video__WEBPACK_IMPORTED_MODULE_3__.getVideoPermissions)().then(function (stream) {
-      _this10.videoCallParams.stream = stream;
+    /* Video Call --START-- */
+    initializeVideoChannel: function initializeVideoChannel() {
+      this.videoCallParams.channel = window.Echo.join("Demo");
+    },
+    getVideoMediaPermission: function getVideoMediaPermission() {
+      var _this13 = this;
 
-      if (_this10.$refs.userVideo) {
-        _this10.$refs.userVideo.srcObject = stream;
-      }
-    })["catch"](function (error) {
-      console.log(error);
-    });
-  }), _defineProperty(_methods, "initializeVideoCallListeners", function initializeVideoCallListeners() {
-    var _this11 = this;
+      return (0,_helpers_video__WEBPACK_IMPORTED_MODULE_3__.getVideoPermissions)().then(function (stream) {
+        _this13.videoCallParams.stream = stream;
 
-    this.videoCallParams.channel.here(function (users) {
-      _this11.videoCallParams.users = users;
-    });
-    this.videoCallParams.channel.joining(function (user) {
-      // check user availability
-      var joiningUserIndex = _this11.videoCallParams.users.findIndex(function (data) {
-        return data.id === user.id;
+        if (_this13.$refs.userVideo) {
+          _this13.$refs.userVideo.srcObject = stream;
+        }
+      })["catch"](function (error) {
+        console.log(error);
       });
+    },
+    initializeVideoCallListeners: function initializeVideoCallListeners() {
+      var _this14 = this;
 
-      if (joiningUserIndex < 0) {
-        _this11.videoCallParams.users.push(user);
-      }
-    });
-    this.videoCallParams.channel.leaving(function (user) {
-      var leavingUserIndex = _this11.videoCallParams.users.findIndex(function (data) {
-        return data.id === user.id;
+      this.videoCallParams.channel.here(function (users) {
+        _this14.videoCallParams.users = users;
       });
-
-      _this11.videoCallParams.users.splice(leavingUserIndex, 1);
-    }); // listen to incomming call
-
-    this.videoCallParams.channel.listen("StartVideoChat", function (_ref) {
-      var data = _ref.data;
-      console.log(data);
-
-      if (data.type === "incomingCall") {
-        // add a new line to the sdp to take care of error
-        var updatedSignal = _objectSpread(_objectSpread({}, data.signalData), {}, {
-          sdp: "".concat(data.signalData.sdp, "\n")
+      this.videoCallParams.channel.joining(function (user) {
+        // check user availability
+        var joiningUserIndex = _this14.videoCallParams.users.findIndex(function (data) {
+          return data.id === user.id;
         });
 
-        _this11.videoCallParams.receivingCall = true;
-        _this11.videoCallParams.caller = data.from;
-        _this11.videoCallParams.callerSignal = updatedSignal;
-      }
-    });
-  }), _defineProperty(_methods, "placeVideoCall", function placeVideoCall(id, name) {
-    var _this12 = this;
-
-    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
-        while (1) {
-          switch (_context.prev = _context.next) {
-            case 0:
-              _this12.videoCallPlaced = true;
-              _this12.videoCallPartner = name;
-              console.log(name);
-              _context.next = 5;
-              return _this12.getVideoMediaPermission();
-
-            case 5:
-              _this12.videoCallParams.peer1 = new (simple_peer__WEBPACK_IMPORTED_MODULE_2___default())({
-                initiator: true,
-                trickle: false,
-                stream: _this12.videoCallParams.stream
-              });
-
-              _this12.videoCallParams.peer1.on("signal", function (data) {
-                axios.post("/video/call-user", {
-                  user_to_call: id,
-                  signal_data: data,
-                  from: _this12.authUserID
-                }).then(function (response) {
-                  console.log(response);
-                })["catch"](function (error) {
-                  console.log(error);
-                });
-              });
-
-              _this12.videoCallParams.peer1.on("stream", function (stream) {
-                console.log("Call Streaming...");
-
-                if (_this12.$refs.partnerVideo) {
-                  _this12.$refs.partnerVideo.srcObject = stream;
-                }
-              });
-
-              _this12.videoCallParams.peer1.on("connect", function () {
-                console.log("Peer Connected!");
-              });
-
-              _this12.videoCallParams.peer1.on("error", function (error) {
-                console.log(error);
-              });
-
-              _this12.videoCallParams.peer1.on("close", function () {
-                console.log("Call Closed Caller");
-              });
-
-              _this12.videoCallParams.channel.listen("StartVideoChat", function (_ref2) {
-                var data = _ref2.data;
-
-                if (data.type == "callAccepted") {
-                  if (data.signal.renegotiate) {
-                    console.log("renegotating");
-                  }
-
-                  if (data.signal.sdp) {
-                    _this12.videoCallParams.callAccepted = true;
-
-                    var updateSignal = _objectSpread(_objectSpread({}, data.signal), {}, {
-                      sdp: "".concat(data.signal.sdp, "\n")
-                    });
-
-                    _this12.videoCallParams.peer1.signal(updateSignal);
-                  }
-                }
-              });
-
-              document.getElementById("chat").style.display = "none";
-
-            case 13:
-            case "end":
-              return _context.stop();
-          }
+        if (joiningUserIndex < 0) {
+          _this14.videoCallParams.users.push(user);
         }
-      }, _callee);
-    }))();
-  }), _defineProperty(_methods, "acceptVideoCall", function acceptVideoCall(name) {
-    var _this13 = this;
-
-    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2() {
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
-        while (1) {
-          switch (_context2.prev = _context2.next) {
-            case 0:
-              _this13.videoCallPlaced = true;
-              _this13.videoCallParams.callAccepted = true;
-              _this13.videoCallPartner = name;
-              console.log(name);
-              _context2.next = 6;
-              return _this13.getVideoMediaPermission();
-
-            case 6:
-              _this13.videoCallParams.peer2 = new (simple_peer__WEBPACK_IMPORTED_MODULE_2___default())({
-                initiator: false,
-                trickle: false,
-                stream: _this13.videoCallParams.stream
-              });
-              _this13.videoCallParams.receivingCall = false;
-
-              _this13.videoCallParams.peer2.on("signal", function (data) {
-                axios.post("/video/accept-call", {
-                  signal: data,
-                  to: _this13.videoCallParams.caller
-                }).then(function (response) {
-                  console.log(response);
-                })["catch"](function (error) {
-                  console.log(error);
-                });
-              });
-
-              _this13.videoCallParams.peer2.on("stream", function (stream) {
-                _this13.videoCallParams.callAccepted = true;
-                _this13.$refs.partnerVideo.srcObject = stream;
-              });
-
-              _this13.videoCallParams.peer2.on("connect", function () {
-                console.log("Peer02 Connected");
-                _this13.videoCallParams.callAccepted = true;
-              });
-
-              _this13.videoCallParams.peer2.on("error", function (err) {
-                console.log(err);
-              });
-
-              _this13.videoCallParams.peer2.on("close", function () {
-                console.log("Call Closed Accepter");
-              });
-
-              _this13.videoCallParams.peer2.signal(_this13.videoCallParams.callerSignal);
-
-              document.getElementById("chat").style.display = "none";
-
-            case 15:
-            case "end":
-              return _context2.stop();
-          }
-        }
-      }, _callee2);
-    }))();
-  }), _defineProperty(_methods, "declineVideoCall", function declineVideoCall() {
-    this.videoCallParams.receivingCall = false;
-    document.getElementById("chatCard").style.display = "block";
-  }), _defineProperty(_methods, "endVideoCall", function endVideoCall() {
-    var _this14 = this;
-
-    if (!this.videoMutedVideo) this.toggleVideoMuteVideo();
-    if (!this.videoMutedAudio) this.toggleVideoMuteAudio();
-    this.stopStreamedVideoCall(this.$refs.userVideo);
-
-    if (this.authuserid === this.videoCallParams.caller) {
-      this.videoCallParams.peer1.destroy();
-    } else {
-      this.videoCallParams.peer2.destroy();
-    }
-
-    this.videoCallParams.channel.pusher.channels.channels["presence-Demo"].disconnect();
-    setTimeout(function () {
-      _this14.videoCallPlaced = false;
-    }, 3000);
-  }), _defineProperty(_methods, "toggleVideoCameraArea", function toggleVideoCameraArea() {
-    if (this.videoCallParams.callAccepted) {
-      this.isVideoFocusMyself = !this.isVideoFocusMyself;
-    }
-  }), _defineProperty(_methods, "toggleVideoMuteAudio", function toggleVideoMuteAudio() {
-    if (this.videoMutedAudio) {
-      this.$refs.userVideo.srcObject.getAudioTracks()[0].enabled = true;
-      this.videoMutedAudio = false;
-    } else {
-      this.$refs.userVideo.srcObject.getAudioTracks()[0].enabled = false;
-      this.videoMutedAudio = true;
-    }
-  }), _defineProperty(_methods, "toggleVideoMuteVideo", function toggleVideoMuteVideo() {
-    if (this.videoMutedVideo) {
-      this.$refs.userVideo.srcObject.getVideoTracks()[0].enabled = true;
-      this.videoMutedVideo = false;
-    } else {
-      this.$refs.userVideo.srcObject.getVideoTracks()[0].enabled = false;
-      this.videoMutedVideo = true;
-    }
-  }), _defineProperty(_methods, "stopStreamedVideoCall", function stopStreamedVideoCall(videoElem) {
-    var stream = videoElem.srcObject;
-    var tracks = stream.getTracks();
-    tracks.forEach(function (track) {
-      track.stop();
-    });
-    videoElem.srcObject = null;
-    document.getElementById("video").style.display = "none";
-    document.getElementById("chat").style.display = "block";
-  }), _defineProperty(_methods, "initializeAudioChannel", function initializeAudioChannel() {
-    this.audioCallParams.channel = window.Echo.join("DemoAudio");
-  }), _defineProperty(_methods, "getAudioMediaPermission", function getAudioMediaPermission() {
-    var _this15 = this;
-
-    return (0,_helpers_audio__WEBPACK_IMPORTED_MODULE_4__.getAudioPermissions)().then(function (stream) {
-      _this15.audioCallParams.stream = stream;
-
-      if (_this15.$refs.userAudio) {
-        _this15.$refs.userAudio.srcObject = stream;
-      }
-    })["catch"](function (error) {
-      console.log(error);
-    });
-  }), _defineProperty(_methods, "initializeAudioCallListeners", function initializeAudioCallListeners() {
-    var _this16 = this;
-
-    this.audioCallParams.channel.here(function (users) {
-      _this16.audioCallParams.users = users;
-    });
-    this.audioCallParams.channel.joining(function (user) {
-      // check user availability
-      var joiningUserIndex = _this16.audioCallParams.users.findIndex(function (data) {
-        return data.id === user.id;
       });
-
-      if (joiningUserIndex < 0) {
-        _this16.audioCallParams.users.push(user);
-      }
-    });
-    this.audioCallParams.channel.leaving(function (user) {
-      var leavingUserIndex = _this16.audioCallParams.users.findIndex(function (data) {
-        return data.id === user.id;
-      });
-
-      _this16.audioCallParams.users.splice(leavingUserIndex, 1);
-    }); // listen to incomming call
-
-    this.audioCallParams.channel.listen("StartAudioChat", function (_ref3) {
-      var data = _ref3.data;
-      console.log(data);
-
-      if (data.type === "incomingCall") {
-        // add a new line to the sdp to take care of error
-        var updatedSignal = _objectSpread(_objectSpread({}, data.signalData), {}, {
-          sdp: "".concat(data.signalData.sdp, "\n")
+      this.videoCallParams.channel.leaving(function (user) {
+        var leavingUserIndex = _this14.videoCallParams.users.findIndex(function (data) {
+          return data.id === user.id;
         });
 
-        _this16.audioCallParams.receivingCall = true;
-        _this16.audioCallParams.caller = data.from;
-        _this16.audioCallParams.callerSignal = updatedSignal;
+        _this14.videoCallParams.users.splice(leavingUserIndex, 1);
+      }); // listen to incomming call
+
+      this.videoCallParams.channel.listen("StartVideoChat", function (_ref) {
+        var data = _ref.data;
+        console.log(data);
+
+        if (data.type === "incomingCall") {
+          // add a new line to the sdp to take care of error
+          var updatedSignal = _objectSpread(_objectSpread({}, data.signalData), {}, {
+            sdp: "".concat(data.signalData.sdp, "\n")
+          });
+
+          _this14.videoCallParams.receivingCall = true;
+          _this14.videoCallParams.caller = data.from;
+          _this14.videoCallParams.callerSignal = updatedSignal;
+        }
+      });
+    },
+    placeVideoCall: function placeVideoCall(id, name) {
+      var _this15 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee() {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee$(_context) {
+          while (1) {
+            switch (_context.prev = _context.next) {
+              case 0:
+                _this15.videoCallPlaced = true;
+                _this15.videoCallPartner = name;
+                console.log(name);
+                _context.next = 5;
+                return _this15.getVideoMediaPermission();
+
+              case 5:
+                _this15.videoCallParams.peer1 = new (simple_peer__WEBPACK_IMPORTED_MODULE_2___default())({
+                  initiator: true,
+                  trickle: false,
+                  stream: _this15.videoCallParams.stream
+                });
+
+                _this15.videoCallParams.peer1.on("signal", function (data) {
+                  axios.post("/video/call-user", {
+                    user_to_call: id,
+                    signal_data: data,
+                    from: _this15.authUserID
+                  }).then(function (response) {
+                    console.log(response);
+                  })["catch"](function (error) {
+                    console.log(error);
+                  });
+                });
+
+                _this15.videoCallParams.peer1.on("stream", function (stream) {
+                  console.log("Call Streaming...");
+
+                  if (_this15.$refs.partnerVideo) {
+                    _this15.$refs.partnerVideo.srcObject = stream;
+                  }
+                });
+
+                _this15.videoCallParams.peer1.on("connect", function () {
+                  console.log("Peer Connected!");
+                });
+
+                _this15.videoCallParams.peer1.on("error", function (error) {
+                  console.log(error);
+                });
+
+                _this15.videoCallParams.peer1.on("close", function () {
+                  console.log("Call Closed Caller");
+                });
+
+                _this15.videoCallParams.channel.listen("StartVideoChat", function (_ref2) {
+                  var data = _ref2.data;
+
+                  if (data.type == "callAccepted") {
+                    if (data.signal.renegotiate) {
+                      console.log("renegotating");
+                    }
+
+                    if (data.signal.sdp) {
+                      _this15.videoCallParams.callAccepted = true;
+
+                      var updateSignal = _objectSpread(_objectSpread({}, data.signal), {}, {
+                        sdp: "".concat(data.signal.sdp, "\n")
+                      });
+
+                      _this15.videoCallParams.peer1.signal(updateSignal);
+                    }
+                  }
+                });
+
+                document.getElementById("chat").style.display = "none";
+
+              case 13:
+              case "end":
+                return _context.stop();
+            }
+          }
+        }, _callee);
+      }))();
+    },
+    acceptVideoCall: function acceptVideoCall(name) {
+      var _this16 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee2() {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee2$(_context2) {
+          while (1) {
+            switch (_context2.prev = _context2.next) {
+              case 0:
+                _this16.videoCallPlaced = true;
+                _this16.videoCallParams.callAccepted = true;
+                _this16.videoCallPartner = name;
+                console.log(name);
+                _context2.next = 6;
+                return _this16.getVideoMediaPermission();
+
+              case 6:
+                _this16.videoCallParams.peer2 = new (simple_peer__WEBPACK_IMPORTED_MODULE_2___default())({
+                  initiator: false,
+                  trickle: false,
+                  stream: _this16.videoCallParams.stream
+                });
+                _this16.videoCallParams.receivingCall = false;
+
+                _this16.videoCallParams.peer2.on("signal", function (data) {
+                  axios.post("/video/accept-call", {
+                    signal: data,
+                    to: _this16.videoCallParams.caller
+                  }).then(function (response) {
+                    console.log(response);
+                  })["catch"](function (error) {
+                    console.log(error);
+                  });
+                });
+
+                _this16.videoCallParams.peer2.on("stream", function (stream) {
+                  _this16.videoCallParams.callAccepted = true;
+                  _this16.$refs.partnerVideo.srcObject = stream;
+                });
+
+                _this16.videoCallParams.peer2.on("connect", function () {
+                  console.log("Peer02 Connected");
+                  _this16.videoCallParams.callAccepted = true;
+                });
+
+                _this16.videoCallParams.peer2.on("error", function (err) {
+                  console.log(err);
+                });
+
+                _this16.videoCallParams.peer2.on("close", function () {
+                  console.log("Call Closed Accepter");
+                });
+
+                _this16.videoCallParams.peer2.signal(_this16.videoCallParams.callerSignal);
+
+                document.getElementById("chat").style.display = "none";
+
+              case 15:
+              case "end":
+                return _context2.stop();
+            }
+          }
+        }, _callee2);
+      }))();
+    },
+    declineVideoCall: function declineVideoCall() {
+      this.videoCallParams.receivingCall = false;
+      document.getElementById("chatCard").style.display = "block";
+    },
+    endVideoCall: function endVideoCall() {
+      var _this17 = this;
+
+      if (!this.videoMutedVideo) this.toggleVideoMuteVideo();
+      if (!this.videoMutedAudio) this.toggleVideoMuteAudio();
+      this.stopStreamedVideoCall(this.$refs.userVideo);
+
+      if (this.authuserid === this.videoCallParams.caller) {
+        this.videoCallParams.peer1.destroy();
+      } else {
+        this.videoCallParams.peer2.destroy();
       }
-    });
-  }), _defineProperty(_methods, "placeAudioCall", function placeAudioCall(id, name) {
-    var _this17 = this;
 
-    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee3() {
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee3$(_context3) {
-        while (1) {
-          switch (_context3.prev = _context3.next) {
-            case 0:
-              _this17.audioCallPlaced = true;
-              _this17.audioCallPartner = name; // console.log(name);
+      this.videoCallParams.channel.pusher.channels.channels["presence-Demo"].disconnect();
+      setTimeout(function () {
+        _this17.videoCallPlaced = false;
+      }, 3000);
+    },
+    toggleVideoCameraArea: function toggleVideoCameraArea() {
+      if (this.videoCallParams.callAccepted) {
+        this.isVideoFocusMyself = !this.isVideoFocusMyself;
+      }
+    },
+    toggleVideoMuteAudio: function toggleVideoMuteAudio() {
+      if (this.videoMutedAudio) {
+        this.$refs.userVideo.srcObject.getAudioTracks()[0].enabled = true;
+        this.videoMutedAudio = false;
+      } else {
+        this.$refs.userVideo.srcObject.getAudioTracks()[0].enabled = false;
+        this.videoMutedAudio = true;
+      }
+    },
+    toggleVideoMuteVideo: function toggleVideoMuteVideo() {
+      if (this.videoMutedVideo) {
+        this.$refs.userVideo.srcObject.getVideoTracks()[0].enabled = true;
+        this.videoMutedVideo = false;
+      } else {
+        this.$refs.userVideo.srcObject.getVideoTracks()[0].enabled = false;
+        this.videoMutedVideo = true;
+      }
+    },
+    stopStreamedVideoCall: function stopStreamedVideoCall(videoElem) {
+      var stream = videoElem.srcObject;
+      var tracks = stream.getTracks();
+      tracks.forEach(function (track) {
+        track.stop();
+      });
+      videoElem.srcObject = null;
+      document.getElementById("video").style.display = "none";
+      document.getElementById("chat").style.display = "block";
+    },
 
-              _context3.next = 4;
-              return _this17.getAudioMediaPermission();
+    /* Video Call --END-- */
 
-            case 4:
-              _this17.audioCallParams.peer1 = new (simple_peer__WEBPACK_IMPORTED_MODULE_2___default())({
-                initiator: true,
-                trickle: false,
-                stream: _this17.audioCallParams.stream
-              });
+    /* Video Call --START-- */
+    initializeAudioChannel: function initializeAudioChannel() {
+      this.audioCallParams.channel = window.Echo.join("DemoAudio");
+    },
+    getAudioMediaPermission: function getAudioMediaPermission() {
+      var _this18 = this;
 
-              _this17.audioCallParams.peer1.on("signal", function (data) {
-                axios.post("/audio/call-user", {
-                  user_to_call: id,
-                  signal_data: data,
-                  from: _this17.authUserID
-                }).then(function (response) {
-                  console.log(response);
-                })["catch"](function (error) {
+      return (0,_helpers_audio__WEBPACK_IMPORTED_MODULE_4__.getAudioPermissions)().then(function (stream) {
+        _this18.audioCallParams.stream = stream;
+
+        if (_this18.$refs.userAudio) {
+          _this18.$refs.userAudio.srcObject = stream;
+        }
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    initializeAudioCallListeners: function initializeAudioCallListeners() {
+      var _this19 = this;
+
+      this.audioCallParams.channel.here(function (users) {
+        _this19.audioCallParams.users = users;
+      });
+      this.audioCallParams.channel.joining(function (user) {
+        // check user availability
+        var joiningUserIndex = _this19.audioCallParams.users.findIndex(function (data) {
+          return data.id === user.id;
+        });
+
+        if (joiningUserIndex < 0) {
+          _this19.audioCallParams.users.push(user);
+        }
+      });
+      this.audioCallParams.channel.leaving(function (user) {
+        var leavingUserIndex = _this19.audioCallParams.users.findIndex(function (data) {
+          return data.id === user.id;
+        });
+
+        _this19.audioCallParams.users.splice(leavingUserIndex, 1);
+      }); // listen to incomming call
+
+      this.audioCallParams.channel.listen("StartAudioChat", function (_ref3) {
+        var data = _ref3.data;
+        console.log(data);
+
+        if (data.type === "incomingCall") {
+          // add a new line to the sdp to take care of error
+          var updatedSignal = _objectSpread(_objectSpread({}, data.signalData), {}, {
+            sdp: "".concat(data.signalData.sdp, "\n")
+          });
+
+          _this19.audioCallParams.receivingCall = true;
+          _this19.audioCallParams.caller = data.from;
+          _this19.audioCallParams.callerSignal = updatedSignal;
+        }
+      });
+    },
+    placeAudioCall: function placeAudioCall(id, name) {
+      var _this20 = this;
+
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee3() {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee3$(_context3) {
+          while (1) {
+            switch (_context3.prev = _context3.next) {
+              case 0:
+                _this20.audioCallPlaced = true;
+                _this20.audioCallPartner = name; // console.log(name);
+
+                _context3.next = 4;
+                return _this20.getAudioMediaPermission();
+
+              case 4:
+                _this20.audioCallParams.peer1 = new (simple_peer__WEBPACK_IMPORTED_MODULE_2___default())({
+                  initiator: true,
+                  trickle: false,
+                  stream: _this20.audioCallParams.stream
+                });
+
+                _this20.audioCallParams.peer1.on("signal", function (data) {
+                  axios.post("/audio/call-user", {
+                    user_to_call: id,
+                    signal_data: data,
+                    from: _this20.authUserID
+                  }).then(function (response) {
+                    console.log(response);
+                  })["catch"](function (error) {
+                    console.log(error);
+                  });
+                });
+
+                _this20.audioCallParams.peer1.on("stream", function (stream) {
+                  console.log("Call Streaming...");
+
+                  if (_this20.$refs.partnerAudio) {
+                    _this20.$refs.partnerAudio.srcObject = stream;
+                  }
+                });
+
+                _this20.audioCallParams.peer1.on("connect", function () {
+                  console.log("Peer Connected!");
+                });
+
+                _this20.audioCallParams.peer1.on("error", function (error) {
                   console.log(error);
                 });
-              });
 
-              _this17.audioCallParams.peer1.on("stream", function (stream) {
-                console.log("Call Streaming...");
-
-                if (_this17.$refs.partnerAudio) {
-                  _this17.$refs.partnerAudio.srcObject = stream;
-                }
-              });
-
-              _this17.audioCallParams.peer1.on("connect", function () {
-                console.log("Peer Connected!");
-              });
-
-              _this17.audioCallParams.peer1.on("error", function (error) {
-                console.log(error);
-              });
-
-              _this17.audioCallParams.peer1.on("close", function () {
-                console.log("Call Closed Caller");
-              });
-
-              _this17.audioCallParams.channel.listen("StartAudioChat", function (_ref4) {
-                var data = _ref4.data;
-
-                if (data.type == "callAccepted") {
-                  if (data.signal.renegotiate) {
-                    console.log("renegotating");
-                  }
-
-                  if (data.signal.sdp) {
-                    _this17.audioCallParams.callAccepted = true;
-
-                    var updateSignal = _objectSpread(_objectSpread({}, data.signal), {}, {
-                      sdp: "".concat(data.signal.sdp, "\n")
-                    });
-
-                    _this17.audioCallParams.peer1.signal(updateSignal);
-                  }
-                }
-              });
-
-              document.getElementById("chat").style.display = "none";
-
-            case 12:
-            case "end":
-              return _context3.stop();
-          }
-        }
-      }, _callee3);
-    }))();
-  }), _defineProperty(_methods, "acceptAudioCall", function acceptAudioCall(name) {
-    var _this18 = this;
-
-    return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee4() {
-      return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee4$(_context4) {
-        while (1) {
-          switch (_context4.prev = _context4.next) {
-            case 0:
-              _this18.audioCallPlaced = true;
-              _this18.audioCallParams.callAccepted = true;
-              _this18.audioCallPartner = name; // console.log(name);
-
-              _context4.next = 5;
-              return _this18.getAudioMediaPermission();
-
-            case 5:
-              _this18.audioCallParams.peer2 = new (simple_peer__WEBPACK_IMPORTED_MODULE_2___default())({
-                initiator: false,
-                trickle: false,
-                stream: _this18.audioCallParams.stream
-              });
-              _this18.audioCallParams.receivingCall = false;
-
-              _this18.audioCallParams.peer2.on("signal", function (data) {
-                axios.post("/audio/accept-call", {
-                  signal: data,
-                  to: _this18.audioCallParams.caller
-                }).then(function (response) {
-                  console.log(response);
-                })["catch"](function (error) {
-                  console.log(error);
+                _this20.audioCallParams.peer1.on("close", function () {
+                  console.log("Call Closed Caller");
                 });
-              });
 
-              _this18.audioCallParams.peer2.on("stream", function (stream) {
-                _this18.audioCallParams.callAccepted = true;
-                _this18.$refs.partnerAudio.srcObject = stream;
-              });
+                _this20.audioCallParams.channel.listen("StartAudioChat", function (_ref4) {
+                  var data = _ref4.data;
 
-              _this18.audioCallParams.peer2.on("connect", function () {
-                console.log("Peer02 Connected");
-                _this18.audioCallParams.callAccepted = true;
-              });
+                  if (data.type == "callAccepted") {
+                    if (data.signal.renegotiate) {
+                      console.log("renegotating");
+                    }
 
-              _this18.audioCallParams.peer2.on("error", function (err) {
-                console.log(err);
-              });
+                    if (data.signal.sdp) {
+                      _this20.audioCallParams.callAccepted = true;
 
-              _this18.audioCallParams.peer2.on("close", function () {
-                console.log("Call Closed Accepter");
-              });
+                      var updateSignal = _objectSpread(_objectSpread({}, data.signal), {}, {
+                        sdp: "".concat(data.signal.sdp, "\n")
+                      });
 
-              _this18.audioCallParams.peer2.signal(_this18.audioCallParams.callerSignal);
+                      _this20.audioCallParams.peer1.signal(updateSignal);
+                    }
+                  }
+                });
 
-              document.getElementById("chat").style.display = "none";
+                document.getElementById("chat").style.display = "none";
 
-            case 14:
-            case "end":
-              return _context4.stop();
+              case 12:
+              case "end":
+                return _context3.stop();
+            }
           }
-        }
-      }, _callee4);
-    }))();
-  }), _defineProperty(_methods, "declineAudioCall", function declineAudioCall() {
-    this.audioCallParams.receivingCall = false;
-    document.getElementById("chatCard").style.display = "block";
-  }), _defineProperty(_methods, "endAudioCall", function endAudioCall() {
-    var _this19 = this;
+        }, _callee3);
+      }))();
+    },
+    acceptAudioCall: function acceptAudioCall(name) {
+      var _this21 = this;
 
-    // if(!this.audioMutedVideo) this.toggleAudioMuteVideo();
-    if (!this.audioMutedAudio) this.toggleAudioMuteAudio();
-    this.stopStreamedAudioCall(this.$refs.userAudio);
+      return _asyncToGenerator( /*#__PURE__*/_babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().mark(function _callee4() {
+        return _babel_runtime_regenerator__WEBPACK_IMPORTED_MODULE_0___default().wrap(function _callee4$(_context4) {
+          while (1) {
+            switch (_context4.prev = _context4.next) {
+              case 0:
+                _this21.audioCallPlaced = true;
+                _this21.audioCallParams.callAccepted = true;
+                _this21.audioCallPartner = name; // console.log(name);
 
-    if (this.authUserID === this.audioCallParams.caller) {
-      this.audioCallParams.peer1.destroy();
-    } else {
-      this.audioCallParams.peer2.destroy();
-    }
+                _context4.next = 5;
+                return _this21.getAudioMediaPermission();
 
-    this.audioCallParams.channel.pusher.channels.channels["presence-DemoAudio"].disconnect();
-    setTimeout(function () {
-      _this19.audioCallPlaced = false;
-    }, 3000);
-  }), _defineProperty(_methods, "toggleAudioCameraArea", function toggleAudioCameraArea() {
-    if (this.audioCallParams.callAccepted) {
-      this.isAudioFocusMyself = !this.isAudioFocusMyself;
+              case 5:
+                _this21.audioCallParams.peer2 = new (simple_peer__WEBPACK_IMPORTED_MODULE_2___default())({
+                  initiator: false,
+                  trickle: false,
+                  stream: _this21.audioCallParams.stream
+                });
+                _this21.audioCallParams.receivingCall = false;
+
+                _this21.audioCallParams.peer2.on("signal", function (data) {
+                  axios.post("/audio/accept-call", {
+                    signal: data,
+                    to: _this21.audioCallParams.caller
+                  }).then(function (response) {
+                    console.log(response);
+                  })["catch"](function (error) {
+                    console.log(error);
+                  });
+                });
+
+                _this21.audioCallParams.peer2.on("stream", function (stream) {
+                  _this21.audioCallParams.callAccepted = true;
+                  _this21.$refs.partnerAudio.srcObject = stream;
+                });
+
+                _this21.audioCallParams.peer2.on("connect", function () {
+                  console.log("Peer02 Connected");
+                  _this21.audioCallParams.callAccepted = true;
+                });
+
+                _this21.audioCallParams.peer2.on("error", function (err) {
+                  console.log(err);
+                });
+
+                _this21.audioCallParams.peer2.on("close", function () {
+                  console.log("Call Closed Accepter");
+                });
+
+                _this21.audioCallParams.peer2.signal(_this21.audioCallParams.callerSignal);
+
+                document.getElementById("chat").style.display = "none";
+
+              case 14:
+              case "end":
+                return _context4.stop();
+            }
+          }
+        }, _callee4);
+      }))();
+    },
+    declineAudioCall: function declineAudioCall() {
+      this.audioCallParams.receivingCall = false;
+      document.getElementById("chatCard").style.display = "block";
+    },
+    endAudioCall: function endAudioCall() {
+      var _this22 = this;
+
+      // if(!this.audioMutedVideo) this.toggleAudioMuteVideo();
+      if (!this.audioMutedAudio) this.toggleAudioMuteAudio();
+      this.stopStreamedAudioCall(this.$refs.userAudio);
+
+      if (this.authUserID === this.audioCallParams.caller) {
+        this.audioCallParams.peer1.destroy();
+      } else {
+        this.audioCallParams.peer2.destroy();
+      }
+
+      this.audioCallParams.channel.pusher.channels.channels["presence-DemoAudio"].disconnect();
+      setTimeout(function () {
+        _this22.audioCallPlaced = false;
+      }, 3000);
+    },
+    toggleAudioCameraArea: function toggleAudioCameraArea() {
+      if (this.audioCallParams.callAccepted) {
+        this.isAudioFocusMyself = !this.isAudioFocusMyself;
+      }
+    },
+    toggleAudioMuteAudio: function toggleAudioMuteAudio() {
+      if (this.audioMutedAudio) {
+        this.$refs.userAudio.srcObject.getAudioTracks()[0].enabled = true;
+        this.audioMutedAudio = false;
+      } else {
+        this.$refs.userAudio.srcObject.getAudioTracks()[0].enabled = false;
+        this.audioMutedAudio = true;
+      }
+    },
+    toggleAudioMuteVideo: function toggleAudioMuteVideo() {
+      if (this.audioMutedVideo) {
+        this.$refs.userAudio.srcObject.getVideoTracks()[0].enabled = true;
+        this.audioMutedVideo = false;
+      } else {
+        this.$refs.userAudio.srcObject.getVideoTracks()[0].enabled = false;
+        this.audioMutedVideo = true;
+      }
+    },
+    stopStreamedAudioCall: function stopStreamedAudioCall(videoElem) {
+      var stream = videoElem.srcObject;
+      var tracks = stream.getTracks();
+      tracks.forEach(function (track) {
+        track.stop();
+      });
+      videoElem.srcObject = null;
+      document.getElementById("audio").style.display = "none";
+      document.getElementById("chat").style.display = "block";
     }
-  }), _defineProperty(_methods, "toggleAudioMuteAudio", function toggleAudioMuteAudio() {
-    if (this.audioMutedAudio) {
-      this.$refs.userAudio.srcObject.getAudioTracks()[0].enabled = true;
-      this.audioMutedAudio = false;
-    } else {
-      this.$refs.userAudio.srcObject.getAudioTracks()[0].enabled = false;
-      this.audioMutedAudio = true;
-    }
-  }), _defineProperty(_methods, "toggleAudioMuteVideo", function toggleAudioMuteVideo() {
-    if (this.audioMutedVideo) {
-      this.$refs.userAudio.srcObject.getVideoTracks()[0].enabled = true;
-      this.audioMutedVideo = false;
-    } else {
-      this.$refs.userAudio.srcObject.getVideoTracks()[0].enabled = false;
-      this.audioMutedVideo = true;
-    }
-  }), _defineProperty(_methods, "stopStreamedAudioCall", function stopStreamedAudioCall(videoElem) {
-    var stream = videoElem.srcObject;
-    var tracks = stream.getTracks();
-    tracks.forEach(function (track) {
-      track.stop();
-    });
-    videoElem.srcObject = null;
-    document.getElementById("audio").style.display = "none";
-    document.getElementById("chat").style.display = "block";
-  }), _methods)
+    /* Video Call --END-- */
+
+  }
 });
 
 /***/ }),
@@ -57917,6 +58062,223 @@ var render = function() {
           )
         : _vm._e(),
       _vm._v(" "),
+      _vm.componentKeyGroup
+        ? _c(
+            "div",
+            { attrs: { id: "chat" } },
+            [
+              _c(
+                "v-card",
+                { attrs: { width: "420", height: "550" } },
+                [
+                  _c(
+                    "v-toolbar",
+                    { attrs: { dark: "" } },
+                    [
+                      _c(
+                        "v-btn",
+                        { attrs: { icon: "" }, on: { click: _vm.closeChat } },
+                        [_c("v-icon", [_vm._v("mdi-close")])],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c("v-toolbar-title", [
+                        _vm._v(" " + _vm._s(_vm.groupName))
+                      ]),
+                      _vm._v(" "),
+                      _c("v-spacer"),
+                      _vm._v(" "),
+                      _c(
+                        "v-btn",
+                        {
+                          attrs: { icon: "" },
+                          on: {
+                            click: function($event) {
+                              return _vm.placeAudioCall(
+                                _vm.toUserId,
+                                _vm.userName
+                              )
+                            }
+                          }
+                        },
+                        [_c("v-icon", [_vm._v("mdi-phone")])],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "v-btn",
+                        {
+                          attrs: { icon: "" },
+                          on: {
+                            click: function($event) {
+                              return _vm.placeVideoCall(
+                                _vm.toUserId,
+                                _vm.userName
+                              )
+                            }
+                          }
+                        },
+                        [_c("v-icon", [_vm._v("mdi-video")])],
+                        1
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "v-btn",
+                        { attrs: { icon: "" } },
+                        [_c("v-icon", [_vm._v("mdi-dots-vertical")])],
+                        1
+                      )
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    { attrs: { id: "chatCard", flat: "", height: "550" } },
+                    [
+                      _c(
+                        "v-card",
+                        { attrs: { flat: "", height: "550" } },
+                        [
+                          _c(
+                            "v-card-text",
+                            {
+                              staticClass: "flex-grow-1 overflow-y-auto",
+                              staticStyle: { height: "550px" }
+                            },
+                            [
+                              _vm._l(_vm.groupMessages, function(
+                                message,
+                                index
+                              ) {
+                                return [
+                                  _c(
+                                    "div",
+                                    {
+                                      key: index,
+                                      class:
+                                        message.user_id != _vm.currentID
+                                          ? "d-flex flex-row"
+                                          : "d-flex flex-row-reverse"
+                                    },
+                                    [
+                                      _c("v-menu", {
+                                        attrs: { "offset-y": "" },
+                                        scopedSlots: _vm._u(
+                                          [
+                                            {
+                                              key: "activator",
+                                              fn: function(ref) {
+                                                var on = ref.on
+                                                return [
+                                                  _c(
+                                                    "v-hover",
+                                                    [
+                                                      _c(
+                                                        "v-chip",
+                                                        _vm._g(
+                                                          {
+                                                            staticClass:
+                                                              "pa-4 mb-2",
+                                                            staticStyle: {
+                                                              height: "35px",
+                                                              "white-space":
+                                                                "normal"
+                                                            },
+                                                            attrs: {
+                                                              color:
+                                                                message.user_id !=
+                                                                _vm.currentID
+                                                                  ? ""
+                                                                  : "#1565C0",
+                                                              dark: ""
+                                                            }
+                                                          },
+                                                          on
+                                                        ),
+                                                        [
+                                                          _vm._v(
+                                                            "\n                                                    " +
+                                                              _vm._s(
+                                                                message.body
+                                                              ) +
+                                                              "\n                                                "
+                                                          )
+                                                        ]
+                                                      )
+                                                    ],
+                                                    1
+                                                  )
+                                                ]
+                                              }
+                                            }
+                                          ],
+                                          null,
+                                          true
+                                        )
+                                      })
+                                    ],
+                                    1
+                                  )
+                                ]
+                              })
+                            ],
+                            2
+                          ),
+                          _vm._v(" "),
+                          _c("v-text-field", {
+                            attrs: {
+                              "ma-0": "",
+                              "pa-0": "",
+                              placeholder: "Type a message...",
+                              type: "text",
+                              regular: "",
+                              "single-line": "",
+                              clearable: "",
+                              filled: "",
+                              "append-icon": "mdi-send",
+                              name: "message"
+                            },
+                            on: {
+                              "click:append": _vm.sendMessage,
+                              keyup: function($event) {
+                                if (
+                                  !$event.type.indexOf("key") &&
+                                  _vm._k(
+                                    $event.keyCode,
+                                    "enter",
+                                    13,
+                                    $event.key,
+                                    "Enter"
+                                  )
+                                ) {
+                                  return null
+                                }
+                                return _vm.sendMessage($event)
+                              }
+                            },
+                            model: {
+                              value: _vm.newMessage,
+                              callback: function($$v) {
+                                _vm.newMessage = $$v
+                              },
+                              expression: "newMessage"
+                            }
+                          })
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        : _vm._e(),
+      _vm._v(" "),
       _vm.audioCallPlaced
         ? _c(
             "div",
@@ -58982,95 +59344,36 @@ var render = function() {
                 ? _c(
                     "v-list",
                     [
-                      _c(
-                        "v-card",
-                        { attrs: { flat: "" } },
-                        [
-                          _c(
-                            "v-card-text",
+                      !_vm.addGroupChecked
+                        ? _c(
+                            "v-col",
                             [
-                              !_vm.addGroupChecked
-                                ? _c(
-                                    "v-col",
-                                    [
-                                      _c("v-icon", [
-                                        _vm._v("mdi-account-group")
-                                      ]),
-                                      _vm._v(" "),
-                                      _c(
-                                        "v-btn",
-                                        {
-                                          attrs: { text: "" },
-                                          on: {
-                                            click: function($event) {
-                                              return _vm.checkGroup(
-                                                (_vm.addGroupChecked = !_vm.addGroupChecked)
-                                              )
-                                            }
-                                          }
-                                        },
-                                        [_vm._v(" Add Group")]
-                                      )
-                                    ],
-                                    1
-                                  )
-                                : _vm._e(),
+                              _c("v-icon", [_vm._v("mdi-account-group")]),
                               _vm._v(" "),
-                              _vm.addGroupChecked
-                                ? _c(
-                                    "v-row",
-                                    [
-                                      _c(
-                                        "v-col",
-                                        { attrs: { cols: "8" } },
-                                        [
-                                          _c("v-text-field", {
-                                            attrs: {
-                                              filled: "",
-                                              label: "Group Name"
-                                            }
-                                          })
-                                        ],
-                                        1
-                                      ),
-                                      _vm._v(" "),
-                                      _c(
-                                        "v-col",
-                                        { attrs: { cols: "2" } },
-                                        [
-                                          _c(
-                                            "v-btn",
-                                            {
-                                              attrs: { text: "" },
-                                              on: {
-                                                click: function($event) {
-                                                  return _vm.addGroup(
-                                                    (_vm.addGroupChecked = !_vm.addGroupChecked)
-                                                  )
-                                                }
-                                              }
-                                            },
-                                            [_vm._v(" Confirm ")]
-                                          )
-                                        ],
-                                        1
+                              _c(
+                                "v-btn",
+                                {
+                                  attrs: { text: "" },
+                                  on: {
+                                    click: function($event) {
+                                      return _vm.checkGroup(
+                                        (_vm.addGroupChecked = !_vm.addGroupChecked)
                                       )
-                                    ],
-                                    1
-                                  )
-                                : _vm._e()
+                                    }
+                                  }
+                                },
+                                [_vm._v(" Add Group")]
+                              )
                             ],
                             1
                           )
-                        ],
-                        1
-                      ),
+                        : _vm._e(),
                       _vm._v(" "),
-                      _vm.addGroupChecked
+                      !_vm.addGroupChecked
                         ? _c(
                             "v-list-item-group",
                             {
-                              attrs: { multiple: "", color: "#1976D2" },
+                              attrs: { color: "#1976D2" },
                               model: {
                                 value: _vm.model,
                                 callback: function($$v) {
@@ -59080,6 +59383,111 @@ var render = function() {
                               }
                             },
                             [
+                              _vm._l(_vm.allGroups, function(user, index) {
+                                return [
+                                  _c(
+                                    "v-list-item",
+                                    { key: index },
+                                    [
+                                      _c(
+                                        "v-list-item-avatar",
+                                        [
+                                          _c("v-icon", [
+                                            _vm._v(
+                                              "\n                                        mdi-account-circle\n                                    "
+                                            )
+                                          ])
+                                        ],
+                                        1
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "v-list-item-content",
+                                        {
+                                          on: {
+                                            click: function($event) {
+                                              return _vm.fetchGroupMessage(
+                                                user.id,
+                                                user.name,
+                                                _vm.componentKeyGroup++
+                                              )
+                                            }
+                                          }
+                                        },
+                                        [
+                                          _c(
+                                            "v-list-item-title",
+                                            {
+                                              domProps: {
+                                                innerHTML: _vm._s(user.name)
+                                              }
+                                            },
+                                            [_vm._v(_vm._s(user.name))]
+                                          )
+                                        ],
+                                        1
+                                      )
+                                    ],
+                                    1
+                                  )
+                                ]
+                              })
+                            ],
+                            2
+                          )
+                        : _vm._e(),
+                      _vm._v(" "),
+                      _vm.addGroupChecked
+                        ? _c(
+                            "v-list-item-group",
+                            {
+                              attrs: { color: "#1976D2" },
+                              model: {
+                                value: _vm.model,
+                                callback: function($$v) {
+                                  _vm.model = $$v
+                                },
+                                expression: "model"
+                              }
+                            },
+                            [
+                              _vm.addGroupChecked
+                                ? _c(
+                                    "v-row",
+                                    [
+                                      _c("v-text-field", {
+                                        attrs: {
+                                          filled: "",
+                                          label: "Group Name"
+                                        },
+                                        model: {
+                                          value: _vm.newGroupName,
+                                          callback: function($$v) {
+                                            _vm.newGroupName = $$v
+                                          },
+                                          expression: "newGroupName"
+                                        }
+                                      }),
+                                      _vm._v(" "),
+                                      _c(
+                                        "v-btn",
+                                        {
+                                          attrs: { text: "" },
+                                          on: {
+                                            click: function($event) {
+                                              return _vm.createGroup(
+                                                _vm.newGroupName
+                                              )
+                                            }
+                                          }
+                                        },
+                                        [_vm._v(" Confirm")]
+                                      )
+                                    ],
+                                    1
+                                  )
+                                : _vm._e(),
+                              _vm._v(" "),
                               _vm._l(_vm.allusers, function(user, index) {
                                 return [
                                   _c(
@@ -59148,16 +59556,7 @@ var render = function() {
                                                             )
                                                           )
                                                         ]
-                                                      ),
-                                                      _vm._v(" "),
-                                                      _c("span", [
-                                                        _vm._v(
-                                                          "Checked names: " +
-                                                            _vm._s(
-                                                              _vm.chosenUserID
-                                                            )
-                                                        )
-                                                      ])
+                                                      )
                                                     ])
                                                   ],
                                                   1
@@ -59172,15 +59571,6 @@ var render = function() {
                                                         color:
                                                           "deep-purple accent-4",
                                                         value: user.id
-                                                      },
-                                                      on: {
-                                                        click: function(
-                                                          $event
-                                                        ) {
-                                                          return _vm.checkboxUpdated(
-                                                            user.id
-                                                          )
-                                                        }
                                                       },
                                                       model: {
                                                         value: _vm.chosenUserID,

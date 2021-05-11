@@ -62,6 +62,68 @@
         </div>
         <!-- Chat Messages **END** -->
 
+        <!-- Chat Messages **START** -->
+        <div id='chat' v-if="componentKeyGroup">
+            <v-card width="420" height="550">
+                    <v-toolbar dark>
+                        <v-btn icon @click="closeChat"> 
+                            <v-icon>mdi-close</v-icon>
+                        </v-btn>
+                        <v-toolbar-title> {{ groupName }}</v-toolbar-title>
+                        <v-spacer></v-spacer>
+                        <v-btn icon @click="placeAudioCall(toUserId, userName)">
+                            <v-icon>mdi-phone</v-icon>
+                        </v-btn>
+                        <v-btn icon @click="placeVideoCall(toUserId, userName)">
+                            <v-icon>mdi-video</v-icon>
+                        </v-btn>
+                        <v-btn icon>
+                            <v-icon>mdi-dots-vertical</v-icon>
+                        </v-btn>
+                    </v-toolbar>
+                    <div id="chatCard" flat height="550">
+                        <v-card flat height="550">
+                            <v-card-text class="flex-grow-1 overflow-y-auto" style="height: 550px;">
+                                <template v-for="(message, index) in groupMessages" >
+                                    <div :class="message.user_id != currentID ? 'd-flex flex-row' : 'd-flex flex-row-reverse'" :key="index">
+                                        <v-menu offset-y>
+                                            <template v-slot:activator="{ on }">
+                                                <v-hover>
+                                                    <v-chip
+                                                        :color="message.user_id != currentID ? '' : '#1565C0'"
+                                                        dark
+                                                        style="height:35px; white-space: normal;"
+                                                        class="pa-4 mb-2"
+                                                        v-on="on">
+                                                        {{ message.body }}
+                                                    </v-chip>
+                                                </v-hover>
+                                            </template>
+                                        </v-menu>
+                                    </div>
+                                </template>
+                            </v-card-text>
+                            <v-text-field
+                                    ma-0 pa-0
+                                    v-model="newMessage"
+                                    placeholder="Type a message..." 
+                                    type="text"
+                                    regular
+                                    single-line
+                                    clearable
+                                    filled
+                                    append-icon="mdi-send"
+                                    @click:append="sendMessage"
+                                    @keyup.enter="sendMessage"
+                                    name="message"
+                                    > 
+                                </v-text-field>
+                        </v-card>
+                    </div>
+                </v-card>
+        </div>
+        <!-- Chat Messages **END** -->
+
         <!-- Video Call **START**  -->
         <div id="audio" v-if="audioCallPlaced">
             <v-card width="420" height="550">
@@ -341,27 +403,33 @@
 
             <!-- Group List **START** -->
                 <v-list v-if="groupVlist">
-                    <v-card flat>
-                        <v-card-text>
-                            <v-col v-if="!addGroupChecked">
-                                <v-icon>mdi-account-group</v-icon>
-                                <v-btn text v-on:click="checkGroup(addGroupChecked = !addGroupChecked)"> Add Group</v-btn>
-                            </v-col>
-                            <v-row v-if="addGroupChecked" >
-                                <v-col cols="8">
-                                    <v-text-field
-                                    filled
-                                    label="Group Name"
-                                    ></v-text-field>
-                                    <!-- <input type="text" placeholder="Enter a group name"> -->
-                                </v-col>
-                                <v-col cols="2">
-                                    <v-btn text v-on:click="addGroup(addGroupChecked = !addGroupChecked)"> Confirm </v-btn>
-                                </v-col>
-                            </v-row>
-                        </v-card-text>
-                    </v-card>
-                    <v-list-item-group multiple color="#1976D2" v-model="model" v-if="addGroupChecked">
+                    <v-col v-if="!addGroupChecked">
+                            <v-icon>mdi-account-group</v-icon>
+                            <v-btn text v-on:click="checkGroup(addGroupChecked = !addGroupChecked)"> Add Group</v-btn>
+                        </v-col>
+                    <v-list-item-group color="#1976D2" v-model="model" v-if="!addGroupChecked">
+                        <template v-for="(user, index) in allGroups">
+                                <v-list-item :key="index" > 
+                                    <v-list-item-avatar>
+                                        <v-icon>
+                                            mdi-account-circle
+                                        </v-icon>
+                                    </v-list-item-avatar>
+                                        <v-list-item-content v-on:click="fetchGroupMessage(user.id, user.name, componentKeyGroup++)">
+                                            <v-list-item-title v-html="user.name">{{ user.name }}</v-list-item-title>
+                                        </v-list-item-content>
+                                </v-list-item>
+                        </template>
+                    </v-list-item-group>
+                    <v-list-item-group color="#1976D2" v-model="model" v-if="addGroupChecked">
+                        <v-row v-if="addGroupChecked" >
+                            <v-text-field
+                                v-model="newGroupName"
+                                filled
+                                label="Group Name"
+                                ></v-text-field>
+                            <v-btn text v-on:click="createGroup(newGroupName)"> Confirm</v-btn>
+                        </v-row>
                         <template v-for="(user, index) in allusers">
                                 <v-list-item :key="index" > 
                                     <v-list-item-avatar>
@@ -375,7 +443,7 @@
                                             <v-list-item-subtitle>
                                                 <span class="badge badge-light">{{ getUserOnlineStatus(user.id) }}</span>
                                                 <span class="badge badge-light" style="display:none;">{{ getUserOnlineStatusVideo(user.id) }}</span>
-                                                <span>Checked names: {{ chosenUserID }}</span>
+                                                <!-- <span>Checked names: {{ chosenUserID }}</span> -->
                                             </v-list-item-subtitle>
                                         </v-list-item-content>
                                         <v-list-item-action>
@@ -384,15 +452,16 @@
                                                 color="deep-purple accent-4"
                                                 v-model="chosenUserID"
                                                 :value="user.id"
-                                                @click="checkboxUpdated(user.id)"
                                                 ></v-checkbox>
                                         </v-list-item-action>
+                                        
                                     </template>
                                     
                                 </v-list-item>
                                 
                                 <v-divider v-if="user.divider" :key="user.name"></v-divider>
                         </template>
+                        
                     </v-list-item-group>
                 </v-list>
             <!-- Group List **END** -->
@@ -446,6 +515,7 @@ export default {
             allGroups: [],
             isOpenChat: false,
             componentKey: 0, 
+            componentKeyGroup: 0,
             model: 1,
 
             // Video Call
@@ -485,6 +555,9 @@ export default {
             },
 
             chosenUserID: [],
+            newGroupName: '',
+            groupMessages: [],
+            groupName: '',
         }
     },
 
@@ -500,6 +573,7 @@ export default {
         this.getMerchantList();
         this.getSentFriendRequest();
         this.getFriendList();
+        this.getGroupList();
 
         this.initializeVideoChannel();
         this.initializeVideoCallListeners(); 
@@ -577,12 +651,23 @@ export default {
     },
 
     methods: {
-        checkboxUpdated(newValue){
+        createGroup(groupName) {
             console.log(this.chosenUserID)
-        },
+            console.log(groupName)
 
-        addGroup(name){
-
+            this.chosenUserID.push(this.$userId)
+            axios.post('add-group', 
+            {
+                name: this.groupName,
+                users: this.chosenUserID
+            })
+            .then(response => {
+                this.messages = response.data
+                console.log(response.data)
+            })
+            .catch(error => {
+                console.log(error);
+            })
         },
 
         getUserList(){
@@ -590,10 +675,45 @@ export default {
                 this.allusers = response.data;
             })
         },
+        
+        fetchGroupMessage(groupID, groupName) {
+            this.groupName = groupName;
+            // fetchMessages-group
+            axios.post('fetchMessages-group', 
+            {
+                group_id: groupID
+            })
+            .then(response => {
+                this.groupMessages = response.data
+                this.componentKeyGroup += 1;
+                console.log(response.data)
+            })
+            .catch(error => {
+                console.log(error);
+            })
+        },
 
         getMerchantList(){
             axios.get('user-merchant').then(response => {
                 this.allmerchants = response.data;
+            })
+        },
+
+        getGroupList(){
+            axios.post('group', 
+            {
+                user_id: this.$userId,
+            })
+            .then(response => {
+                console.log(response.data);
+                axios.post('getGroupName', 
+                {
+                    groupID: response.data
+                })
+                .then(response => {
+                    this.allGroups = response.data
+                    console.log(response.data)
+                })
             })
         },
 
