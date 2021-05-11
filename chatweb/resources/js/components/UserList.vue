@@ -343,34 +343,54 @@
                 <v-list v-if="groupVlist">
                     <v-card flat>
                         <v-card-text>
-                            <v-col>
+                            <v-col v-if="!addGroupChecked">
                                 <v-icon>mdi-account-group</v-icon>
-                                <v-btn text> Add Group</v-btn>
+                                <v-btn text v-on:click="checkGroup(addGroupChecked = !addGroupChecked)"> Add Group</v-btn>
                             </v-col>
+                            <v-row v-if="addGroupChecked" >
+                                <v-col cols="8">
+                                    <v-text-field
+                                    filled
+                                    label="Group Name"
+                                    ></v-text-field>
+                                    <!-- <input type="text" placeholder="Enter a group name"> -->
+                                </v-col>
+                                <v-col cols="2">
+                                    <v-btn text v-on:click="addGroup(addGroupChecked = !addGroupChecked)"> Confirm </v-btn>
+                                </v-col>
+                            </v-row>
                         </v-card-text>
                     </v-card>
-                    <v-list-item-group color="#1976D2" v-model="model">
+                    <v-list-item-group multiple color="#1976D2" v-model="model" v-if="addGroupChecked">
                         <template v-for="(user, index) in allusers">
-                                <v-list-item :key="index"> 
+                                <v-list-item :key="index" > 
                                     <v-list-item-avatar>
                                         <v-icon>
                                             mdi-account-circle
                                         </v-icon>
                                     </v-list-item-avatar>
-                                    <v-list-item-content v-on:click="getUserMessage(user.id, user.name, componentKey++)">
-                                        <v-list-item-title v-html="user.name">{{ user.name }}</v-list-item-title>
-                                        <v-list-item-subtitle>
-                                            <span class="badge badge-light">{{ getUserOnlineStatus(user.id) }}</span>
-                                            <span class="badge badge-light" style="display:none;">{{ getUserOnlineStatusVideo(user.id) }}</span>
-                                        </v-list-item-subtitle>
-                                    </v-list-item-content>
-                                    <v-list-item-action>
-                                        <v-col v-if="colFriendStatus">
-                                            <v-btn v-on:click="acceptFriend(user.id)">Accept</v-btn>
-                                            <v-btn v-on:click="rejectFriend(user.id)">Reject</v-btn>
-                                        </v-col>
-                                    </v-list-item-action>
+                                    <template v-slot:default="{ active }">
+                                        <v-list-item-content>
+                                            <v-list-item-title v-html="user.name">{{ user.name }}</v-list-item-title>
+                                            <v-list-item-subtitle>
+                                                <span class="badge badge-light">{{ getUserOnlineStatus(user.id) }}</span>
+                                                <span class="badge badge-light" style="display:none;">{{ getUserOnlineStatusVideo(user.id) }}</span>
+                                                <span>Checked names: {{ chosenUserID }}</span>
+                                            </v-list-item-subtitle>
+                                        </v-list-item-content>
+                                        <v-list-item-action>
+                                            <v-checkbox
+                                                :input-value="active"
+                                                color="deep-purple accent-4"
+                                                v-model="chosenUserID"
+                                                :value="user.id"
+                                                @click="checkboxUpdated(user.id)"
+                                                ></v-checkbox>
+                                        </v-list-item-action>
+                                    </template>
+                                    
                                 </v-list-item>
+                                
                                 <v-divider v-if="user.divider" :key="user.name"></v-divider>
                         </template>
                     </v-list-item-group>
@@ -408,6 +428,7 @@ export default {
             groupVlist: false,
             sentRequest: false,
             colFriendStatus: true,
+            addGroupChecked: false,
 
             // Message
             messages: [],
@@ -462,6 +483,8 @@ export default {
                 peer1: null,
                 peer2: null,
             },
+
+            chosenUserID: [],
         }
     },
 
@@ -539,9 +562,29 @@ export default {
         }
         return null;
         },
+
+        selectedItems: {
+            get() {
+                return this.value;
+            },
+            set(item) {
+                // Could either emit (so you can use v-model on the parent)
+                // or add to array
+                this.chosenItems.push(item)
+                this.$emit("input", item);
+            }
+        }
     },
 
     methods: {
+        checkboxUpdated(newValue){
+            console.log(this.chosenUserID)
+        },
+
+        addGroup(name){
+
+        },
+
         getUserList(){
             axios.get('user-member').then(response => {
                 this.allusers = response.data;
@@ -770,7 +813,14 @@ export default {
             }
         },
 
-        
+        checkGroup(groupChecked) {
+            return groupChecked;
+        },
+
+        addGroup(groupChecked) {
+            return groupChecked;
+        },
+
         /* Video Call --START-- */
         initializeVideoChannel() {
             this.videoCallParams.channel = window.Echo.join("Demo");

@@ -8,7 +8,6 @@ use App\Http\Controllers\GroupController;
 use App\Http\Controllers\VideoChatController;
 use App\Http\Controllers\AudioChatController;
 use App\Http\Controllers\FriendController;
-use App\Http\Controllers\GroupController;
 
 use App\Models\User;
 
