@@ -8,6 +8,8 @@ use App\Http\Controllers\GroupController;
 use App\Http\Controllers\VideoChatController;
 use App\Http\Controllers\AudioChatController;
 use App\Http\Controllers\FriendController;
+use App\Http\Controllers\GroupController;
+
 use App\Models\User;
 
 /*
@@ -49,14 +51,6 @@ Route::group(['middleware' => ['auth',  'online']], function () {
         return view('conversation', ['users' => $users]);
     });
 
-    // Group routes
-    // Route::get('/group-user', [GroupController::class, 'index']);
-    // Route::post('/group-message', [GroupController::class, 'fetchGroup']);
-
-    // Route::post('/create', [GroupController::class, 'store']);
-    // Route::post('/group', [GroupController::class, 'getGroup']);
-    // Route::post('/sendGroup', [GroupController::class, 'sendGroupMessage']);
-
     // Message routes
     Route::post('/send', [ConversationController::class, 'sendMessage']);
     Route::get('/chats/{from_user_id}', [ConversationController::class, 'fetchPersonal']);
@@ -79,4 +73,7 @@ Route::group(['middleware' => ['auth',  'online']], function () {
     Route::post('/getSentFriendRequest', [FriendController::class, 'getSentFriendRequest']);
     Route::post('/acceptFriend', [FriendController::class, 'acceptFriend']);
     Route::post('/rejectFriend', [FriendController::class, 'rejectFriend']);
+
+    // Group routes
+    Route::post('/add-group', [GroupController::class, 'store']);
 });

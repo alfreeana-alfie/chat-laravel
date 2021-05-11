@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Group;
+use App\Models\GroupUser;
+use App\Models\GroupChat;
 use Illuminate\Http\Request;
 
 class GroupController extends Controller
@@ -35,7 +37,40 @@ class GroupController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $group = Group::create([
+            'name' => $request['name']
+        ]);
+
+        foreach($request['users'] as $user){
+            GroupUser::create([
+                'user_id' => $user,
+                'group_id' => $group->id
+            ]);
+        }
+
+        return $group;
+    }
+
+    public function sendGroupMessage(Request $request){
+        $message = GroupChat::create([
+            'message' => $request->input('message'),
+            'user_id' => $request['user_id'],
+            'group_id' => $request['group_id']
+        ]);
+
+        return $message;
+    }
+
+    public function fetchGroup(Request $request){
+        $message = GroupChat::where(['group_id' => $request['group_id']])->get();
+
+        return $message;
+    }
+
+    public function getGroup(Request $request){
+        $groupUser = GroupUser::where(['user_id' => $request['user_id']])->get();
+
+        return $groupUser;
     }
 
     /**

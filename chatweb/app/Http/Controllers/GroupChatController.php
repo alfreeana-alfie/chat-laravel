@@ -35,7 +35,13 @@ class GroupChatController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $message = new GroupChat();
+        $message->message = $request->message;
+        $message->user_id = $request->user_id;
+        $message->group_id = $request->group_id;
+        $message->save();
+
+        return $message;
     }
 
     /**
