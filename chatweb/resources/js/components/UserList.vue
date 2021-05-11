@@ -419,6 +419,13 @@ export default {
         }
     },
 
+    created(){
+        Echo.join('chat')
+            .listen('MessageSent',(event) => {
+                this.messages.push(event.message);
+            })
+    },
+
     mounted(){
         this.getUserList();
         this.getMerchantList();
@@ -574,6 +581,11 @@ export default {
         },
 
         sendMessage(){
+            this.messages.push({
+                user_id: this.$userId,
+                body: this.newMessage
+            });
+
             axios.post('send', 
             {
                 body: this.newMessage, 
@@ -581,16 +593,12 @@ export default {
                 user_id: this.$userId
             })
             .then(response => {
-                this.allusers = response.data
+                // this.allusers = response.data
+                // this.allusers = response.data
             })
             .catch((error) => {
                 console.log(error);
             })
-
-            this.messages.push({
-                user_id: this.$userId,
-                body: this.newMessage
-            });
 
             this.newMessage = ''
         },

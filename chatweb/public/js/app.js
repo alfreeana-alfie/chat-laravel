@@ -2533,6 +2533,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }
     };
   },
+  created: function created() {
+    var _this = this;
+
+    Echo.join('chat').listen('MessageSent', function (event) {
+      _this.messages.push(event.message);
+    });
+  },
   mounted: function mounted() {
     this.getUserList();
     this.getMerchantList();
@@ -2553,11 +2560,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       return false;
     },
     videoCallerDetails: function videoCallerDetails() {
-      var _this = this;
+      var _this2 = this;
 
       if (this.videoCallParams.caller && this.videoCallParams.caller !== this.authUserID) {
         var incomingCaller = this.allusers.filter(function (user) {
-          return user.id === _this.videoCallParams.caller;
+          return user.id === _this2.videoCallParams.caller;
         });
         return {
           id: this.videoCallParams.caller,
@@ -2576,11 +2583,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       return false;
     },
     audioCallerDetails: function audioCallerDetails() {
-      var _this2 = this;
+      var _this3 = this;
 
       if (this.audioCallParams.caller && this.audioCallParams.caller !== this.authuserid) {
         var incomingCaller = this.allusers.filter(function (user) {
-          return user.id === _this2.audioCallParams.caller;
+          return user.id === _this3.audioCallParams.caller;
         });
         return {
           id: this.audioCallParams.caller,
@@ -2593,17 +2600,17 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   methods: {
     getUserList: function getUserList() {
-      var _this3 = this;
+      var _this4 = this;
 
       axios.get('user-member').then(function (response) {
-        _this3.allusers = response.data;
+        _this4.allusers = response.data;
       });
     },
     getMerchantList: function getMerchantList() {
-      var _this4 = this;
+      var _this5 = this;
 
       axios.get('user-merchant').then(function (response) {
-        _this4.allmerchants = response.data;
+        _this5.allmerchants = response.data;
       });
     },
     openAllMembers: function openAllMembers() {
@@ -2632,20 +2639,20 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     },
     // Get Chat Room ID for messages
     getUserMessage: function getUserMessage(user_id, name, isOpenChat) {
-      var _this5 = this;
+      var _this6 = this;
 
       this.userName = name, this.toUserId = user_id;
       axios.post('http://127.0.0.1:8000/api/chatID', {
         user_id: this.$userId,
         to_user_id: user_id
       }).then(function (response) {
-        _this5.chatID = response.data.id;
+        _this6.chatID = response.data.id;
 
-        _this5.fetchMessages();
+        _this6.fetchMessages();
 
-        _this5.componentKey += 1;
+        _this6.componentKey += 1;
 
-        _this5.openChat();
+        _this6.openChat();
       })["catch"](function (error) {
         console.log(error);
       });
@@ -2657,32 +2664,30 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       document.getElementById("chat").style.display = "none";
     },
     fetchMessages: function fetchMessages() {
-      var _this6 = this;
+      var _this7 = this;
 
       axios.post('http://127.0.0.1:8000/api/chats', {
         chat_id: this.chatID
       }).then(function (response) {
-        _this6.messages = response.data;
+        _this7.messages = response.data;
         console.log(response.data);
       })["catch"](function (error) {
         console.log(error);
       });
     },
     sendMessage: function sendMessage() {
-      var _this7 = this;
-
+      this.messages.push({
+        user_id: this.$userId,
+        body: this.newMessage
+      });
       axios.post('send', {
         body: this.newMessage,
         chat_id: this.chatID,
         user_id: this.$userId
-      }).then(function (response) {
-        _this7.allusers = response.data;
+      }).then(function (response) {// this.allusers = response.data
+        // this.allusers = response.data
       })["catch"](function (error) {
         console.log(error);
-      });
-      this.messages.push({
-        user_id: this.$userId,
-        body: this.newMessage
       });
       this.newMessage = '';
     },
