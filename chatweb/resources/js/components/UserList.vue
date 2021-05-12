@@ -133,7 +133,7 @@
         </div>
         <!-- Chat Group Messages **END** -->
 
-        <!-- Video Call **START**  -->
+        <!-- Audio Call **START**  -->
         <div id="audio" v-if="audioCallPlaced">
             <v-card width="420" height="550">
                 <v-toolbar dark flat>
@@ -189,9 +189,9 @@
                 </div>
             </v-card>
         </div>
-        <!-- Video Call **END**  -->
+        <!-- Audio Call **END**  -->
 
-        <!-- Incoming Video Call **START** -->
+        <!-- Incoming Audio Call **START** -->
         <div>
             <v-card>
                 <div class="row" v-if="incomingAudioCallDialog">
@@ -205,7 +205,7 @@
                 </div>
             </v-card>
         </div>
-        <!-- Incoming Video Call **END** -->
+        <!-- Incoming Audio Call **END** -->
 
         <!-- Video Call **START**  -->
         <div id="video" v-if="videoCallPlaced">

@@ -10,12 +10,11 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class StartVideoChat implements ShouldBroadcast
+class StartGroupVideoChat
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $data;
-
     /**
      * Create a new event instance.
      *
@@ -33,6 +32,6 @@ class StartVideoChat implements ShouldBroadcast
      */
     public function broadcastOn()
     {
-        return new PresenceChannel('Demo');
+        return new PresenceChannel('GroupDemo');
     }
 }
