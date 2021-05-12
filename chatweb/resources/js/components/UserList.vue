@@ -35,13 +35,15 @@
                                                         v-on="on">
                                                         <v-col>
                                                             <p style="margin:0;text-align:left;font-size:14px">{{ message.body }}</p>
-                                                            <p style="margin:0;text-align:right;font-size:12px">{{ moment(message.created_at).format("LT") }}</p>
+                                                            <p style="margin:0;text-align:right;font-size:12px">{{ moment(message.created_at).format("llll") }}</p>
                                                         </v-col>
                                                     </v-chip>
                                                 </v-hover>
                                             </template>
                                         </v-menu>
                                     </div>
+                                    
+                                    
                                 </template>
                             </v-card-text>
                             <v-text-field
@@ -101,7 +103,7 @@
                                                         <v-col>
                                                             <p style="margin-bottom:2px;text-align:left;font-size:14px"><strong>{{ message.user_name }}</strong></p>
                                                             <p style="margin:0;text-align:left;font-size:14px">{{ message.body }}</p>
-                                                            <p style="margin:0;text-align:right;font-size:12px">{{ moment(message.created_at).format("LT") }}</p>
+                                                            <p style="margin:0;text-align:right;font-size:12px">{{ moment(message.created_at).format("lll") }}</p>
                                                         </v-col>
                                                     </v-chip>
                                                 </v-hover>
@@ -569,6 +571,7 @@ export default {
             newGroupMessage: '',
             GroupID: '',
             moment: moment,
+            dateMessage: '',
         }
     },
 
