@@ -30,10 +30,13 @@
                                                     <v-chip
                                                         :color="message.user_id != currentID ? '' : '#1565C0'"
                                                         dark
-                                                        style="height:35px; white-space: normal;"
-                                                        class="pa-4 mb-2"
+                                                        style="height:auto; white-space: normal;"
+                                                        class="pa-0 mb-2 ma-0"
                                                         v-on="on">
-                                                        {{ message.body }}
+                                                        <v-col>
+                                                            <p style="margin:0;text-align:left;font-size:14px">{{ message.body }}</p>
+                                                            <p style="margin:0;text-align:right;font-size:12px">{{ moment(message.created_at).format("LT") }}</p>
+                                                        </v-col>
                                                     </v-chip>
                                                 </v-hover>
                                             </template>
@@ -96,9 +99,9 @@
                                                         class="pa-0 mb-2 ma-0"
                                                         v-on="on">
                                                         <v-col>
-                                                            <strong>{{ message.user_name }}</strong>
-                                                            <p style="margin:0;">{{ message.body }}</p>
-                                                            <p style="margin:0;">{{ message.created_at }}</p>
+                                                            <p style="margin-bottom:2px;text-align:left;font-size:14px"><strong>{{ message.user_name }}</strong></p>
+                                                            <p style="margin:0;text-align:left;font-size:14px">{{ message.body }}</p>
+                                                            <p style="margin:0;text-align:right;font-size:12px">{{ moment(message.created_at).format("LT") }}</p>
                                                         </v-col>
                                                     </v-chip>
                                                 </v-hover>
@@ -479,6 +482,7 @@
 <script>
 import Chat from "./Chat";
 import Peer from "simple-peer";
+import moment from "moment";
 import { getVideoPermissions } from "../helpers-video";
 import { getAudioPermissions } from "../helpers-audio";
 
@@ -564,6 +568,7 @@ export default {
             groupName: '',
             newGroupMessage: '',
             GroupID: '',
+            moment: moment,
         }
     },
 
