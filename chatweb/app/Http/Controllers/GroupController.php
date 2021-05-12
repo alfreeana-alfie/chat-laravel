@@ -6,6 +6,7 @@ use App\Models\Group;
 use App\Models\GroupUser;
 use App\Models\GroupChat;
 use Illuminate\Http\Request;
+use App\Events\GroupMessageSent;
 
 class GroupController extends Controller
 {
@@ -53,10 +54,13 @@ class GroupController extends Controller
 
     public function sendGroupMessage(Request $request){
         $message = GroupChat::create([
-            'message' => $request->input('message'),
+            'body' => $request->input('body'),
             'user_id' => $request['user_id'],
+            'user_name' => $request['user_name'],
             'group_id' => $request['group_id']
         ]);
+
+        broadcast(new GroupMessageSent($message->load('user')))->toOthers();
 
         return $message;
     }

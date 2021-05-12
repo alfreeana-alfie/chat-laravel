@@ -21,6 +21,10 @@ Broadcast::channel('chat', function ($user) {
     return $user;
 });
 
+Broadcast::channel('group-chat', function ($user) {
+    return $user;
+});
+
 Broadcast::channel('request', function ($user) {
     return $user->name;
 });

@@ -62,7 +62,7 @@
         </div>
         <!-- Chat Messages **END** -->
 
-        <!-- Chat Messages **START** -->
+        <!-- Chat Group Messages **START** -->
         <div id='chat' v-if="componentKeyGroup">
             <v-card width="420" height="550">
                     <v-toolbar dark>
@@ -92,10 +92,14 @@
                                                     <v-chip
                                                         :color="message.user_id != currentID ? '' : '#1565C0'"
                                                         dark
-                                                        style="height:35px; white-space: normal;"
-                                                        class="pa-4 mb-2"
+                                                        style="height:auto; white-space: normal; margin:0;"
+                                                        class="pa-0 mb-2 ma-0"
                                                         v-on="on">
-                                                        {{ message.body }}
+                                                        <v-col>
+                                                            <strong>{{ message.user_name }}</strong>
+                                                            <p style="margin:0;">{{ message.body }}</p>
+                                                            <p style="margin:0;">{{ message.created_at }}</p>
+                                                        </v-col>
                                                     </v-chip>
                                                 </v-hover>
                                             </template>
@@ -105,7 +109,7 @@
                             </v-card-text>
                             <v-text-field
                                     ma-0 pa-0
-                                    v-model="newMessage"
+                                    v-model="newGroupMessage"
                                     placeholder="Type a message..." 
                                     type="text"
                                     regular
@@ -113,8 +117,8 @@
                                     clearable
                                     filled
                                     append-icon="mdi-send"
-                                    @click:append="sendMessage"
-                                    @keyup.enter="sendMessage"
+                                    @click:append="sendGroupMessage"
+                                    @keyup.enter="sendGroupMessage"
                                     name="message"
                                     > 
                                 </v-text-field>
@@ -122,7 +126,7 @@
                     </div>
                 </v-card>
         </div>
-        <!-- Chat Messages **END** -->
+        <!-- Chat Group Messages **END** -->
 
         <!-- Video Call **START**  -->
         <div id="audio" v-if="audioCallPlaced">
@@ -558,6 +562,8 @@ export default {
             newGroupName: '',
             groupMessages: [],
             groupName: '',
+            newGroupMessage: '',
+            GroupID: '',
         }
     },
 
@@ -565,6 +571,11 @@ export default {
         Echo.join('chat')
             .listen('MessageSent',(event) => {
                 this.messages.push(event.message);
+            })
+
+        Echo.join('group-chat')
+            .listen('GroupMessageSent',(event) => {
+                this.groupMessages.push(event.message);
             })
     },
 
@@ -678,6 +689,7 @@ export default {
         
         fetchGroupMessage(groupID, groupName) {
             this.groupName = groupName;
+            this.groupID = groupID;
             // fetchMessages-group
             axios.post('fetchMessages-group', 
             {
@@ -691,6 +703,31 @@ export default {
             .catch(error => {
                 console.log(error);
             })
+        },
+
+        sendGroupMessage(){
+            // console.log(this.newGroupMessage);
+            this.groupMessages.push({
+                user_id: this.$userId,
+                user_name: this.authUserName,
+                body: this.newGroupMessage
+            });
+
+            axios.post('send-group', 
+            {
+                body: this.newGroupMessage, 
+                group_id: this.groupID,
+                user_id: this.$userId,
+                user_name: this.authUserName
+            })
+            .then(response => {
+                console.log(response)
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+
+            this.newGroupMessage = ''
         },
 
         getMerchantList(){
@@ -1521,5 +1558,9 @@ export default {
     height: 50vh;
   }
 }
-</style>
 
+.tab {
+    display: inline-block;
+    margin-left: 10px;
+}
+</style>

@@ -10,9 +10,11 @@ class GroupChat extends Model
     use HasFactory;
 
     protected $fillable = [
-        'message', 
+        'body', 
         'user_id', 
-        'group_id'
+        'user_name',
+        'group_id',
+        'created_at',
     ];
 
     public function user()

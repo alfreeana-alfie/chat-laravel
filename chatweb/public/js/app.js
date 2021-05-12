@@ -2598,6 +2598,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
 
 
 
@@ -2671,7 +2675,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       chosenUserID: [],
       newGroupName: '',
       groupMessages: [],
-      groupName: ''
+      groupName: '',
+      newGroupMessage: '',
+      GroupID: ''
     };
   },
   created: function created() {
@@ -2679,6 +2685,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
     Echo.join('chat').listen('MessageSent', function (event) {
       _this.messages.push(event.message);
+    });
+    Echo.join('group-chat').listen('GroupMessageSent', function (event) {
+      _this.groupMessages.push(event.message);
     });
   },
   mounted: function mounted() {
@@ -2778,7 +2787,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     fetchGroupMessage: function fetchGroupMessage(groupID, groupName) {
       var _this6 = this;
 
-      this.groupName = groupName; // fetchMessages-group
+      this.groupName = groupName;
+      this.groupID = groupID; // fetchMessages-group
 
       axios.post('fetchMessages-group', {
         group_id: groupID
@@ -2789,6 +2799,25 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       })["catch"](function (error) {
         console.log(error);
       });
+    },
+    sendGroupMessage: function sendGroupMessage() {
+      // console.log(this.newGroupMessage);
+      this.groupMessages.push({
+        user_id: this.$userId,
+        user_name: this.authUserName,
+        body: this.newGroupMessage
+      });
+      axios.post('send-group', {
+        body: this.newGroupMessage,
+        group_id: this.groupID,
+        user_id: this.$userId,
+        user_name: this.authUserName
+      }).then(function (response) {
+        console.log(response);
+      })["catch"](function (error) {
+        console.log(error);
+      });
+      this.newGroupMessage = '';
     },
     getMerchantList: function getMerchantList() {
       var _this7 = this;
@@ -10655,7 +10684,7 @@ __webpack_require__.r(__webpack_exports__);
 
 var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
 // Module
-___CSS_LOADER_EXPORT___.push([module.id, "\n#video-row {\n  width: 410px;\n  height: 500px;\n  margin: 0;\n}\n#incoming-call-card {\n  border: 1px solid #0acf83;\n}\n.video-container {\n  width: 410px;\n  height: 500px;\n  max-width: 90vw;\n  max-height: 50vh;\n  margin: 0;\n  position: relative;\n  background-color: #fff;\n}\n.video-container .user-video {\n  width: 30%;\n  position: absolute;\n  left: 10px;\n  bottom: 10px;\n  border: 1px solid #fff;\n  border-radius: 6px;\n  z-index: 2;\n}\n.video-container .partner-video {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  top: 0;\n  z-index: 1;\n  margin: 0;\n  padding: 0;\n}\n.video-container .action-btns {\n  position: absolute;\n  bottom: 20px;\n  left: 50%;\n  margin-left: -50px;\n  z-index: 3;\n  display: flex;\n  flex-direction: row;\n}\n\n/* Mobiel Styles */\n@media only screen and (max-width: 768px) {\n.video-container {\n    height: 50vh;\n}\n}\n#audio-row {\n  width: 410px;\n  height: 500px;\n  margin: 0;\n}\n#incoming-call-card {\n  border: 1px solid #0acf83;\n}\n.audio-container {\n  width: 410px;\n  height: 500px;\n  max-width: 90vw;\n  max-height: 50vh;\n  margin: 0;\n  position: relative;\n  background-color: #fff;\n}\n.audio-container .user-audio {\n  width: 30%;\n  position: absolute;\n  left: 10px;\n  bottom: 10px;\n  border: 1px solid #fff;\n  border-radius: 6px;\n  z-index: 2;\n}\n.audio-container .partner-audio {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  top: 0;\n  z-index: 1;\n  margin: 0;\n  padding: 0;\n}\n.audio-container .action-btns {\n  position: absolute;\n  bottom: 20px;\n  left: 50%;\n  margin-left: -50px;\n  z-index: 3;\n  display: flex;\n  flex-direction: row;\n}\n\n/* Mobiel Styles */\n@media only screen and (max-width: 768px) {\n.audio-container {\n    height: 50vh;\n}\n}\n", ""]);
+___CSS_LOADER_EXPORT___.push([module.id, "\n#video-row {\n  width: 410px;\n  height: 500px;\n  margin: 0;\n}\n#incoming-call-card {\n  border: 1px solid #0acf83;\n}\n.video-container {\n  width: 410px;\n  height: 500px;\n  max-width: 90vw;\n  max-height: 50vh;\n  margin: 0;\n  position: relative;\n  background-color: #fff;\n}\n.video-container .user-video {\n  width: 30%;\n  position: absolute;\n  left: 10px;\n  bottom: 10px;\n  border: 1px solid #fff;\n  border-radius: 6px;\n  z-index: 2;\n}\n.video-container .partner-video {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  top: 0;\n  z-index: 1;\n  margin: 0;\n  padding: 0;\n}\n.video-container .action-btns {\n  position: absolute;\n  bottom: 20px;\n  left: 50%;\n  margin-left: -50px;\n  z-index: 3;\n  display: flex;\n  flex-direction: row;\n}\n\n/* Mobiel Styles */\n@media only screen and (max-width: 768px) {\n.video-container {\n    height: 50vh;\n}\n}\n#audio-row {\n  width: 410px;\n  height: 500px;\n  margin: 0;\n}\n#incoming-call-card {\n  border: 1px solid #0acf83;\n}\n.audio-container {\n  width: 410px;\n  height: 500px;\n  max-width: 90vw;\n  max-height: 50vh;\n  margin: 0;\n  position: relative;\n  background-color: #fff;\n}\n.audio-container .user-audio {\n  width: 30%;\n  position: absolute;\n  left: 10px;\n  bottom: 10px;\n  border: 1px solid #fff;\n  border-radius: 6px;\n  z-index: 2;\n}\n.audio-container .partner-audio {\n  width: 100%;\n  height: 100%;\n  position: absolute;\n  left: 0;\n  right: 0;\n  bottom: 0;\n  top: 0;\n  z-index: 1;\n  margin: 0;\n  padding: 0;\n}\n.audio-container .action-btns {\n  position: absolute;\n  bottom: 20px;\n  left: 50%;\n  margin-left: -50px;\n  z-index: 3;\n  display: flex;\n  flex-direction: row;\n}\n\n/* Mobiel Styles */\n@media only screen and (max-width: 768px) {\n.audio-container {\n    height: 50vh;\n}\n}\n.tab {\n    display: inline-block;\n    margin-left: 10px;\n}\n", ""]);
 // Exports
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
 
@@ -58179,11 +58208,12 @@ var render = function() {
                                                         _vm._g(
                                                           {
                                                             staticClass:
-                                                              "pa-4 mb-2",
+                                                              "pa-0 mb-2 ma-0",
                                                             staticStyle: {
-                                                              height: "35px",
+                                                              height: "auto",
                                                               "white-space":
-                                                                "normal"
+                                                                "normal",
+                                                              margin: "0"
                                                             },
                                                             attrs: {
                                                               color:
@@ -58197,14 +58227,49 @@ var render = function() {
                                                           on
                                                         ),
                                                         [
-                                                          _vm._v(
-                                                            "\n                                                    " +
-                                                              _vm._s(
-                                                                message.body
-                                                              ) +
-                                                              "\n                                                "
-                                                          )
-                                                        ]
+                                                          _c("v-col", [
+                                                            _c("strong", [
+                                                              _vm._v(
+                                                                _vm._s(
+                                                                  message.user_name
+                                                                )
+                                                              )
+                                                            ]),
+                                                            _vm._v(" "),
+                                                            _c(
+                                                              "p",
+                                                              {
+                                                                staticStyle: {
+                                                                  margin: "0"
+                                                                }
+                                                              },
+                                                              [
+                                                                _vm._v(
+                                                                  _vm._s(
+                                                                    message.body
+                                                                  )
+                                                                )
+                                                              ]
+                                                            ),
+                                                            _vm._v(" "),
+                                                            _c(
+                                                              "p",
+                                                              {
+                                                                staticStyle: {
+                                                                  margin: "0"
+                                                                }
+                                                              },
+                                                              [
+                                                                _vm._v(
+                                                                  _vm._s(
+                                                                    message.created_at
+                                                                  )
+                                                                )
+                                                              ]
+                                                            )
+                                                          ])
+                                                        ],
+                                                        1
                                                       )
                                                     ],
                                                     1
@@ -58240,7 +58305,7 @@ var render = function() {
                               name: "message"
                             },
                             on: {
-                              "click:append": _vm.sendMessage,
+                              "click:append": _vm.sendGroupMessage,
                               keyup: function($event) {
                                 if (
                                   !$event.type.indexOf("key") &&
@@ -58254,15 +58319,15 @@ var render = function() {
                                 ) {
                                   return null
                                 }
-                                return _vm.sendMessage($event)
+                                return _vm.sendGroupMessage($event)
                               }
                             },
                             model: {
-                              value: _vm.newMessage,
+                              value: _vm.newGroupMessage,
                               callback: function($$v) {
-                                _vm.newMessage = $$v
+                                _vm.newGroupMessage = $$v
                               },
-                              expression: "newMessage"
+                              expression: "newGroupMessage"
                             }
                           })
                         ],
