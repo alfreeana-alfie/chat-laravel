@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Events\StartVideoChat;
+use App\Models\User;
 
 class VideoChatController extends Controller
 {

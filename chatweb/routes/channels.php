@@ -38,13 +38,9 @@ Broadcast::channel('reject-friend', function ($user) {
 });
 
 Broadcast::channel('Demo', function ($user) {
-    return $user;
+    return true;
 });
 
 Broadcast::channel('DemoAudio', function ($user) {
-    return ['id' => $user->id, 'name' => $user->name];
-});
-
-Broadcast::channel('GroupDemo', function ($user) {
     return ['id' => $user->id, 'name' => $user->name];
 });

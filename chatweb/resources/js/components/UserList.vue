@@ -281,6 +281,7 @@
         </div>
         <!-- Incoming Video Call **END** -->
 
+
         <v-card>
             <v-card width="420" height="550" class="pa-0">
                 <v-card-text class="pa-0">
@@ -585,6 +586,12 @@ export default {
             .listen('GroupMessageSent',(event) => {
                 this.groupMessages.push(event.message);
             })
+
+        Echo.join('Demo')
+            .listen('StartVideoChat',(event) => {
+                // this.groupMessages.push(event.message);
+                console.log(event);
+            })
     },
 
     mounted(){
@@ -597,13 +604,14 @@ export default {
         this.initializeVideoChannel();
         this.initializeVideoCallListeners(); 
 
-        this.initializeAudioChannel();
-        this.initializeAudioCallListeners();
+        // this.initializeAudioChannel();
+        // this.initializeAudioCallListeners();
     },
 
     computed: {
         // Video Computed
         incomingVideoCallDialog() {
+            // console.log(this.videoCallParams.receivingCall)
         if (
             this.videoCallParams.receivingCall &&
             this.videoCallParams.caller !== this.authUserID
@@ -655,24 +663,12 @@ export default {
         }
         return null;
         },
-
-        selectedItems: {
-            get() {
-                return this.value;
-            },
-            set(item) {
-                // Could either emit (so you can use v-model on the parent)
-                // or add to array
-                this.chosenItems.push(item)
-                this.$emit("input", item);
-            }
-        }
     },
 
     methods: {
         createGroup(groupName) {
-            console.log(this.chosenUserID)
-            console.log(groupName)
+            // console.log(this.chosenUserID)
+            // console.log(groupName)
 
             this.chosenUserID.push(this.$userId)
             axios.post('add-group', 
@@ -682,14 +678,15 @@ export default {
             })
             .then(response => {
                 this.messages = response.data
-                console.log(response.data)
+                // console.log(response.data)
             })
             .catch(error => {
-                console.log(error);
+                // console.log(error);
             })
         },
 
         getUserList(){
+            
             axios.get('user-member').then(response => {
                 this.allusers = response.data;
             })
@@ -706,7 +703,7 @@ export default {
             .then(response => {
                 this.groupMessages = response.data
                 this.componentKeyGroup += 1;
-                console.log(response.data)
+                // console.log(response.data)
             })
             .catch(error => {
                 console.log(error);
@@ -750,14 +747,14 @@ export default {
                 user_id: this.$userId,
             })
             .then(response => {
-                console.log(response.data);
+                // console.log(response.data);
                 axios.post('getGroupName', 
                 {
                     groupID: response.data
                 })
                 .then(response => {
                     this.allGroups = response.data
-                    console.log(response.data)
+                    // console.log(response.data)
                 })
             })
         },
@@ -876,7 +873,7 @@ export default {
             })
             .then(response => {
                 this.allFriendRequest = response.data;
-                console.log(response.data);
+                // console.log(response.data);
             })
             .catch((error) => {
                 console.log(error);
@@ -890,7 +887,7 @@ export default {
             })
             .then(response => {
                 this.allFriendList = response.data;
-                console.log(response.data);
+                // console.log(response.data);
             })
             .catch((error) => {
                 console.log(error);
@@ -968,7 +965,7 @@ export default {
         },
 
         getUserOnlineStatusVideo(id) {
-            const onlineUserIndex = this.audioCallParams.users.findIndex(
+            const onlineUserIndex = this.videoCallParams.users.findIndex(
                 (data) => data.id === id
             );
             if (onlineUserIndex < 0) {
@@ -1005,6 +1002,8 @@ export default {
         },
 
         initializeVideoCallListeners() {
+            this.videoCallParams.channel = window.Echo.join("Demo");
+
             this.videoCallParams.channel.here((users) => {
                 this.videoCallParams.users = users;
             });
@@ -1027,7 +1026,7 @@ export default {
 
             // listen to incomming call
             this.videoCallParams.channel.listen("StartVideoChat", ({ data }) => {
-                console.log(data);
+                // console.log(data);
                 if (data.type === "incomingCall") {
                 // add a new line to the sdp to take care of error
                 const updatedSignal = {
@@ -1063,6 +1062,8 @@ export default {
                 }).catch((error) => {
                     console.log(error);
                 });
+
+                // console.log(data);
             });
 
             this.videoCallParams.peer1.on("stream", (stream) => {
@@ -1257,7 +1258,7 @@ export default {
 
             // listen to incomming call
             this.audioCallParams.channel.listen("StartAudioChat", ({ data }) => {
-                console.log(data);
+                // console.log(data);
                 if (data.type === "incomingCall") {
                 // add a new line to the sdp to take care of error
                 const updatedSignal = {
