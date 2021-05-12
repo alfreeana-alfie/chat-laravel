@@ -586,12 +586,6 @@ export default {
             .listen('GroupMessageSent',(event) => {
                 this.groupMessages.push(event.message);
             })
-
-        Echo.join('Demo')
-            .listen('StartVideoChat',(event) => {
-                // this.groupMessages.push(event.message);
-                console.log(event);
-            })
     },
 
     mounted(){
@@ -609,6 +603,9 @@ export default {
     },
 
     computed: {
+
+        
+
         // Video Computed
         incomingVideoCallDialog() {
             // console.log(this.videoCallParams.receivingCall)
@@ -666,6 +663,13 @@ export default {
     },
 
     methods: {
+        listen(){
+            window.Echo.channel('GroupDemo' +  this.$userId)
+            .listen('StartGroupVideoChat',(event) => {
+                console.log(event)
+            })
+        },
+
         createGroup(groupName) {
             // console.log(this.chosenUserID)
             // console.log(groupName)
@@ -954,7 +958,7 @@ export default {
         },
 
         getUserOnlineStatus(id) {
-            const onlineUserIndex = this.audioCallParams.users.findIndex(
+            const onlineUserIndex = this.videoCallParams.users.findIndex(
                 (data) => data.id === id
             );
             if (onlineUserIndex < 0) {
@@ -985,7 +989,8 @@ export default {
 
         /* Video Call --START-- */
         initializeVideoChannel() {
-            this.videoCallParams.channel = window.Echo.join("Demo");
+            // window.Echo.channel('GroupDemo' +  '2');
+            this.videoCallParams.channel = window.Echo.join(`GroupDemo.${this.$userId}`);
         },
 
         getVideoMediaPermission() {
@@ -1002,8 +1007,6 @@ export default {
         },
 
         initializeVideoCallListeners() {
-            this.videoCallParams.channel = window.Echo.join("Demo");
-
             this.videoCallParams.channel.here((users) => {
                 this.videoCallParams.users = users;
             });
@@ -1025,7 +1028,7 @@ export default {
             });
 
             // listen to incomming call
-            this.videoCallParams.channel.listen("StartVideoChat", ({ data }) => {
+            this.videoCallParams.channel.listen("StartGroupVideoChat", ({ data }) => {
                 // console.log(data);
                 if (data.type === "incomingCall") {
                 // add a new line to the sdp to take care of error
@@ -1053,7 +1056,7 @@ export default {
             });
 
             this.videoCallParams.peer1.on("signal", (data) => {
-                axios.post("/video/call-user", {
+                axios.post("/testing", {
                     user_to_call: id,
                     signal_data: data,
                     from: this.authUserID,
@@ -1085,7 +1088,7 @@ export default {
                 console.log("Call Closed Caller");
             });
 
-            this.videoCallParams.channel.listen("StartVideoChat", ({data}) => {
+            this.videoCallParams.channel.listen("StartGroupVideoChat", ({data}) => {
                 if(data.type == "callAccepted"){
                     if (data.signal.renegotiate) {
                         console.log("renegotating");
@@ -1120,7 +1123,7 @@ export default {
 
             this.videoCallParams.receivingCall = false;
             this.videoCallParams.peer2.on("signal", (data) => {
-                axios.post("/video/accept-call", {
+                axios.post("/testing-accept", {
                     signal: data,
                     to: this.videoCallParams.caller,
                 }).then((response) => {

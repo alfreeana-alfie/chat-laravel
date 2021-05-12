@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Events\StartVideoChat;
 use App\Models\User;
+use App\Models\VideoConfiq;
 
 class VideoChatController extends Controller
 {

@@ -9,19 +9,22 @@ use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
+use App\Models\User;
 
-class StartGroupVideoChat
+class StartGroupVideoChat implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $data;
+    public $user;
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($data)
+    public function __construct(User $user, $data)
     {
+        $this->user = $user;
         $this->data = $data;
     }
 
@@ -32,6 +35,6 @@ class StartGroupVideoChat
      */
     public function broadcastOn()
     {
-        return new PresenceChannel('GroupDemo');
+        return new PresenceChannel('GroupDemo.'.$this->user->id);
     }
 }

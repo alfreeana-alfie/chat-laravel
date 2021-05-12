@@ -44,3 +44,7 @@ Broadcast::channel('Demo', function ($user) {
 Broadcast::channel('DemoAudio', function ($user) {
     return ['id' => $user->id, 'name' => $user->name];
 });
+
+Broadcast::channel('GroupDemo.{id}', function ($user, $id) {
+    return $user->id === (int) $id;
+});

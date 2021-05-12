@@ -8,6 +8,7 @@ use App\Http\Controllers\GroupController;
 use App\Http\Controllers\VideoChatController;
 use App\Http\Controllers\AudioChatController;
 use App\Http\Controllers\FriendController;
+use App\Http\Controllers\GroupVideoChatController;
 
 use App\Models\User;
 
@@ -34,50 +35,56 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
+// User routes
+Route::get('/users', [UserController::class, 'index']);
+Route::get('/user-merchant', [UserController::class, 'merchantID']);
+Route::get('/user-member', [UserController::class, 'memberID']);
+Route::post('/user-single', [UserController::class, 'singleID']);
+Route::get('/users/{user_id}', [UserController::class, 'show']);
+Route::post('/users-name', [UserController::class, 'getName']);
+
+Route::get('/conversation', function () {
+    // fetch all users apart from the authenticated user
+    $users = User::where('id', '<>', Auth::id())->get();
+    return view('conversation', ['users' => $users]);
+});
+
+// Message routes
+Route::post('/send', [ConversationController::class, 'sendMessage']);
+Route::get('/chats/{from_user_id}', [ConversationController::class, 'fetchPersonal']);
+Route::get('/messages', [ConversationController::class, 'fetchMessages']);
+Route::post('/messages', 'ChatsController@sendMessage');
+
+// Video routes
+Route::post('/check', [UserController::class, 'userOnlineStatus']);
+
+// Personal Message routes
+Route::post('/video/call-user', [VideoChatController::class, 'callUser']);
+Route::post('/video/accept-call', [VideoChatController::class, 'acceptCall']);
+
+Route::post('/audio/call-user', [AudioChatController::class, 'callUser']);
+Route::post('/audio/accept-call', [AudioChatController::class, 'acceptCall']);
+
+// Friend routes
+Route::post('/sendRequest', [FriendController::class, 'store']);
+Route::post('/getFriendList', [FriendController::class, 'getFriendList']);
+Route::post('/getSentFriendRequest', [FriendController::class, 'getSentFriendRequest']);
+Route::post('/acceptFriend', [FriendController::class, 'acceptFriend']);
+Route::post('/rejectFriend', [FriendController::class, 'rejectFriend']);
+
+// Group routes
+Route::post('/add-group', [GroupController::class, 'store']);
+Route::post('/group', [GroupController::class, 'getGroup']);
+Route::post('/getGroupName', [GroupController::class, 'fetchGroup']);
+
+Route::post('/fetchMessages-group', [GroupController::class, 'fetchGroupMessages']);
+Route::post('/send-group', [GroupController::class, 'sendGroupMessage']);
+
+//Testing routes
+Route::post('/testing', [GroupVideoChatController::class, 'testing']);
+Route::post('/testing-accept', [GroupVideoChatController::class, 'acceptTestCall']);
+
 Route::group(['middleware' => ['auth',  'online']], function () {
 
-    // User routes
-    Route::get('/users', [UserController::class, 'index']);
-    Route::get('/user-merchant', [UserController::class, 'merchantID']);
-    Route::get('/user-member', [UserController::class, 'memberID']);
-    Route::post('/user-single', [UserController::class, 'singleID']);
-    Route::get('/users/{user_id}', [UserController::class, 'show']);
-    Route::post('/users-name', [UserController::class, 'getName']);
-
-    Route::get('/conversation', function () {
-        // fetch all users apart from the authenticated user
-        $users = User::where('id', '<>', Auth::id())->get();
-        return view('conversation', ['users' => $users]);
-    });
-
-    // Message routes
-    Route::post('/send', [ConversationController::class, 'sendMessage']);
-    Route::get('/chats/{from_user_id}', [ConversationController::class, 'fetchPersonal']);
-    Route::get('/messages', [ConversationController::class, 'fetchMessages']);
-    Route::post('/messages', 'ChatsController@sendMessage');
-
-    // Video routes
-    Route::post('/check', [UserController::class, 'userOnlineStatus']);
-
-    // Personal Message routes
-    Route::post('/video/call-user', [VideoChatController::class, 'callUser']);
-    Route::post('/video/accept-call', [VideoChatController::class, 'acceptCall']);
     
-    Route::post('/audio/call-user', [AudioChatController::class, 'callUser']);
-    Route::post('/audio/accept-call', [AudioChatController::class, 'acceptCall']);
-
-    // Friend routes
-    Route::post('/sendRequest', [FriendController::class, 'store']);
-    Route::post('/getFriendList', [FriendController::class, 'getFriendList']);
-    Route::post('/getSentFriendRequest', [FriendController::class, 'getSentFriendRequest']);
-    Route::post('/acceptFriend', [FriendController::class, 'acceptFriend']);
-    Route::post('/rejectFriend', [FriendController::class, 'rejectFriend']);
-
-    // Group routes
-    Route::post('/add-group', [GroupController::class, 'store']);
-    Route::post('/group', [GroupController::class, 'getGroup']);
-    Route::post('/getGroupName', [GroupController::class, 'fetchGroup']);
-
-    Route::post('/fetchMessages-group', [GroupController::class, 'fetchGroupMessages']);
-    Route::post('/send-group', [GroupController::class, 'sendGroupMessage']);
 });
