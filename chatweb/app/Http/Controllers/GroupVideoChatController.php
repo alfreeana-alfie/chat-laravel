@@ -26,6 +26,8 @@ class GroupVideoChatController extends Controller
         $data['to'] = $request->to;
         $data['type'] = 'callAccepted';
 
-        broadcast(new StartGroupVideoChat($data))->toOthers();
+        $user = User::where('id', '=', $request->to)->first();
+
+        broadcast(new StartGroupVideoChat($user, $data))->toOthers();
     }
 }

@@ -6,7 +6,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Events\StartVideoChat;
 use App\Models\User;
-use App\Models\VideoConfiq;
+use App\Events\checkStatusEvent;
+
 
 class VideoChatController extends Controller
 {
@@ -17,13 +18,22 @@ class VideoChatController extends Controller
         $data['from'] = Auth::id();
         $data['type'] = 'incomingCall';
 
-        broadcast(new StartVideoChat($data))->toOthers();
+        $user = User::where('id', '=', $request->user_to_call)->first();
+
+        broadcast(new StartVideoChat($user, $data))->toOthers();
+        broadcast(new checkStatusEvent($data))->toOthers();
+
     }
     public function acceptCall(Request $request)
     {
         $data['signal'] = $request->signal;
         $data['to'] = $request->to;
         $data['type'] = 'callAccepted';
-        broadcast(new StartVideoChat($data))->toOthers();
+
+        $user = User::where('id', '=', $request->to)->first();
+
+        broadcast(new StartVideoChat($user, $data))->toOthers();
+        broadcast(new checkStatusEvent($data))->toOthers();
+        
     }
 }
