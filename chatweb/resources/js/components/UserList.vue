@@ -281,7 +281,6 @@
         </div>
         <!-- Incoming Video Call **END** -->
 
-
         <v-card>
             <v-card width="420" height="550" class="pa-0">
                 <v-card-text class="pa-0">
@@ -345,6 +344,7 @@
                                         <v-list-item-title v-html="user.name">{{ user.name }}</v-list-item-title>
                                         <v-list-item-subtitle>
                                             <span class="badge badge-light">{{ getUserOnlineStatus(user.id) }}</span>
+                                            <span class="badge badge-light" style="display:none;">{{ getUserOnlineStatusAudio(user.id) }}</span>
                                             <span class="badge badge-light" style="display:none;">{{ getUserOnlineStatusVideo(user.id) }}</span>
                                         </v-list-item-subtitle>
                                     </v-list-item-content>
@@ -353,9 +353,9 @@
                         </template>
                     </v-list-item-group>
                 </v-list>
-            <!-- Merchants **END** -->
+        <!-- Merchants **END** -->
 
-            <!-- Friend Request **START** -->
+        <!-- Friend Request **START** -->
                 <v-list v-if="friendRequestVlist">
                     <v-list-item-group color="#1976D2" v-model="model">
                         <template v-for="(user, index) in allFriendRequest" >
@@ -369,6 +369,7 @@
                                         <v-list-item-title v-html="user.name">{{ user.name }}</v-list-item-title>
                                         <v-list-item-subtitle>
                                             <span class="badge badge-light">{{ getUserOnlineStatus(user.id) }}</span>
+                                            <span class="badge badge-light" style="display:none;">{{ getUserOnlineStatusAudio(user.id) }}</span>
                                             <span class="badge badge-light" style="display:none;">{{ getUserOnlineStatusVideo(user.id) }}</span>
                                         </v-list-item-subtitle>
                                     </v-list-item-content>
@@ -380,9 +381,9 @@
                         </template>
                     </v-list-item-group>
                 </v-list>
-            <!-- Friend Request **END** -->
+        <!-- Friend Request **END** -->
 
-            <!-- Friend List **START** -->
+        <!-- Friend List **START** -->
                 <v-list v-if="friendVlist">
                     <v-list-item-group color="#1976D2" v-model="model">
                         <template v-for="(user, index) in allFriendList">
@@ -396,6 +397,7 @@
                                         <v-list-item-title v-html="user.name">{{ user.name }}</v-list-item-title>
                                         <v-list-item-subtitle>
                                             <span class="badge badge-light">{{ getUserOnlineStatus(user.id) }}</span>
+                                            <span class="badge badge-light" style="display:none;">{{ getUserOnlineStatusAudio(user.id) }}</span>
                                             <span class="badge badge-light" style="display:none;">{{ getUserOnlineStatusVideo(user.id) }}</span>
                                         </v-list-item-subtitle>
                                     </v-list-item-content>
@@ -410,9 +412,9 @@
                         </template>
                     </v-list-item-group>
                 </v-list>
-            <!-- Friend List **END** -->
+        <!-- Friend List **END** -->
 
-            <!-- Group List **START** -->
+        <!-- Group List **START** -->
                 <v-list v-if="groupVlist">
                     <v-col v-if="!addGroupChecked">
                             <v-icon>mdi-account-group</v-icon>
@@ -453,8 +455,8 @@
                                             <v-list-item-title v-html="user.name">{{ user.name }}</v-list-item-title>
                                             <v-list-item-subtitle>
                                                 <span class="badge badge-light">{{ getUserOnlineStatus(user.id) }}</span>
+                                                <span class="badge badge-light" style="display:none;">{{ getUserOnlineStatusAudio(user.id) }}</span>
                                                 <span class="badge badge-light" style="display:none;">{{ getUserOnlineStatusVideo(user.id) }}</span>
-                                                <!-- <span>Checked names: {{ chosenUserID }}</span> -->
                                             </v-list-item-subtitle>
                                         </v-list-item-content>
                                         <v-list-item-action>
@@ -475,7 +477,7 @@
                         
                     </v-list-item-group>
                 </v-list>
-            <!-- Group List **END** -->
+        <!-- Group List **END** -->
             </v-card> 
         </v-card>
         
@@ -619,12 +621,8 @@ export default {
     },
 
     computed: {
-
-        
-
         // Video Computed
         incomingVideoCallDialog() {
-            // console.log(this.videoCallParams.receivingCall)
         if (
             this.videoCallParams.receivingCall &&
             this.videoCallParams.caller !== this.authUserID
@@ -650,7 +648,7 @@ export default {
         return null;
         },
 
-        // Video Computed
+        // Audio Computed
         incomingAudioCallDialog() {
         if (
             this.audioCallParams.receivingCall &&
@@ -680,13 +678,10 @@ export default {
 
     methods: {
         createGroup(groupName) {
-            // console.log(this.chosenUserID)
-            // console.log(groupName)
-
             this.chosenUserID.push(this.$userId)
             axios.post('add-group', 
             {
-                name: this.groupName,
+                name: groupName,
                 users: this.chosenUserID
             })
             .then(response => {
@@ -699,7 +694,6 @@ export default {
         },
 
         getUserList(){
-            
             axios.get('user-member').then(response => {
                 this.allusers = response.data;
             })
@@ -1053,7 +1047,6 @@ export default {
 
         /* Video Call --START-- */
         initializeVideoChannel() {
-            // window.Echo.channel('Demo' +  '2');
             this.videoCallParams.channel = window.Echo.join(`Demo.${this.$userId}`);
         },
 
@@ -1284,7 +1277,7 @@ export default {
         },
         /* Video Call --END-- */
 
-        /* Video Call --START-- */
+        /* Audio Call --START-- */
         initializeAudioChannel() {
             this.audioCallParams.channel = window.Echo.join(`DemoAudio.${this.$userId}`);
         },
@@ -1455,7 +1448,6 @@ export default {
         },
 
         endAudioCall(){
-            // if(!this.audioMutedVideo) this.toggleAudioMuteVideo();
             if(!this.audioMutedAudio) this.toggleAudioMuteAudio();
 
             this.stopStreamedAudioCall(this.$refs.userAudio);
@@ -1509,7 +1501,7 @@ export default {
             document.getElementById("audio").style.display = "none";
             document.getElementById("chat").style.display = "block";
         },
-        /* Video Call --END-- */
+        /* Audio Call --END-- */
     }
 }
 </script>
