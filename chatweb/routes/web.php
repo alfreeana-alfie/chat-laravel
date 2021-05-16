@@ -79,6 +79,7 @@ Route::post('/getGroupName', [GroupController::class, 'fetchGroup']);
 
 Route::post('/fetchMessages-group', [GroupController::class, 'fetchGroupMessages']);
 Route::post('/send-group', [GroupController::class, 'sendGroupMessage']);
+Route::post('/get-ID', [GroupController::class, 'getUserID']);
 
 //Testing routes
 Route::post('/testing', [GroupVideoChatController::class, 'testing']);

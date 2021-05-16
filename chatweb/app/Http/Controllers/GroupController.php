@@ -85,6 +85,14 @@ class GroupController extends Controller
         return $groupUser;
     }
 
+    public function getUserID (Request $request) {
+        $user = GroupUser::where(['group_id' => $request['group_id']])
+        ->where('user_id', '!=', $request['user_id'])
+        ->pluck('user_id');
+
+        return $user;
+    }
+
     /**
      * Display the specified resource.
      *

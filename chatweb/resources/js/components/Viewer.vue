@@ -7,6 +7,7 @@
         ><br />
 
         <video autoplay ref="viewer"></video>
+        
       </div>
     </div>
   </div>
@@ -29,12 +30,22 @@ export default {
       broadcasterId: null,
     };
   },
+
+  mounted() {
+    const stream = getVideoPermissions();
+
+    
+  },
+
   methods: {
     joinBroadcast() {
-      const stream = getVideoPermissions();
-
-      this.initializeStreamingChannel();
-      this.initializeSignalOfferChannel(); // a private channel where the viewer listens to incoming signalling offer
+       axios.get("/streaming/112acde2").then(res => { 
+          console.log(res)
+          this.initializeStreamingChannel();
+          this.initializeSignalOfferChannel();
+       }).catch(error => {
+         console.log(error)
+       });
     },
     initializeStreamingChannel() {
       this.streamingPresenceChannel = window.Echo.join(

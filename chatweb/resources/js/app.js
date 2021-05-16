@@ -23,7 +23,7 @@ Vue.component("viewer", require("./components/Viewer.vue").default);
 
 Vue.component("combine", require("./components/Combine.vue").default);
 
-// Vue.prototype.$userId = document.querySelector("meta[name='user-id']").getAttribute('content');
+Vue.prototype.$userId = document.querySelector("meta[name='user-id']").getAttribute('content');
 
 import Vuetify from 'vuetify';
 

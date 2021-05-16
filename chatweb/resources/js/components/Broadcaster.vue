@@ -16,14 +16,21 @@
 
 <script>
 import Peer from "simple-peer";
+import Viewer from "./Viewer";
+
 import { getVideoPermissions } from "../helpers-video";
 export default {
+  component:{ Viewer },
+
   name: "Broadcaster",
   props: [
     "auth_user_id"
   ],
   data() {
     return {
+      broadcasterPeer: null,
+      broadcastId: null,
+
       isVisibleLink: false,
       streamingPresenceChannel: null,
       streamingUsers: [],
@@ -43,6 +50,8 @@ export default {
     },
   },
   methods: {
+    
+
     async startStream() {
       // const stream = await navigator.mediaDevices.getUserMedia({
       //   video: true,
@@ -99,6 +108,7 @@ export default {
       });
       this.streamingPresenceChannel.joining((user) => {
         console.log("New User", user);
+
         // if this new user is not already on the call, send your stream offer
         const joiningUserIndex = this.streamingUsers.findIndex(
           (data) => data.id === user.id
