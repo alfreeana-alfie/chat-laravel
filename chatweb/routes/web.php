@@ -84,7 +84,11 @@ Route::post('/send-group', [GroupController::class, 'sendGroupMessage']);
 Route::post('/testing', [GroupVideoChatController::class, 'testing']);
 Route::post('/testing-accept', [GroupVideoChatController::class, 'acceptTestCall']);
 
-Route::group(['middleware' => ['auth',  'online']], function () {
+// Video Group Calls routes
+Route::get('/streaming', [GroupVideoChatController::class, 'index']);
+Route::get('/streaming/{streamId}', [GroupVideoChatController::class, 'consumer']);
+Route::post('/stream-offer', [GroupVideoChatController::class, 'makeStreamOffer']);
+Route::post('/stream-answer', [GroupVideoChatController::class, 'makeStreamAnswer']);
 
-    
+Route::group(['middleware' => ['auth',  'online']], function () {
 });

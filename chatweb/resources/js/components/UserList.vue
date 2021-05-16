@@ -580,6 +580,7 @@ export default {
                 peer2: null,
             },
 
+            // Group variables
             chosenUserID: [],
             newGroupName: '',
             groupMessages: [],
@@ -588,39 +589,17 @@ export default {
             GroupID: '',
             moment: moment,
             dateMessage: '',
+
+            // Group Video Call
+            streamingPresenceChannel: null,
+            streamingUsers: [],
+            currentlyContactedUser: null,
+            allPeers: {},
         }
     },
 
-    created(){
-        Echo.join('chat')
-            .listen('MessageSent',(event) => {
-                this.messages.push(event.message);
-            })
-
-        Echo.join('group-chat')
-            .listen('GroupMessageSent',(event) => {
-                this.groupMessages.push(event.message);
-            })
-    },
-
-    mounted(){
-        this.getUserList();
-        this.getMerchantList();
-        this.getSentFriendRequest();
-        this.getFriendList();
-        this.getGroupList();
-
-        this.initializeAudioChannel();
-        this.initializeAudioCallListeners();
-
-        this.initializeVideoChannel();
-        this.initializeVideoCallListeners(); 
-
-        this.initializeStatusChannel();
-        this.initializeStatusListeners(); 
-    },
-
     computed: {
+
         // Video Computed
         incomingVideoCallDialog() {
         if (
@@ -676,6 +655,36 @@ export default {
         },
     },
 
+    created(){
+        Echo.join('chat')
+            .listen('MessageSent',(event) => {
+                this.messages.push(event.message);
+            })
+
+        Echo.join('group-chat')
+            .listen('GroupMessageSent',(event) => {
+                this.groupMessages.push(event.message);
+            })
+    },
+
+    mounted(){
+        this.getUserList();
+        this.getMerchantList();
+        this.getSentFriendRequest();
+        this.getFriendList();
+        this.getGroupList();
+
+        this.initializeAudioChannel();
+        this.initializeAudioCallListeners();
+
+        this.initializeVideoChannel();
+        this.initializeVideoCallListeners(); 
+
+        this.initializeStatusChannel();
+        this.initializeStatusListeners(); 
+    },
+
+    
     methods: {
         createGroup(groupName) {
             this.chosenUserID.push(this.$userId)

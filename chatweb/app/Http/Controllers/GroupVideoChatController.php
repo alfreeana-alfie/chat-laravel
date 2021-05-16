@@ -5,29 +5,35 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Events\StartGroupVideoChat;
+use App\Events\StreamOffer;
+use App\Events\StreamAnswer;
 use App\Models\User;
 
 class GroupVideoChatController extends Controller
 {
-    public function testing(Request $request)
+    public function index()
     {
-        $data['userToCall'] = $request->user_to_call;
-        $data['signalData'] = $request->signal_data;
-        $data['from'] = Auth::id();
-        $data['type'] = 'incomingCall';
-
-        $user = User::where('id', '=', $request->user_to_call)->first();
-
-        broadcast(new StartGroupVideoChat($user, $data))->toOthers();
+        return view('video-broadcast', ['type' => 'broadcaster', 'id' => Auth::id()]);
     }
-    public function acceptTestCall(Request $request)
+
+    public function consumer(Request $request, $streamId)
     {
-        $data['signal'] = $request->signal;
-        $data['to'] = $request->to;
-        $data['type'] = 'callAccepted';
+        return view('video-broadcast', ['type' => 'consumer', 'streamId' => $streamId, 'id' => Auth::id()]);
+    }
 
-        $user = User::where('id', '=', $request->to)->first();
+    public function makeStreamOffer(Request $request)
+    {
+        $data['broadcaster'] = $request->broadcaster;
+        $data['receiver'] = $request->receiver;
+        $data['offer'] = $request->offer;
 
-        broadcast(new StartGroupVideoChat($user, $data))->toOthers();
+        event(new StreamOffer($data));
+    }
+
+    public function makeStreamAnswer(Request $request)
+    {
+        $data['broadcaster'] = $request->broadcaster;
+        $data['answer'] = $request->answer;
+        event(new StreamAnswer($data));
     }
 }
