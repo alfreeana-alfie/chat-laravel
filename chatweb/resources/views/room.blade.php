@@ -55,8 +55,9 @@
 
             const div = document.createElement('div');
             div.id = participant.sid;
-            div.setAttribute("style", "float: left; margin: 10px;");
-            div.innerHTML = "<div style='clear:both'>" + participant.identity + "</div>";
+            div.setAttribute("style", "float: left; margin: 5px;");
+            div.setAttribute("class", "overlay");
+            div.innerHTML = "<div style='clear:both;background-color:#e0ebeb;text-align:center;'>" + participant.identity + "</div>";
 
             participant.tracks.forEach(function(track) {
                 trackAdded(div, track)
@@ -88,18 +89,55 @@
         function trackRemoved(track) {
             track.detach().forEach( function(element) { element.remove() });
         }
+
+        function clickBtn(){
+            console.log('Click');
+        }
     </script>
     <body>
+        <v-app>
         <div id="app">
             <div class="content">
-                <div class="title m-b-md">
-                    Video Chat Rooms
+                <div class="title m-b-md" style="text-align:center;background-color:#e0ebeb">
+                    <h1>
+                        Video Chat Room
+                    </h1>
                 </div>
-         
-                <div id="media-div">
+                <div>
+                    <div id="media-div">
+                    </div>
                 </div>
             </div>
         </div>
+        </v-app>
         <script src="{{ asset('js/app.js') }}"></script>
     </body>
 </html>
+
+<style>
+.container
+{
+    position: relative;
+}
+.container
+{
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    z-index: 1 !important;
+}
+.container .overlay
+{
+    position: absolute;
+    top: 0;
+    left: 10px;
+    width: 100%;
+    z-index: 2;
+}
+.container .overlay h3
+{
+    font-size: 1em;
+    color: #fff;
+    font-weight: bold;
+}
+</style>

@@ -595,11 +595,22 @@ export default {
             streamingUsers: [],
             currentlyContactedUser: null,
             allPeers: {},
+
+            groupCallParams: {
+                users: [],
+                stream: null,
+                receivingCall: false,
+                caller: null,
+                callerSignal: null,
+                callAccepted: false,
+                channel: null,
+                peer1: null,
+                peer2: null,
+            },
         }
     },
 
     computed: {
-
         // Video Computed
         incomingVideoCallDialog() {
         if (
@@ -1511,6 +1522,10 @@ export default {
             document.getElementById("chat").style.display = "block";
         },
         /* Audio Call --END-- */
+
+        /* Group Video Call --START-- */
+
+        /* Group Video Call --END-- */
     }
 }
 </script>
