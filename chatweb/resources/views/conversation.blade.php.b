@@ -1,46 +1,34 @@
 @extends('layouts.app')
 
 @section('content')
-    {{-- <user-list :user="{{ auth()->user() }}" class="chat-popup" id="myForm"></user-list> --}}
-    <main-screen></main-screen>
-
+<div class="app">
+    <v-app>
+        <video-chat></video-chat>
+        
+        <meta name="user-id" content="{{ Auth::user()->id }}">
+        <meta name="user-name" content="{{ Auth::user()->name }}">
+        <meta name="csrf-token" content="{{ csrf_token() }}">
     {{-- <button class="open-button" type="button" onclick="openForm()">Chat</button> --}}
-
-    <meta name="user-id" content="{{ Auth::user()->id }}">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
+    </v-app>
+</div>
 @endsection
 
-<style>
-    .open-button {
-        background-color: rgb(245, 245, 245);
-        padding: 16px 20px;
-        border: none;
-        cursor: pointer;
-        opacity: 0.8;
-        position: fixed;
-        bottom: 23px;
-        right: 25px;
-        width: 100px;
-    }
-        /* The popup chat - hidden by default */
-    .chat-popup {
-        display: block;
-        /* z-index: 9; */
-    }
-    </style>
+@extends('layouts.app')
 
-{{-- Start Here (Script) --}}
-<script>
-    var isChecked = false;
+<div class="content">
+   <div class="title m-b-md">
+       Video Chat Rooms
+   </div>
 
-    function openForm() {
-        isChecked = !isChecked;
+   {!! Form::open(['url' => 'room/create']) !!}
+       {!! Form::label('roomName', 'Create or Join a Video Chat Room') !!}
+       {!! Form::text('roomName') !!}
+       {!! Form::submit('Go') !!}
+   {!! Form::close() !!}
 
-        if(isChecked == true){
-            document.getElementById("myForm").style.display = "block";
-        }else{
-            document.getElementById("myForm").style.display = "none";
-        }
-        console.log(isChecked);
-    }
-    </script>
+   @if($rooms)
+   @foreach ($rooms as $room)
+       <a href="{{ url('/room/join/'.$room) }}">{{ $room }}</a>
+   @endforeach
+   @endif
+</div>

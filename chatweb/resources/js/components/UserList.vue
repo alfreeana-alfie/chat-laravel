@@ -758,12 +758,12 @@ export default {
         },
 
         getGroupList(){
-            axios.post('group', 
+           axios.post('group', 
             {
                 user_id: this.$userId,
             })
             .then(response => {
-                // console.log(response.data);
+                console.log(response.data);
                 axios.post('getGroupName', 
                 {
                     groupID: response.data

@@ -5,12 +5,8 @@
         <v-card-text>
             <video autoplay ref="broadcaster"></video>
             <video autoplay ref="viewer"></video>
-            <video autoplay ref="viewer2"></video>
-            <div v-if="videoCallPlaced">
-                <p>{{videoCallPartner}}</p>
-                <video autoplay ref="viewer"></video>
-            </div>
 
+            <video autoplay ref="viewer02"></video>
         <div>
             <v-card>
                 <div class="row" v-if="incomingVideoCallDialog">
@@ -18,19 +14,12 @@
                         <p>Incoming Video Call from <strong>{{ videoCallerDetails.name }}</strong></p>
                         <div class="btn-group" role="group">
                             <button type="button" class="btn btn-danger">Decline</button>
-                            <button type="button" class="btn btn-success ml-5" @click="shareLink(videoCallerDetails.id)">Accept</button>
+                            <button type="button" class="btn btn-success ml-5" @click="acceptCall(videoCallerDetails.id)">Accept</button>
                         </div>
                     </div>
                 </div>
-                <p class="my-5">
-                    Share the following streaming link: {{ streamLink }}
-                </p>
             </v-card>
         </div>
-
-            <!-- <button class="btn btn-success" @click="startCall">
-          Start Stream</button
-        ><br /> -->
         </v-card-text>
 
         <v-card-text>
@@ -49,13 +38,13 @@
                                             <span class="badge badge-light">{{ getUserOnlineStatus(user.id) }}</span>
                                             <span class="badge badge-light">{{ getUserOnlineStatusVideo(user.id) }}</span>
                                             <span class="badge badge-light">{{ getUserOnlineStatusVideoGroup(user.id) }}</span>
-                                       
                                         </v-list-item-subtitle>
                                     </v-list-item-content>
                                 </v-list-item>
                         </template>
                     </v-list-item-group>
                 </v-list>
+                                       
         <!-- All Members **END** -->
         </v-card-text>
         </v-card>
@@ -398,7 +387,7 @@ export default {
                     peer.on("signal", (data) => {
                         // send offer over here.
                         signalCallback(data, user);
-                        this.shareLink(user.id);
+                        this.acceptCall(user.id);
                     });
                     peer.on("stream", (stream) => {
                         console.log("onStream");
@@ -468,32 +457,19 @@ export default {
                     });
                 });
             })
+
+            
             
             await this.getVideoMediaPermission();
             
             this.initializeSignalAnswerChannel();
 
-            
-        },
-
-        getVideoMediaPermission02() {
-            return getVideoPermissions()
-                .then((stream) => {
-                this.streamingPresenceChannel = stream;
-                this.$refs.viewer.srcObject = stream;
-                if(this.$refs.viewer.srcObject != null){
-                    this.$refs.viewer2.srcObject = stream;
-                }
-                console.log(stream);
-               }).catch((error) => {
-                
-                console.log(error);
-            
+            this.videoCallParams.peer1.on("close", () => {
+                console.log("Call Closed Caller");
             });
-            
         },
 
-        async shareLink(id){
+        async acceptCall(id){
             console.log("SHARE LINK: "+ id);
             this.streamLink = `http://127.0.0.1:8000/streaming/${id}123`;
 
@@ -501,8 +477,6 @@ export default {
                 `streaming-channel.${id}123`
             );
             this.initializeSignalOfferChannel();
-
-            await this.getVideoMediaPermission02();
         },
 
         initializeStreamingChannel() {
@@ -526,10 +500,6 @@ export default {
                 initiator: false,
                 trickle: false,
             });
-            // Add Transceivers
-            // peer.addTransceiver("video");
-            // peer.addTransceiver("audio");
-            // Initialize Peer events for connection to remote peer
 
             this.handlePeerEvents(
                 peer,

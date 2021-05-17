@@ -22,6 +22,7 @@ Vue.component("broadcaster", require("./components/Broadcaster.vue").default);
 Vue.component("viewer", require("./components/Viewer.vue").default);
 
 Vue.component("combine", require("./components/Combine.vue").default);
+Vue.component('video-chat', require('./components/VideoChat.vue').default);
 
 Vue.prototype.$userId = document.querySelector("meta[name='user-id']").getAttribute('content');
 

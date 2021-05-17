@@ -9,6 +9,8 @@ use App\Http\Controllers\VideoChatController;
 use App\Http\Controllers\AudioChatController;
 use App\Http\Controllers\FriendController;
 use App\Http\Controllers\GroupVideoChatController;
+use App\Http\Controllers\AccessTokenController;
+use App\Http\Controllers\VideoRoomsController;
 
 use App\Models\User;
 
@@ -23,11 +25,11 @@ use App\Models\User;
 |
 */
 
-Route::get('/', function () {
-    broadcast(new WebSocketDemoEvent('some data'));
+// Route::get('/', function () {
+//     broadcast(new WebSocketDemoEvent('some data'));
 
-    return view('welcome');
-});
+//     return view('welcome');
+// });
 
 
 
@@ -90,6 +92,14 @@ Route::get('/streaming', [GroupVideoChatController::class, 'index']);
 Route::get('/streaming/{streamId}', [GroupVideoChatController::class, 'consumer']);
 Route::post('/stream-offer', [GroupVideoChatController::class, 'makeStreamOffer']);
 Route::post('/stream-answer', [GroupVideoChatController::class, 'makeStreamAnswer']);
+
+Route::get('access_token', [AccessTokenController::class, 'generate_token']);
+
+Route::get('/', [VideoRoomsController::class, 'index']);
+Route::prefix('room')->middleware('auth')->group(function() {
+   Route::get('join/{roomName}', [VideoRoomsController::class, 'joinRoom']);
+   Route::post('create', [VideoRoomsController::class, 'createRoom']);
+});
 
 Route::group(['middleware' => ['auth',  'online']], function () {
 });

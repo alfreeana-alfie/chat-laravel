@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\GroupController;
+use App\Http\Controllers\AccessTokenController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,6 +29,7 @@ Route::get('/user-member', [UserController::class, 'memberID']);
 
 // Route::post('/create', [GroupController::class, 'store']);
 // Route::post('/getGroupName', [GroupController::class, 'store']);
+Route::get('access_token', [AccessTokenController::class, 'generate_token']);
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();

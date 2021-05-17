@@ -32,6 +32,7 @@
         "postscribe": "^2.0.8",
         "pusher-js": "^7.0.3",
         "simple-peer": "^9.11.0",
+        "twilio-video": "^2.0.0",
         "vue-resource": "^1.5.2",
         "vue-router": "^3.5.1",
         "vue-socket.io": "^3.0.10",
