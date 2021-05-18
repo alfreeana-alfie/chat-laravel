@@ -16,4 +16,4 @@ This chat application was inspired by Facebook Messenger. This application has m
 - Group Voice Call
 - Create new Group
 
-Be mindful, the user interface is little bit ugly as it still ongoing projects and continues build it on the upcoming branches. 
+Be mindful, the user interface is little bit ugly as it still ongoing projects and continues build it in the future.
