@@ -1,6 +1,6 @@
 <template>
 <v-container >
-    <UserList class="user-container" :authUserName="authUserName" :authUserID="authUserID"></UserList>
+    <UserList class="user-container" v-if="hidden" :authUserName="authUserName" :authUserID="authUserID"></UserList>
     <v-fab-transition>
         <v-btn
         color="pink"
