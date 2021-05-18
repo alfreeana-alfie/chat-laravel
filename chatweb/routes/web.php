@@ -11,27 +11,16 @@ use App\Http\Controllers\FriendController;
 use App\Http\Controllers\GroupVideoChatController;
 use App\Http\Controllers\AccessTokenController;
 use App\Http\Controllers\VideoRoomsController;
-
+use App\Http\Controllers\AudioRoomController;
+use App\Http\Controllers\GroupRequestController;
+use App\Http\Controllers\GroupRequestAudioController;
 use App\Models\User;
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
+Route::get('/', function () {
+    broadcast(new WebSocketDemoEvent('some data'));
 
-// Route::get('/', function () {
-//     broadcast(new WebSocketDemoEvent('some data'));
-
-//     return view('welcome');
-// });
-
-
+    return view('welcome');
+});
 
 Auth::routes();
 
@@ -78,14 +67,19 @@ Route::post('/rejectFriend', [FriendController::class, 'rejectFriend']);
 Route::post('/add-group', [GroupController::class, 'store']);
 Route::post('/group', [GroupController::class, 'getGroup']);
 Route::post('/getGroupName', [GroupController::class, 'fetchGroup']);
+Route::post('/fetchSingleGroupName', [GroupController::class, 'fetchSingleGroupName']);
 
 Route::post('/fetchMessages-group', [GroupController::class, 'fetchGroupMessages']);
 Route::post('/send-group', [GroupController::class, 'sendGroupMessage']);
 Route::post('/get-ID', [GroupController::class, 'getUserID']);
 
 //Testing routes
-Route::post('/testing', [GroupVideoChatController::class, 'testing']);
+Route::post('/testing', [GroupRequestController::class, 'testing']);
 Route::post('/testing-accept', [GroupVideoChatController::class, 'acceptTestCall']);
+
+//Testing Audio routes
+Route::post('/testing-audio', [GroupRequestAudioController::class, 'testing']);
+Route::post('/testing-accept-audio', [GroupRequestAudioController::class, 'acceptTestCall']);
 
 // Video Group Calls routes
 Route::get('/streaming', [GroupVideoChatController::class, 'index']);
@@ -95,11 +89,16 @@ Route::post('/stream-answer', [GroupVideoChatController::class, 'makeStreamAnswe
 
 Route::get('access_token', [AccessTokenController::class, 'generate_token']);
 
-Route::get('/', [VideoRoomsController::class, 'index']);
+// Route::get('/', [VideoRoomsController::class, 'index']);
 Route::prefix('room')->middleware('auth')->group(function() {
    Route::get('join/{roomName}', [VideoRoomsController::class, 'joinRoom']);
    Route::post('create', [VideoRoomsController::class, 'createRoom']);
 });
+
+Route::prefix('audio-room')->middleware('auth')->group(function() {
+    Route::get('join/{roomName}', [AudioRoomController::class, 'joinRoom']);
+    Route::post('create', [AudioRoomController::class, 'createRoom']);
+ });
 
 Route::group(['middleware' => ['auth',  'online']], function () {
 });

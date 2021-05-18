@@ -22,14 +22,16 @@
     </head>
     <script src="//media.twiliocdn.com/sdk/js/video/v1/twilio-video.min.js"></script>
     <script>
+        var checkedMutedAudio = true;
+
         Twilio.Video.createLocalTracks({
         audio: true,
-        video: { width: 300 }
+        video: { width: 400, height: 300 }
         }).then(function(localTracks) {
         return Twilio.Video.connect('{{ $accessToken }}', {
             name: '{{ $roomName }}',
             tracks: localTracks,
-            video: { width: 300 }
+            video: { width: 400, height: 300 }
         });
         }).then(function(room) {
         console.log('Successfully joined a Room: ', room.name);
@@ -56,8 +58,7 @@
             const div = document.createElement('div');
             div.id = participant.sid;
             div.setAttribute("style", "float: left; margin: 5px;");
-            div.setAttribute("class", "overlay");
-            div.innerHTML = "<div style='clear:both;background-color:#e0ebeb;text-align:center;'>" + participant.identity + "</div>";
+            div.innerHTML = "<div style='clear:both;background-color:#e0ebeb;text-align:center;padding:10px;'>" + participant.identity + "</div>";
 
             participant.tracks.forEach(function(track) {
                 trackAdded(div, track)
@@ -82,7 +83,7 @@
             div.appendChild(track.attach());
             var video = div.getElementsByTagName("video")[0];
             if (video) {
-                video.setAttribute("style", "max-width:300px;");
+                video.setAttribute("style", "width:400px;height:300px;");
             }
         }
 
@@ -90,8 +91,8 @@
             track.detach().forEach( function(element) { element.remove() });
         }
 
-        function clickBtn(){
-            console.log('Click');
+        function endCall(){
+            window.location.href = 'http://127.0.0.1:8000/conversation';
         }
     </script>
     <body>
@@ -99,13 +100,12 @@
         <div id="app">
             <div class="content">
                 <div class="title m-b-md" style="text-align:center;background-color:#e0ebeb">
-                    <h1>
-                        Video Chat Room
-                    </h1>
+                    <button type="button" class="button-design" onclick="endCall()">End Call</button>
                 </div>
                 <div>
                     <div id="media-div">
                     </div>
+                    
                 </div>
             </div>
         </div>
@@ -139,5 +139,20 @@
     font-size: 1em;
     color: #fff;
     font-weight: bold;
+}
+.button-design {
+    margin: 5px;
+    font-size: 16px;
+    padding: 14px 40px;
+    border-radius: 12px;
+    background-color: #008CBA;
+    color: white;
+    transition-duration: 0.4s;
+    /* cursor: pointer; */
+}
+.button-design:hover {
+    background-color: white;
+    color: black;
+    border: 2px solid #008CBA;
 }
 </style>

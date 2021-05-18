@@ -42,6 +42,11 @@ Broadcast::channel('GroupDemo.{id}', function ($user, $id) {
     return $user->id === (int) $id;
 });
 
+Broadcast::channel('GroupAudioDemo.{id}', function ($user, $id) {
+    return $user->id === (int) $id;
+});
+
+
 // Dynamic Presence Channel for Streaming
 Broadcast::channel('streaming-channel.{streamId}', function ($user) {
     return ['id' => $user->id, 'name' => $user->name];

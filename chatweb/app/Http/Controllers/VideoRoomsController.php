@@ -56,9 +56,7 @@ class VideoRoomsController extends Controller
             \Log::debug("created new room: ".$request->roomName);
         }
 
-        return redirect()->action([VideoRoomsController::class, 'joinRoom'], [
-            'roomName' => $request->roomName
-        ]);
+        return true;
     }
 
     public function joinRoom($roomName)

@@ -1,9 +1,73 @@
 <template>
     <v-layout>
+        <!-- Incoming Audio Call **START** -->
+        <div style="margin: 15px;">
+            <v-card >
+                <div class="row" v-if="incomingAudioCallDialog" style="padding: 15px;">
+                    <div class="col"> 
+                        <p style="text-align:center;">Incoming Audio Call from <strong>{{ audioCallerDetails.name }}</strong></p>
+                        <div class="btn-group" role="group" style="padding: 0px 25px 0px 25px">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal" @click="declineAudioCall">Decline</button>
+                            <button type="button" class="btn btn-success ml-5" @click="acceptAudioCall(audioCallerDetails.name)">Accept</button>
+                        </div>
+                    </div>
+                </div>
+            </v-card>
+        </div>
+        <!-- Incoming Audio Call **END** -->
+
+        <!-- Incoming Video Call **START** -->
+        <div style="margin: 15px;">
+            <v-card>
+                <div class="row" v-if="incomingVideoCallDialog" style="padding: 15px;">
+                    <div class="col"> 
+                        <p style="text-align:center;">Incoming Video Call from <strong>{{ videoCallerDetails.name }}</strong></p>
+                        <div class="btn-group" role="group" style="padding: 0px 25px 0px 25px">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal" @click="declineVideoCall">Decline</button>
+                            <button type="button" class="btn btn-success ml-5" @click="acceptVideoCall(videoCallerDetails.name)">Accept</button>
+                        </div>
+                    </div>
+                </div>
+            </v-card>
+        </div>
+        <!-- Incoming Video Call **END** -->
+
+        <!-- Incoming Group Call **START** acceptGroupCall-->
+        <div style="margin: 15px;">
+            <v-card>
+                <div class="row" v-if="incomingGroupCallDialog" style="padding: 15px;">
+                    <div class="col"> 
+                        <p style="text-align:center;">Incoming Group Call from <strong>{{ groupCallerDetails.name }}</strong></p>
+                        <div class="btn-group" role="group" style="padding: 0px 25px 0px 25px">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Decline</button>
+                            <button type="button" class="btn btn-success ml-5" @click="acceptGroupCall('=' + groupCallerDetails.name)">Accept</button>
+                        </div>
+                    </div>
+                </div>
+            </v-card>
+        </div>
+        <!-- Incoming Group Call **END** -->
+
+        <!-- Incoming Audio Group Call **START** acceptGroupCall-->
+        <div style="margin: 15px;">
+            <v-card>
+                <div class="row" v-if="incomingAudioGroupCallDialog" style="padding: 15px;">
+                    <div class="col"> 
+                        <p style="text-align:center;">Incoming Group Audio Call from <strong>{{ groupAudioCallerDetails.name }}</strong></p>
+                        <div class="btn-group" role="group" style="padding: 0px 25px 0px 25px">
+                            <button type="button" class="btn btn-danger" data-dismiss="modal">Decline</button>
+                            <button type="button" class="btn btn-success ml-5" @click="acceptAudioGroupCall('=' + groupAudioCallerDetails.name)">Accept</button>
+                        </div>
+                    </div>
+                </div>
+            </v-card>
+        </div>
+        <!-- Incoming Audio Group Call **END** -->
+
         <!-- Chat Messages **START** -->
-        <div id='chat' v-if="componentKey">
-            <v-card width="420" height="550">
-                    <v-toolbar dark>
+        <div id='chat' v-if="componentKey" style="margin-right:10px;" >
+            <v-card outlined tile elevation="1" width="420" height="550">
+                    <v-app-bar dark color="#26C6DA">
                         <v-btn icon @click="closeChat"> 
                             <v-icon>mdi-close</v-icon>
                         </v-btn>
@@ -18,9 +82,9 @@
                         <v-btn icon>
                             <v-icon>mdi-dots-vertical</v-icon>
                         </v-btn>
-                    </v-toolbar>
-                    <div id="chatCard" flat height="550">
-                        <v-card flat height="550">
+                    </v-app-bar>
+                    <div id="chatCard">
+                        <v-card flat tile height="400">
                             <v-card-text class="flex-grow-1 overflow-y-auto" style="height: 550px;">
                                 <template v-for="(message, index) in messages" >
                                     <div :class="message.user_id != currentID ? 'd-flex flex-row' : 'd-flex flex-row-reverse'" :key="index">
@@ -28,7 +92,7 @@
                                             <template v-slot:activator="{ on }">
                                                 <v-hover>
                                                     <v-chip
-                                                        :color="message.user_id != currentID ? '' : '#1565C0'"
+                                                        :color="message.user_id != currentID ? '#616161' : '#26C6DA'"
                                                         dark
                                                         style="height:auto; white-space: normal;"
                                                         class="pa-0 mb-2 ma-0"
@@ -42,52 +106,49 @@
                                             </template>
                                         </v-menu>
                                     </div>
-                                    
-                                    
                                 </template>
                             </v-card-text>
-                            <v-text-field
-                                    ma-0 pa-0
-                                    v-model="newMessage"
-                                    placeholder="Type a message..." 
-                                    type="text"
-                                    regular
-                                    single-line
-                                    clearable
-                                    filled
-                                    append-icon="mdi-send"
-                                    @click:append="sendMessage"
-                                    @keyup.enter="sendMessage"
-                                    name="message"
-                                    > 
-                                </v-text-field>
                         </v-card>
+                        <v-text-field
+                            style="margin:10px;"
+                            v-model="newMessage"
+                            label="Message"
+                            placeholder="Type a message..." 
+                            outlined
+                            clearable
+                            shaped
+                            append-icon="mdi-send"
+                            @click:append="sendMessage"
+                            @keyup.enter="sendMessage"
+                            name="message"
+                            > 
+                        </v-text-field>
                     </div>
                 </v-card>
         </div>
         <!-- Chat Messages **END** -->
 
         <!-- Chat Group Messages **START** -->
-        <div id='chat' v-if="componentKeyGroup">
-            <v-card width="420" height="550">
-                    <v-toolbar dark>
-                        <v-btn icon @click="closeChat"> 
+        <div id='groupChat' v-if="componentKeyGroup" style="margin-right:10px;">
+            <v-card outlined tile elevation="1" width="420" height="550">
+                    <v-app-bar dark color="#26C6DA">
+                        <v-btn icon @click="closeGroupChat"> 
                             <v-icon>mdi-close</v-icon>
                         </v-btn>
                         <v-toolbar-title> {{ groupName }}</v-toolbar-title>
                         <v-spacer></v-spacer>
-                        <v-btn icon @click="placeAudioCall(toUserId, userName)">
+                        <v-btn icon @click="placeGroupAudioCall(groupID, groupName)" >
                             <v-icon>mdi-phone</v-icon>
                         </v-btn>
-                        <v-btn icon @click="placeVideoCall(toUserId, userName)">
+                        <v-btn icon @click="placeGroupVideoCall(groupID, groupName)" >
                             <v-icon>mdi-video</v-icon>
                         </v-btn>
                         <v-btn icon>
                             <v-icon>mdi-dots-vertical</v-icon>
                         </v-btn>
-                    </v-toolbar>
-                    <div id="chatCard" flat height="550">
-                        <v-card flat height="550">
+                    </v-app-bar>
+                    <div id="chatCard">
+                        <v-card flat height="400">
                             <v-card-text class="flex-grow-1 overflow-y-auto" style="height: 550px;">
                                 <template v-for="(message, index) in groupMessages" >
                                     <div :class="message.user_id != currentID ? 'd-flex flex-row' : 'd-flex flex-row-reverse'" :key="index">
@@ -95,7 +156,7 @@
                                             <template v-slot:activator="{ on }">
                                                 <v-hover>
                                                     <v-chip
-                                                        :color="message.user_id != currentID ? '' : '#1565C0'"
+                                                        :color="message.user_id != currentID ? '#616161' : '#26C6DA'"
                                                         dark
                                                         style="height:auto; white-space: normal; margin:0;"
                                                         class="pa-0 mb-2 ma-0"
@@ -112,29 +173,29 @@
                                     </div>
                                 </template>
                             </v-card-text>
-                            <v-text-field
-                                    ma-0 pa-0
-                                    v-model="newGroupMessage"
-                                    placeholder="Type a message..." 
-                                    type="text"
-                                    regular
-                                    single-line
-                                    clearable
-                                    filled
-                                    append-icon="mdi-send"
-                                    @click:append="sendGroupMessage"
-                                    @keyup.enter="sendGroupMessage"
-                                    name="message"
-                                    > 
-                                </v-text-field>
                         </v-card>
+                        <v-text-field
+                            style="margin:10px;"
+                            label="Message"
+                            v-model="newGroupMessage"
+                            placeholder="Type a message..." 
+                            type="text"
+                            outlined
+                            clearable
+                            shaped
+                            append-icon="mdi-send"
+                            @click:append="sendGroupMessage"
+                            @keyup.enter="sendGroupMessage"
+                            name="message"
+                            > 
+                        </v-text-field>
                     </div>
                 </v-card>
         </div>
         <!-- Chat Group Messages **END** -->
 
         <!-- Audio Call **START**  -->
-        <div id="audio" v-if="audioCallPlaced">
+        <div id="audio" v-if="audioCallPlaced" style="margin-right:10px;">
             <v-card width="420" height="550">
                 <v-toolbar dark flat>
                     <v-btn icon @click="closeChat"> 
@@ -178,6 +239,7 @@
                             <v-btn class="btn btn-info" color="#1565C0" @click="toggleAudioMuteAudio">
                                 <v-icon>{{ audioMutedAudio ? "mdi-microphone" : "mdi-microphone-off" }}</v-icon>
                             </v-btn>
+                            <v-spacer></v-spacer>
                             <!-- <v-btn class="btn btn-primary mx-4" color="#1565C0" @click="toggleAudioMuteVideo">
                                 <v-icon>{{ audioMutedVideo ? "mdi-video" : "mdi-video-off" }}</v-icon>
                             </v-btn> -->
@@ -191,24 +253,8 @@
         </div>
         <!-- Audio Call **END**  -->
 
-        <!-- Incoming Audio Call **START** -->
-        <div>
-            <v-card>
-                <div class="row" v-if="incomingAudioCallDialog">
-                    <div class="col"> 
-                        <p>Incoming Video Call from <strong>{{ audioCallerDetails.name }}</strong></p>
-                        <div class="btn-group" role="group">
-                            <button type="button" class="btn btn-danger" data-dismiss="modal" @click="declineAudioCall">Decline</button>
-                            <button type="button" class="btn btn-success ml-5" @click="acceptAudioCall(audioCallerDetails.name)">Accept</button>
-                        </div>
-                    </div>
-                </div>
-            </v-card>
-        </div>
-        <!-- Incoming Audio Call **END** -->
-
         <!-- Video Call **START**  -->
-        <div id="video" v-if="videoCallPlaced">
+        <div id="video" v-if="videoCallPlaced" style="margin-right:10px;">
             <v-card width="420" height="550">
                 <v-toolbar dark flat>
                     <v-btn icon @click="closeChat"> 
@@ -265,26 +311,12 @@
         </div>
         <!-- Video Call **END**  -->
 
-        <!-- Incoming Video Call **START** -->
-        <div>
-            <v-card>
-                <div class="row" v-if="incomingVideoCallDialog">
-                    <div class="col"> 
-                        <p>Incoming Video Call from <strong>{{ videoCallerDetails.name }}</strong></p>
-                        <div class="btn-group" role="group">
-                            <button type="button" class="btn btn-danger" data-dismiss="modal" @click="declineVideoCall">Decline</button>
-                            <button type="button" class="btn btn-success ml-5" @click="acceptVideoCall(videoCallerDetails.name)">Accept</button>
-                        </div>
-                    </div>
-                </div>
-            </v-card>
-        </div>
-        <!-- Incoming Video Call **END** -->
+        
 
-        <v-card>
-            <v-card width="420" height="550" class="pa-0">
-                <v-card-text class="pa-0">
-                    <v-row no-gutters align="center">
+        <v-card flat tile elevation="1">
+            <v-card width="420" height="550" class="pa-0" flat tile>
+                <v-card-text class="pa-0" colo>
+                    <v-row no-gutters align="center" style="background-color:#F5F5F5">
                         <v-col cols="6" md="4">
                             <v-card-text>
                                 <v-icon>mdi-account-circle</v-icon> {{ authUserName }} </v-card-text>
@@ -303,7 +335,7 @@
 
         <!-- All Members **START** -->
                 <v-list v-if="userVlist">
-                    <v-list-item-group color="#1976D2" v-model="model">
+                    <v-list-item-group color="#26C6DA" v-model="model">
                         <template v-for="(user, index) in allusers" >
                                 <v-list-item :key="index"> 
                                     <v-list-item-avatar>
@@ -317,6 +349,8 @@
                                             <span class="badge badge-light">{{ getUserOnlineStatus(user.id) }}</span>
                                             <span class="badge badge-light" style="display:none;">{{ getUserOnlineStatusAudio(user.id) }}</span>
                                             <span class="badge badge-light" style="display:none;">{{ getUserOnlineStatusVideo(user.id) }}</span>
+                                            <span class="badge badge-light" style="display:none;">{{ getUserOnlineGroupVideo(user.id) }}</span>
+                                            <span class="badge badge-light" style="display:none;">{{ getUserOnlineGroupAudio(user.id) }}</span>
                                         </v-list-item-subtitle>
                                     </v-list-item-content>
                                         <v-list-item-action>
@@ -332,7 +366,7 @@
 
         <!-- Merchants **START** -->
                 <v-list v-if="merchantVlist">
-                    <v-list-item-group color="#1976D2" v-model="model">
+                    <v-list-item-group color="#26C6DA" v-model="model">
                         <template v-for="(user, index) in allmerchants" >
                                 <v-list-item :key="index"> 
                                     <v-list-item-avatar>
@@ -357,7 +391,7 @@
 
         <!-- Friend Request **START** -->
                 <v-list v-if="friendRequestVlist">
-                    <v-list-item-group color="#1976D2" v-model="model">
+                    <v-list-item-group color="#26C6DA" v-model="model">
                         <template v-for="(user, index) in allFriendRequest" >
                                 <v-list-item :key="index"> 
                                     <v-list-item-avatar>
@@ -385,7 +419,7 @@
 
         <!-- Friend List **START** -->
                 <v-list v-if="friendVlist">
-                    <v-list-item-group color="#1976D2" v-model="model">
+                    <v-list-item-group color="#26C6DA" v-model="model">
                         <template v-for="(user, index) in allFriendList">
                                 <v-list-item :key="index"> 
                                     <v-list-item-avatar>
@@ -420,7 +454,7 @@
                             <v-icon>mdi-account-group</v-icon>
                             <v-btn text v-on:click="checkGroup(addGroupChecked = !addGroupChecked)"> Add Group</v-btn>
                         </v-col>
-                    <v-list-item-group color="#1976D2" v-model="model" v-if="!addGroupChecked">
+                    <v-list-item-group color="#26C6DA" v-model="model" v-if="!addGroupChecked">
                         <template v-for="(user, index) in allGroups">
                                 <v-list-item :key="index" > 
                                     <v-list-item-avatar>
@@ -434,7 +468,7 @@
                                 </v-list-item>
                         </template>
                     </v-list-item-group>
-                    <v-list-item-group color="#1976D2" v-model="model" v-if="addGroupChecked">
+                    <v-list-item-group color="#26C6DA" v-model="model" v-if="addGroupChecked">
                         <v-row v-if="addGroupChecked" >
                             <v-text-field
                                 v-model="newGroupName"
@@ -471,8 +505,6 @@
                                     </template>
                                     
                                 </v-list-item>
-                                
-                                <v-divider v-if="user.divider" :key="user.name"></v-divider>
                         </template>
                         
                     </v-list-item-group>
@@ -512,6 +544,7 @@ export default {
             sentRequest: false,
             colFriendStatus: true,
             addGroupChecked: false,
+            loading: false,
 
             // Message
             messages: [],
@@ -596,7 +629,29 @@ export default {
             currentlyContactedUser: null,
             allPeers: {},
 
+            isGroupFocusMyself: true,
+            groupCallPlaced: false,
+            groupCallPartner: null,
+            groupMutedAudio: false,
+            groupMutedVideo: false,
             groupCallParams: {
+                users: [],
+                stream: null,
+                receivingCall: false,
+                caller: null,
+                callerSignal: null,
+                callAccepted: false,
+                channel: null,
+                peer1: null,
+                peer2: null,
+            },
+
+            isAudioGroupFocusMyself: true,
+            groupAudioCallPlaced: false,
+            groupAudioCallPartner: null,
+            groupAudioMutedAudio: false,
+            groupAudioMutedVideo: false,
+            groupAudioCallParams: {
                 users: [],
                 stream: null,
                 receivingCall: false,
@@ -611,58 +666,113 @@ export default {
     },
 
     computed: {
+
+        // Audio Group Computed
+        incomingAudioGroupCallDialog() {
+            if (
+                this.groupAudioCallParams.receivingCall &&
+                this.groupAudioCallParams.caller !== this.authUserID
+            ) {
+                return true;
+            }
+            return false;
+        },
+
+        groupAudioCallerDetails() {
+            if (
+                this.groupAudioCallParams.caller &&
+                this.groupAudioCallParams.caller !== this.authUserID
+            ) {
+                const incomingCaller = this.allGroups.filter(
+                (user) => user.id === this.groupAudioCallParams.caller
+                );
+                return {
+                id: this.groupAudioCallParams.caller,
+                name: `${incomingCaller[0].name}`,
+                };
+            }
+            return null;
+        },
+
+        // Group Computed
+        incomingGroupCallDialog() {
+            if (
+                this.groupCallParams.receivingCall &&
+                this.groupCallParams.caller !== this.authUserID
+            ) {
+                return true;
+            }
+            return false;
+        },
+
+        groupCallerDetails() {
+            if (
+                this.groupCallParams.caller &&
+                this.groupCallParams.caller !== this.authUserID
+            ) {
+                const incomingCaller = this.allGroups.filter(
+                (user) => user.id === this.groupCallParams.caller
+                );
+                return {
+                id: this.groupCallParams.caller,
+                name: `${incomingCaller[0].name}`,
+                };
+            }
+            return null;
+        },
+
         // Video Computed
         incomingVideoCallDialog() {
-        if (
-            this.videoCallParams.receivingCall &&
-            this.videoCallParams.caller !== this.authUserID
-        ) {
-            return true;
-        }
-        return false;
+            if (
+                this.videoCallParams.receivingCall &&
+                this.videoCallParams.caller !== this.authUserID
+            ) {
+                return true;
+            }
+            return false;
         },
 
         videoCallerDetails() {
-        if (
-            this.videoCallParams.caller &&
-            this.videoCallParams.caller !== this.authUserID
-        ) {
-            const incomingCaller = this.allusers.filter(
-            (user) => user.id === this.videoCallParams.caller
-            );
-            return {
-            id: this.videoCallParams.caller,
-            name: `${incomingCaller[0].name}`,
-            };
-        }
-        return null;
+            if (
+                this.videoCallParams.caller &&
+                this.videoCallParams.caller !== this.authuserid
+            ) {
+                const incomingCaller = this.allusers.filter(
+                (user) => user.id === this.videoCallParams.caller
+                );
+                return {
+                id: this.videoCallParams.caller,
+                name: `${incomingCaller[0].name}`,
+                };
+            }
+            return null;
         },
 
         // Audio Computed
         incomingAudioCallDialog() {
-        if (
-            this.audioCallParams.receivingCall &&
-            this.audioCallParams.caller !== this.authuserid
-        ) {
-            return true;
-        }
-        return false;
+            if (
+                this.audioCallParams.receivingCall &&
+                this.audioCallParams.caller !== this.authuserid
+            ) {
+                return true;
+            }
+            return false;
         },
 
         audioCallerDetails() {
-        if (
-            this.audioCallParams.caller &&
-            this.audioCallParams.caller !== this.authuserid
-        ) {
-            const incomingCaller = this.allusers.filter(
-            (user) => user.id === this.audioCallParams.caller
-            );
-            return {
-            id: this.audioCallParams.caller,
-            name: `${incomingCaller[0].name}`,
-            };
-        }
-        return null;
+            if (
+                this.audioCallParams.caller &&
+                this.audioCallParams.caller !== this.authuserid
+            ) {
+                const incomingCaller = this.allusers.filter(
+                (user) => user.id === this.audioCallParams.caller
+                );
+                return {
+                id: this.audioCallParams.caller,
+                name: `${incomingCaller[0].name}`,
+                };
+            }
+            return null;
         },
     },
 
@@ -693,6 +803,12 @@ export default {
 
         this.initializeStatusChannel();
         this.initializeStatusListeners(); 
+
+        this.initializeGroupChannel();
+        this.initializeGroupListeners();
+
+        this.initializeGroupAudioChannel();
+        this.initializeGroupAudioCallListeners();
     },
 
     
@@ -855,6 +971,10 @@ export default {
         closeChat(){
             document.getElementById("chat").style.display = "none";
         },
+
+        closeGroupChat(){
+            document.getElementById("groupChat").style.display = "none";
+        },
         
         fetchMessages(){
             axios.post('http://127.0.0.1:8000/api/chats', 
@@ -1015,6 +1135,28 @@ export default {
             }
         },
 
+        getUserOnlineGroupVideo(id) {
+            const onlineUserIndex = this.groupCallParams.users.findIndex(
+                (data) => data.id === id
+            );
+            if (onlineUserIndex < 0) {
+                return "Offline";
+            }else{
+                return "Online";
+            }
+        },
+
+        getUserOnlineGroupAudio(id) {
+            const onlineUserIndex = this.groupAudioCallParams.users.findIndex(
+                (data) => data.id === id
+            );
+            if (onlineUserIndex < 0) {
+                return "Offline";
+            }else{
+                return "Online";
+            }
+        },
+
         checkGroup(groupChecked) {
             return groupChecked;
         },
@@ -1065,22 +1207,102 @@ export default {
             });
         },
 
+        initializeGroupChannel() {
+            this.groupCallParams.channel = window.Echo.join(`GroupDemo.${this.$userId}`);
+            
+        },
+
+        initializeGroupAudioChannel() {
+            this.groupAudioCallParams.channel = window.Echo.join(`GroupAudioDemo.${this.$userId}`);
+        },
+
+        initializeGroupListeners() {
+            // Video Settings 
+            this.groupCallParams.channel.here((users) => {
+                this.groupCallParams.users = users;
+            });
+
+            this.groupCallParams.channel.joining((user) => {
+                const joiningUserIndex = this.groupCallParams.users.findIndex(
+                    (data) => data.id === user.id
+                );
+                if (joiningUserIndex < 0) {
+                    this.groupCallParams.users.push(user);
+                }
+            });
+            this.groupCallParams.channel.leaving((user) => {
+                const leavingUserIndex = this.groupCallParams.users.findIndex(
+                    (data) => data.id === user.id
+                );
+                    this.groupCallParams.users.splice(leavingUserIndex, 1);
+            });
+
+            this.groupCallParams.channel.listen("StartGroupVideoChat", ({ data }) => {
+                if (data.type === "incomingCall") {
+                const updatedSignal = {
+                    ...data.signalData,
+                    sdp: `${data.signalData.sdp}\n`,
+                };
+                this.groupCallParams.receivingCall = true;
+                
+                this.groupCallParams.caller = data.from;
+                this.groupCallParams.callerSignal = updatedSignal;
+                }
+            });
+
+            
+        },
+
+        initializeGroupAudioCallListeners() {
+            // Audio Settings
+            this.groupAudioCallParams.channel.here((users) => {
+                this.groupAudioCallParams.users = users;
+            });
+
+            this.groupAudioCallParams.channel.joining((user) => {
+                const joiningUserIndex = this.groupAudioCallParams.users.findIndex(
+                    (data) => data.id === user.id
+                );
+                if (joiningUserIndex < 0) {
+                    this.groupAudioCallParams.users.push(user);
+                }
+            });
+            this.groupAudioCallParams.channel.leaving((user) => {
+                const leavingUserIndex = this.groupAudioCallParams.users.findIndex(
+                    (data) => data.id === user.id
+                );
+                    this.groupAudioCallParams.users.splice(leavingUserIndex, 1);
+            });
+
+            this.groupAudioCallParams.channel.listen("StartGroupAudioChat", ({ data }) => {
+                if (data.type === "incomingCall") {
+                const updatedSignal = {
+                    ...data.signalData,
+                    sdp: `${data.signalData.sdp}\n`,
+                };
+                this.groupAudioCallParams.receivingCall = true;
+                this.groupAudioCallParams.caller = data.from;
+                this.groupAudioCallParams.callerSignal = updatedSignal;
+                }
+            });
+        },
+
         /* Video Call --START-- */
         initializeVideoChannel() {
             this.videoCallParams.channel = window.Echo.join(`Demo.${this.$userId}`);
         },
 
         getVideoMediaPermission() {
-        return getVideoPermissions()
-            .then((stream) => {
-            this.videoCallParams.stream = stream;
-            if (this.$refs.userVideo) {
-                this.$refs.userVideo.srcObject = stream;
-            }
-            })
-            .catch((error) => {
-            console.log(error);
-            });
+            return getVideoPermissions()
+                .then((stream) => {
+                this.videoCallParams.stream = stream;
+                if (this.$refs.userVideo) {
+                    this.$refs.userVideo.srcObject = stream;
+                }
+                })
+                .catch((error) => {
+                console.log(error);
+                });
         },
 
         initializeVideoCallListeners() {
@@ -1303,16 +1525,16 @@ export default {
         },
 
         getAudioMediaPermission() {
-        return getAudioPermissions()
-            .then((stream) => {
-            this.audioCallParams.stream = stream;
-            if (this.$refs.userAudio) {
-                this.$refs.userAudio.srcObject = stream;
-            }
-            })
-            .catch((error) => {
-            console.log(error);
-            });
+            return getAudioPermissions()
+                .then((stream) => {
+                this.audioCallParams.stream = stream;
+                if (this.$refs.userAudio) {
+                    this.$refs.userAudio.srcObject = stream;
+                }
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
         },
 
         initializeAudioCallListeners() {
@@ -1524,7 +1746,136 @@ export default {
         /* Audio Call --END-- */
 
         /* Group Video Call --START-- */
+        async placeGroupVideoCall(id, name) {
+            this.groupCallPlaced = true;
+            this.groupCallPartner = name;
 
+            console.log(id);
+
+            this.groupCallParams.peer1 = new Peer({
+                initiator: true,
+                trickle: false,
+            });
+
+            axios.post('get-ID', 
+            {
+                group_id: id,
+                user_id: this.$userId
+            })
+            .then(response => {
+                console.log(response.data);
+                var user_id = response.data;
+
+                user_id.forEach(n => {
+                    this.groupCallParams.peer1.on("signal", (data) => {
+                        axios.post("/testing-audio", {
+                            user_to_call: n,
+                            signal_data: data,
+                            from: id,
+                        }).then((response) => {
+                            console.log(response);
+                        }).catch((error) => {
+                            console.log(error);
+                        });
+                    });
+                });
+            })
+
+            this.groupCallParams.peer1.on("close", () => {
+                console.log("Call Closed Caller");
+            });
+
+            var naming = "=" + name;
+            console.log("=" + name);
+
+            this.createRoom(naming);
+
+            setTimeout(() => {
+                this.acceptGroupCall(naming);
+            }, 5000);
+        },
+
+        createRoom(roomName) {
+            axios.post('room/create', 
+            {
+                roomName: roomName,
+            })
+            .then(response => {
+                console.log(response);
+            })
+            .catch(error => {
+                console.log(error);
+            })
+        },
+
+        acceptGroupCall(roomName){
+            window.location.href = 'http://127.0.0.1:8000/room/join/' + roomName;
+        },
+        /* Group Video Call --END-- */
+
+        /* Group Video Call --START-- */
+        async placeGroupAudioCall(id, name) {
+            this.groupAudioCallPlaced = true;
+            this.groupAudioCallPartner = name;
+
+            this.groupAudioCallParams.peer1 = new Peer({
+                initiator: true,
+                trickle: false,
+            });
+
+            axios.post('get-ID', 
+            {
+                group_id: id,
+                user_id: this.$userId
+            })
+            .then(response => {
+                console.log(response.data);
+                var user_id = response.data;
+
+                user_id.forEach(n => {
+                    this.groupAudioCallParams.peer1.on("signal", (data) => {
+                        axios.post("/testing-audio", {
+                            user_to_call: n,
+                            signal_data: data,
+                            from: id,
+                        }).then((response) => {
+                            console.log(response);
+                        }).catch((error) => {
+                            console.log(error);
+                        });
+                    });
+                });
+            })
+
+            this.groupAudioCallParams.peer1.on("close", () => {
+                console.log("Call Closed Caller");
+            });
+
+            var naming = "=" + name;
+
+            this.createAudioRoom(naming);
+
+            setTimeout(() => {
+                this.acceptAudioGroupCall(naming);
+            }, 5000);
+        },
+
+        createAudioRoom(roomName) {
+            axios.post('audio-room/create', 
+            {
+                roomName: roomName,
+            })
+            .then(response => {
+                console.log(response);
+            })
+            .catch(error => {
+                console.log(error);
+            })
+        },
+
+        acceptAudioGroupCall(roomName){
+            window.location.href = 'http://127.0.0.1:8000/audio-room/join/' + roomName;
+        }
         /* Group Video Call --END-- */
     }
 }

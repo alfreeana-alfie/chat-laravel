@@ -70,6 +70,11 @@ class GroupController extends Controller
         return $messages;
     }
 
+    public function fetchSingleGroupName(Request $request){
+        $messages = Group::where('id', $request['id'])->first();
+        return $messages;
+    }
+
     public function fetchGroup(Request $request){
         foreach($request['groupID'] as $group){
             $grouplist = Group::where(['id' => $group])->first();

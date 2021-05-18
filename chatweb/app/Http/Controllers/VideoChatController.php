@@ -8,7 +8,6 @@ use App\Events\StartVideoChat;
 use App\Models\User;
 use App\Events\checkStatusEvent;
 
-
 class VideoChatController extends Controller
 {
     public function callUser(Request $request)
@@ -24,6 +23,7 @@ class VideoChatController extends Controller
         broadcast(new checkStatusEvent($data))->toOthers();
 
     }
+
     public function acceptCall(Request $request)
     {
         $data['signal'] = $request->signal;
