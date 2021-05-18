@@ -311,8 +311,6 @@
         </div>
         <!-- Video Call **END**  -->
 
-        
-
         <v-card flat tile elevation="1">
             <v-card width="420" height="550" class="pa-0" flat tile>
                 <v-card-text class="pa-0" colo>
