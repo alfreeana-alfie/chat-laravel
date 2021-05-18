@@ -1,7 +1,7 @@
 # chat-laravel
 Chat Application in Laravel and Vuetify
 
-This chat application was inspired by Facebook Messenger. This applicatio has most of the functions that similar to the Facebook Messenger such as:
+This chat application was inspired by Facebook Messenger. This application has most of the functions that similar to the Facebook Messenger such as:
 
 # For Personal Uses:
 - 1-1 Chat Messages
