@@ -332,7 +332,7 @@
                 </v-card-text>
 
         <!-- All Members **START** -->
-                <v-list v-if="userVlist">
+                <v-list v-if="userVlist" style="max-height: 550px" class="overflow-y-auto">
                     <v-list-item-group color="#26C6DA" v-model="model">
                         <template v-for="(user, index) in allusers" >
                                 <v-list-item :key="index"> 
@@ -363,7 +363,7 @@
         <!-- All Members **END** -->
 
         <!-- Merchants **START** -->
-                <v-list v-if="merchantVlist">
+                <v-list v-if="merchantVlist"  style="max-height: 550px" class="overflow-y-auto">
                     <v-list-item-group color="#26C6DA" v-model="model">
                         <template v-for="(user, index) in allmerchants" >
                                 <v-list-item :key="index"> 
@@ -388,7 +388,7 @@
         <!-- Merchants **END** -->
 
         <!-- Friend Request **START** -->
-                <v-list v-if="friendRequestVlist">
+                <v-list v-if="friendRequestVlist"  style="max-height: 550px" class="overflow-y-auto">
                     <v-list-item-group color="#26C6DA" v-model="model">
                         <template v-for="(user, index) in allFriendRequest" >
                                 <v-list-item :key="index"> 
@@ -416,7 +416,7 @@
         <!-- Friend Request **END** -->
 
         <!-- Friend List **START** -->
-                <v-list v-if="friendVlist">
+                <v-list v-if="friendVlist"  style="max-height: 550px" class="overflow-y-auto">
                     <v-list-item-group color="#26C6DA" v-model="model">
                         <template v-for="(user, index) in allFriendList">
                                 <v-list-item :key="index"> 
@@ -434,7 +434,7 @@
                                         </v-list-item-subtitle>
                                     </v-list-item-content>
                                     <v-list-item-action>
-                                        <v-col v-if="colFriendStatus">
+                                        <v-col v-if="colFriendStatus == user.status ? true : false">
                                             <v-btn v-on:click="acceptFriend(user.id)">Accept</v-btn>
                                             <v-btn v-on:click="rejectFriend(user.id)">Reject</v-btn>
                                         </v-col>
@@ -447,7 +447,7 @@
         <!-- Friend List **END** -->
 
         <!-- Group List **START** -->
-                <v-list v-if="groupVlist">
+                <v-list v-if="groupVlist"   style="max-height: 550px" class="overflow-y-auto">
                     <v-col v-if="!addGroupChecked">
                             <v-icon>mdi-account-group</v-icon>
                             <v-btn text v-on:click="checkGroup(addGroupChecked = !addGroupChecked)"> Add Group</v-btn>
@@ -467,14 +467,21 @@
                         </template>
                     </v-list-item-group>
                     <v-list-item-group color="#26C6DA" v-model="model" v-if="addGroupChecked">
-                        <v-row v-if="addGroupChecked" >
-                            <v-text-field
-                                v-model="newGroupName"
-                                filled
-                                label="Group Name"
-                                ></v-text-field>
-                            <v-btn text v-on:click="createGroup(newGroupName)"> Confirm</v-btn>
-                        </v-row>
+                        <v-container fill-height>
+                            <v-row  v-if="addGroupChecked" style="margin: 10px;">
+                                <v-text-field
+                                    v-model="newGroupName"
+                                    filled
+                                    label="Group Name"
+                                    ></v-text-field>
+                                <v-btn 
+                                dark
+                                depressed 
+                                color="#26C6DA" 
+                                style="margin-top: 10px;margin-left: 10px;" 
+                                v-on:click="createGroup(newGroupName, addGroupChecked = !addGroupChecked)">Confirm</v-btn>
+                            </v-row>
+                        </v-container>
                         <template v-for="(user, index) in allusers">
                                 <v-list-item :key="index" > 
                                     <v-list-item-avatar>
@@ -540,7 +547,7 @@ export default {
             friendVlist: false,
             groupVlist: false,
             sentRequest: false,
-            colFriendStatus: true,
+            colFriendStatus: "Pending",
             addGroupChecked: false,
             loading: false,
 

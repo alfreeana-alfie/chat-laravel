@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Merchant;
 use App\Models\Friend;
 
 class UserController extends Controller
@@ -16,8 +17,7 @@ class UserController extends Controller
 
     // Merchant List
     public function merchantID(){
-        $user = User::where('id', '!=', auth()->user()->id)
-        ->where('type', '=', '1')
+        $user = Merchant::where('id', '!=', auth()->user()->id)
         ->get();
         
         return $user;
@@ -29,9 +29,6 @@ class UserController extends Controller
         $user = User::where('id', '!=', auth()->user()->id)
         ->where('type', '=', '0')
         ->get();
-
-        
-        
         return $user;
     }
 

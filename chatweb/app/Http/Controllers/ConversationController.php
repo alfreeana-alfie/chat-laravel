@@ -45,13 +45,15 @@ class ConversationController extends Controller
     {
         $chat = Conversation::create([
             'user_id' => auth()->user()->id,
-            'to_user_id' => $request['user_id']
+            'to_user_id' => $request['user_id'],
+            'merchant_id' => auth()->user()->id
         ]);
 
         Message::create([
             'body' => $request['body'],
             'user_id' => $request['user_id'],
-            'chat_id' => $request['chat_id']
+            'chat_id' => $request['chat_id'],
+            'merchant_id' => auth()->user()->id
         ]);
 
         return ['status' => 'Successful', 200];
@@ -61,7 +63,8 @@ class ConversationController extends Controller
         $message = auth()->user()->messages()->create([
             'body' => $request->input('body'),
             'chat_id' => $request['chat_id'],
-            'user_id' => auth()->user()->id
+            'user_id' => auth()->user()->id,
+            'merchant_id' => auth()->user()->id
         ]);
 
         broadcast(new MessageSent($message->load('user')))->toOthers();

@@ -44,7 +44,8 @@ class FriendController extends Controller
         $friend = auth()->user()->friends()->create([
             'user_id' => auth()->user()->id,
             'to_user_id' => $request['to_user_id'],
-            'status' => $request['status']
+            'status' => $request['status'],
+            'merchant_id' => auth()->user()->id
         ]);
 
         broadcast(new FriendRequestSent($friend->load('user')))->toOthers();
@@ -77,15 +78,13 @@ class FriendController extends Controller
         }
 
         return $newArr;
-
-        $count = count($newArr);
     }
 
     public function acceptFriend(Request $request){
         $friend = Friend::where(['to_user_id' => $request['to_user_id']])
         ->where(['user_id' => $request['user_id']])->update(['status' => 'Accept']);
 
-        broadcast(new FriendRequestAccept($friend->load('user')))->toOthers();
+        // broadcast(new FriendRequestAccept($friend->load('user')))->toOthers();
 
         return $friend;
     }
@@ -94,7 +93,7 @@ class FriendController extends Controller
         $friend = Friend::where(['to_user_id' => $request['to_user_id']])
         ->where(['user_id' => $request['user_id']])->delete();
 
-        broadcast(new FriendRequestAccept($friend->load('user')))->toOthers();
+        // broadcast(new FriendRequestAccept($friend->load('user')))->toOthers();
 
         return $friend;
     }
