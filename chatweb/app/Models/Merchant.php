@@ -2,10 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Cache;
 
-class Merchant extends Model
+class Merchant extends Authenticatable
 {
     use HasFactory, Notifiable;
 
@@ -15,7 +18,7 @@ class Merchant extends Model
      * @var array
      */
     protected $fillable = [
-        'merchant_name',
+        'name',
         'email',
         'password',
     ];
