@@ -19,7 +19,19 @@ class Merchant extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'ssm_no',
+        'primary_contact_no',
+        'secondary_contact_no',
         'email',
+        'address',
+        'zip_code',
+        'city',
+        'state',
+        'country',
+        'bank_name',
+        'bank_acc_no',
+        'belongs_to',
+        'activation',
         'password',
     ];
 
