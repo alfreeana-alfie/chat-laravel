@@ -1,523 +1,526 @@
 <template>
     <v-layout>
         <!-- Incoming Audio Call **START** -->
-        <div style="margin: 15px;">
-            <v-card >
-                <div class="row" v-if="incomingAudioCallDialog" style="padding: 15px;">
-                    <div class="col"> 
-                        <p style="text-align:center;">Incoming Audio Call from <strong>{{ audioCallerDetails.name }}</strong></p>
-                        <div class="btn-group" role="group" style="padding: 0px 25px 0px 25px">
-                            <button type="button" class="btn btn-danger" data-dismiss="modal" @click="declineAudioCall">Decline</button>
-                            <button type="button" class="btn btn-success ml-5" @click="acceptAudioCall(audioCallerDetails.name)">Accept</button>
+            <div style="margin: 15px;">
+                <v-card >
+                    <div class="row" v-if="incomingAudioCallDialog" style="padding: 15px;">
+                        <div class="col"> 
+                            <p style="text-align:center;">Incoming Audio Call from <strong>{{ audioCallerDetails.name }}</strong></p>
+                            <div class="btn-group" role="group" style="padding: 0px 25px 0px 25px">
+                                <button type="button" class="btn btn-danger" data-dismiss="modal" @click="declineAudioCall">Decline</button>
+                                <button type="button" class="btn btn-success ml-5" @click="acceptAudioCall(audioCallerDetails.name)">Accept</button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </v-card>
-        </div>
+                </v-card>
+            </div>
         <!-- Incoming Audio Call **END** -->
 
         <!-- Incoming Video Call **START** -->
-        <div style="margin: 15px;">
-            <v-card>
-                <div class="row" v-if="incomingVideoCallDialog" style="padding: 15px;">
-                    <div class="col"> 
-                        <p style="text-align:center;">Incoming Video Call from <strong>{{ videoCallerDetails.name }}</strong></p>
-                        <div class="btn-group" role="group" style="padding: 0px 25px 0px 25px">
-                            <button type="button" class="btn btn-danger" data-dismiss="modal" @click="declineVideoCall">Decline</button>
-                            <button type="button" class="btn btn-success ml-5" @click="acceptVideoCall(videoCallerDetails.name)">Accept</button>
+            <div style="margin: 15px;">
+                <v-card>
+                    <div class="row" v-if="incomingVideoCallDialog" style="padding: 15px;">
+                        <div class="col"> 
+                            <p style="text-align:center;">Incoming Video Call from <strong>{{ videoCallerDetails.name }}</strong></p>
+                            <div class="btn-group" role="group" style="padding: 0px 25px 0px 25px">
+                                <button type="button" class="btn btn-danger" data-dismiss="modal" @click="declineVideoCall">Decline</button>
+                                <button type="button" class="btn btn-success ml-5" @click="acceptVideoCall(videoCallerDetails.name)">Accept</button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </v-card>
-        </div>
+                </v-card>
+            </div>
         <!-- Incoming Video Call **END** -->
 
         <!-- Incoming Group Call **START** acceptGroupCall-->
-        <div style="margin: 15px;">
-            <v-card>
-                <div class="row" v-if="incomingGroupCallDialog" style="padding: 15px;">
-                    <div class="col"> 
-                        <p style="text-align:center;">Incoming Group Call from <strong>{{ groupCallerDetails.name }}</strong></p>
-                        <div class="btn-group" role="group" style="padding: 0px 25px 0px 25px">
-                            <button type="button" class="btn btn-danger" data-dismiss="modal">Decline</button>
-                            <button type="button" class="btn btn-success ml-5" @click="acceptGroupCall('=' + groupCallerDetails.name)">Accept</button>
+            <div style="margin: 15px;">
+                <v-card>
+                    <div class="row" v-if="incomingGroupCallDialog" style="padding: 15px;">
+                        <div class="col"> 
+                            <p style="text-align:center;">Incoming Group Call from <strong>{{ groupCallerDetails.name }}</strong></p>
+                            <div class="btn-group" role="group" style="padding: 0px 25px 0px 25px">
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">Decline</button>
+                                <button type="button" class="btn btn-success ml-5" @click="acceptGroupCall('=' + groupCallerDetails.name)">Accept</button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </v-card>
-        </div>
+                </v-card>
+            </div>
         <!-- Incoming Group Call **END** -->
 
         <!-- Incoming Audio Group Call **START** acceptGroupCall-->
-        <div style="margin: 15px;">
-            <v-card>
-                <div class="row" v-if="incomingAudioGroupCallDialog" style="padding: 15px;">
-                    <div class="col"> 
-                        <p style="text-align:center;">Incoming Group Audio Call from <strong>{{ groupAudioCallerDetails.name }}</strong></p>
-                        <div class="btn-group" role="group" style="padding: 0px 25px 0px 25px">
-                            <button type="button" class="btn btn-danger" data-dismiss="modal">Decline</button>
-                            <button type="button" class="btn btn-success ml-5" @click="acceptAudioGroupCall('=' + groupAudioCallerDetails.name)">Accept</button>
+            <div style="margin: 15px;">
+                <v-card>
+                    <div class="row" v-if="incomingAudioGroupCallDialog" style="padding: 15px;">
+                        <div class="col"> 
+                            <p style="text-align:center;">Incoming Group Audio Call from <strong>{{ groupAudioCallerDetails.name }}</strong></p>
+                            <div class="btn-group" role="group" style="padding: 0px 25px 0px 25px">
+                                <button type="button" class="btn btn-danger" data-dismiss="modal">Decline</button>
+                                <button type="button" class="btn btn-success ml-5" @click="acceptAudioGroupCall('=' + groupAudioCallerDetails.name)">Accept</button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </v-card>
-        </div>
+                </v-card>
+            </div>
         <!-- Incoming Audio Group Call **END** -->
 
         <!-- Chat Messages **START** -->
-        <div id='chat' v-if="componentKey" style="margin-right:10px;" >
-            <v-card outlined tile elevation="1" width="420" height="550">
-                    <v-app-bar dark color="#26C6DA">
-                        <v-btn icon @click="closeChat"> 
-                            <v-icon>mdi-close</v-icon>
-                        </v-btn>
-                        <v-toolbar-title> {{ userName }}</v-toolbar-title>
-                        <v-spacer></v-spacer>
-                        <v-btn icon @click="placeAudioCall(toUserId, userName)">
-                            <v-icon>mdi-phone</v-icon>
-                        </v-btn>
-                        <v-btn icon @click="placeVideoCall(toUserId, userName)">
-                            <v-icon>mdi-video</v-icon>
-                        </v-btn>
-                        <v-btn icon>
-                            <v-icon>mdi-dots-vertical</v-icon>
-                        </v-btn>
-                    </v-app-bar>
-                    <div id="chatCard">
-                        <v-card flat tile height="400">
-                            <v-card-text class="flex-grow-1 overflow-y-auto" style="height: 550px;">
-                                <template v-for="(message, index) in messages" >
-                                    <div :class="message.user_id != currentID ? 'd-flex flex-row' : 'd-flex flex-row-reverse'" :key="index">
-                                        <v-menu offset-y>
-                                            <template v-slot:activator="{ on }">
-                                                <v-hover>
-                                                    <v-chip
-                                                        :color="message.user_id != currentID ? '#616161' : '#26C6DA'"
-                                                        dark
-                                                        style="height:auto; white-space: normal;"
-                                                        class="pa-0 mb-2 ma-0"
-                                                        v-on="on">
-                                                        <v-col>
-                                                            <p style="margin:0;text-align:left;font-size:14px">{{ message.body }}</p>
-                                                            <p style="margin:0;text-align:right;font-size:12px">{{ moment(message.created_at).format("llll") }}</p>
-                                                        </v-col>
-                                                    </v-chip>
-                                                </v-hover>
-                                            </template>
-                                        </v-menu>
-                                    </div>
-                                </template>
-                            </v-card-text>
-                        </v-card>
-                        <v-text-field
-                            style="margin:10px;"
-                            v-model="newMessage"
-                            label="Message"
-                            placeholder="Type a message..." 
-                            outlined
-                            clearable
-                            shaped
-                            append-icon="mdi-send"
-                            @click:append="sendMessage"
-                            @keyup.enter="sendMessage"
-                            name="message"
-                            > 
-                        </v-text-field>
-                    </div>
-                </v-card>
-        </div>
+            <div id='chat' v-if="componentKey" style="margin-right:10px;" >
+                <v-card outlined tile elevation="1" width="420" height="550">
+                        <v-app-bar dark color="#26C6DA">
+                            <v-btn icon @click="closeChat"> 
+                                <v-icon>mdi-close</v-icon>
+                            </v-btn>
+                            <v-toolbar-title> {{ userName }}</v-toolbar-title>
+                            <v-spacer></v-spacer>
+                            <v-btn icon @click="placeAudioCall(toUserId, userName)">
+                                <v-icon>mdi-phone</v-icon>
+                            </v-btn>
+                            <v-btn icon @click="placeVideoCall(toUserId, userName)">
+                                <v-icon>mdi-video</v-icon>
+                            </v-btn>
+                            <v-btn icon>
+                                <v-icon>mdi-dots-vertical</v-icon>
+                            </v-btn>
+                        </v-app-bar>
+                        <div id="chatCard">
+                            <v-card flat tile height="400">
+                                <v-card-text class="flex-grow-1 overflow-y-auto" style="height: 550px;">
+                                    <template v-for="(message, index) in messages" >
+                                        <div :class="message.user_id != currentID ? 'd-flex flex-row' : 'd-flex flex-row-reverse'" :key="index">
+                                            <v-menu offset-y>
+                                                <template v-slot:activator="{ on }">
+                                                    <v-hover>
+                                                        <v-chip
+                                                            :color="message.user_id != currentID ? '#616161' : '#26C6DA'"
+                                                            dark
+                                                            style="height:auto; white-space: normal;"
+                                                            class="pa-0 mb-2 ma-0"
+                                                            v-on="on">
+                                                            <v-col>
+                                                                <p style="margin:0;text-align:left;font-size:14px">{{ message.body }}</p>
+                                                                <p style="margin:0;text-align:right;font-size:12px">{{ moment(message.created_at).format("llll") }}</p>
+                                                            </v-col>
+                                                        </v-chip>
+                                                    </v-hover>
+                                                </template>
+                                            </v-menu>
+                                        </div>
+                                    </template>
+                                </v-card-text>
+                            </v-card>
+                            <v-text-field
+                                style="margin:10px;"
+                                v-model="newMessage"
+                                label="Message"
+                                placeholder="Type a message..." 
+                                outlined
+                                clearable
+                                shaped
+                                append-icon="mdi-send"
+                                @click:append="sendMessage"
+                                @keyup.enter="sendMessage"
+                                name="message"
+                                > 
+                            </v-text-field>
+                        </div>
+                    </v-card>
+            </div>
         <!-- Chat Messages **END** -->
 
         <!-- Chat Group Messages **START** -->
-        <div id='groupChat' v-if="componentKeyGroup" style="margin-right:10px;">
-            <v-card outlined tile elevation="1" width="420" height="550">
-                    <v-app-bar dark color="#26C6DA">
-                        <v-btn icon @click="closeGroupChat"> 
-                            <v-icon>mdi-close</v-icon>
-                        </v-btn>
-                        <v-toolbar-title> {{ groupName }}</v-toolbar-title>
-                        <v-spacer></v-spacer>
-                        <v-btn icon @click="placeGroupAudioCall(groupID, groupName)" >
-                            <v-icon>mdi-phone</v-icon>
-                        </v-btn>
-                        <v-btn icon @click="placeGroupVideoCall(groupID, groupName)" >
-                            <v-icon>mdi-video</v-icon>
-                        </v-btn>
-                        <v-btn icon>
-                            <v-icon>mdi-dots-vertical</v-icon>
-                        </v-btn>
-                    </v-app-bar>
-                    <div id="chatCard">
-                        <v-card flat height="400">
-                            <v-card-text class="flex-grow-1 overflow-y-auto" style="height: 550px;">
-                                <template v-for="(message, index) in groupMessages" >
-                                    <div :class="message.user_id != currentID ? 'd-flex flex-row' : 'd-flex flex-row-reverse'" :key="index">
-                                        <v-menu offset-y>
-                                            <template v-slot:activator="{ on }">
-                                                <v-hover>
-                                                    <v-chip
-                                                        :color="message.user_id != currentID ? '#616161' : '#26C6DA'"
-                                                        dark
-                                                        style="height:auto; white-space: normal; margin:0;"
-                                                        class="pa-0 mb-2 ma-0"
-                                                        v-on="on">
-                                                        <v-col>
-                                                            <p style="margin-bottom:2px;text-align:left;font-size:14px"><strong>{{ message.user_name }}</strong></p>
-                                                            <p style="margin:0;text-align:left;font-size:14px">{{ message.body }}</p>
-                                                            <p style="margin:0;text-align:right;font-size:12px">{{ moment(message.created_at).format("lll") }}</p>
-                                                        </v-col>
-                                                    </v-chip>
-                                                </v-hover>
-                                            </template>
-                                        </v-menu>
-                                    </div>
-                                </template>
-                            </v-card-text>
-                        </v-card>
-                        <v-text-field
-                            style="margin:10px;"
-                            label="Message"
-                            v-model="newGroupMessage"
-                            placeholder="Type a message..." 
-                            type="text"
-                            outlined
-                            clearable
-                            shaped
-                            append-icon="mdi-send"
-                            @click:append="sendGroupMessage"
-                            @keyup.enter="sendGroupMessage"
-                            name="message"
-                            > 
-                        </v-text-field>
-                    </div>
-                </v-card>
-        </div>
+            <div id='groupChat' v-if="componentKeyGroup" style="margin-right:10px;">
+                <v-card outlined tile elevation="1" width="420" height="550">
+                        <v-app-bar dark color="#26C6DA">
+                            <v-btn icon @click="closeGroupChat"> 
+                                <v-icon>mdi-close</v-icon>
+                            </v-btn>
+                            <v-toolbar-title> {{ groupName }}</v-toolbar-title>
+                            <v-spacer></v-spacer>
+                            <v-btn icon @click="placeGroupAudioCall(groupID, groupName)" >
+                                <v-icon>mdi-phone</v-icon>
+                            </v-btn>
+                            <v-btn icon @click="placeGroupVideoCall(groupID, groupName)" >
+                                <v-icon>mdi-video</v-icon>
+                            </v-btn>
+                            <v-btn icon>
+                                <v-icon>mdi-dots-vertical</v-icon>
+                            </v-btn>
+                        </v-app-bar>
+                        <div id="chatCard">
+                            <v-card flat height="400">
+                                <v-card-text class="flex-grow-1 overflow-y-auto" style="height: 550px;">
+                                    <template v-for="(message, index) in groupMessages" >
+                                        <div :class="message.user_id != currentID ? 'd-flex flex-row' : 'd-flex flex-row-reverse'" :key="index">
+                                            <v-menu offset-y>
+                                                <template v-slot:activator="{ on }">
+                                                    <v-hover>
+                                                        <v-chip
+                                                            :color="message.user_id != currentID ? '#616161' : '#26C6DA'"
+                                                            dark
+                                                            style="height:auto; white-space: normal; margin:0;"
+                                                            class="pa-0 mb-2 ma-0"
+                                                            v-on="on">
+                                                            <v-col>
+                                                                <p style="margin-bottom:2px;text-align:left;font-size:14px"><strong>{{ message.user_name }}</strong></p>
+                                                                <p style="margin:0;text-align:left;font-size:14px">{{ message.body }}</p>
+                                                                <p style="margin:0;text-align:right;font-size:12px">{{ moment(message.created_at).format("lll") }}</p>
+                                                            </v-col>
+                                                        </v-chip>
+                                                    </v-hover>
+                                                </template>
+                                            </v-menu>
+                                        </div>
+                                    </template>
+                                </v-card-text>
+                            </v-card>
+                            <v-text-field
+                                style="margin:10px;"
+                                label="Message"
+                                v-model="newGroupMessage"
+                                placeholder="Type a message..." 
+                                type="text"
+                                outlined
+                                clearable
+                                shaped
+                                append-icon="mdi-send"
+                                @click:append="sendGroupMessage"
+                                @keyup.enter="sendGroupMessage"
+                                name="message"
+                                > 
+                            </v-text-field>
+                        </div>
+                    </v-card>
+            </div>
         <!-- Chat Group Messages **END** -->
 
         <!-- Audio Call **START**  -->
-        <div id="audio" v-if="audioCallPlaced" style="margin-right:10px;">
-            <v-card width="420" height="550">
-                <v-toolbar dark flat>
-                    <v-btn icon @click="closeChat"> 
-                        <v-icon>mdi-close</v-icon>
-                    </v-btn>
-                    <v-toolbar-title>{{audioCallPartner}}</v-toolbar-title>
-                </v-toolbar>
-                <div class="row mt-5" id="audio-row">
-                    <div class="col-12 audio-container" >
-                        <video
-                            ref="userAudio"
-                            muted
-                            playsinline
-                            autoplay
-                            class="cursor-pointer"
-                            :class="isAudioFocusMyself === true ? 'user-audio' : 'partner-audio'"
-                            @click="toggleAudioCameraArea"
-                        />
-                        <video
-                            ref="partnerAudio"
-                            playsinline
-                            autoplay
-                            class="cursor-pointer"
-                            :class="isAudioFocusMyself === true ? 'partner-audio' : 'user-audio'"
-                            @click="toggleAudioCameraArea"
-                            v-if="audioCallParams.callAccepted"
-                        />
-                        <v-card-text v-else>
-                            <div class="partner-audio" >
-                                <div v-if="audioCallPartner" class="column items-center q-pt-xl">
-                                <div class="col q-gutter-y-md text-center">
-                                    <p class="q-pt-md">
-                                    <strong>{{ audioCallPartner }}</strong>
-                                    </p>
-                                    <p>calling...</p>
+            <div id="audio" v-if="audioCallPlaced" style="margin-right:10px;">
+                <v-card width="420" height="550">
+                    <v-toolbar dark flat>
+                        <v-btn icon @click="closeChat"> 
+                            <v-icon>mdi-close</v-icon>
+                        </v-btn>
+                        <v-toolbar-title>{{audioCallPartner}}</v-toolbar-title>
+                    </v-toolbar>
+                    <div class="row mt-5" id="audio-row">
+                        <div class="col-12 audio-container" >
+                            <video
+                                ref="userAudio"
+                                muted
+                                playsinline
+                                autoplay
+                                class="cursor-pointer"
+                                :class="isAudioFocusMyself === true ? 'user-audio' : 'partner-audio'"
+                                @click="toggleAudioCameraArea"
+                            />
+                            <video
+                                ref="partnerAudio"
+                                playsinline
+                                autoplay
+                                class="cursor-pointer"
+                                :class="isAudioFocusMyself === true ? 'partner-audio' : 'user-audio'"
+                                @click="toggleAudioCameraArea"
+                                v-if="audioCallParams.callAccepted"
+                            />
+                            <v-card-text v-else>
+                                <div class="partner-audio" >
+                                    <div v-if="audioCallPartner" class="column items-center q-pt-xl">
+                                    <div class="col q-gutter-y-md text-center">
+                                        <p class="q-pt-md">
+                                        <strong>{{ audioCallPartner }}</strong>
+                                        </p>
+                                        <p>calling...</p>
+                                    </div>
+                                    </div>
                                 </div>
-                                </div>
+                            </v-card-text>
+                            <div class="action-btns">
+                                <v-btn class="btn btn-info" color="#1565C0" @click="toggleAudioMuteAudio">
+                                    <v-icon>{{ audioMutedAudio ? "mdi-microphone" : "mdi-microphone-off" }}</v-icon>
+                                </v-btn>
+                                <v-spacer></v-spacer>
+                                <!-- <v-btn class="btn btn-primary mx-4" color="#1565C0" @click="toggleAudioMuteVideo">
+                                    <v-icon>{{ audioMutedVideo ? "mdi-video" : "mdi-video-off" }}</v-icon>
+                                </v-btn> -->
+                                <v-btn class="btn btn-danger" color="#C62828" @click="endAudioCall">
+                                    <v-icon>mdi-phone-hangup</v-icon>
+                                </v-btn>
                             </div>
-                        </v-card-text>
-                        <div class="action-btns">
-                            <v-btn class="btn btn-info" color="#1565C0" @click="toggleAudioMuteAudio">
-                                <v-icon>{{ audioMutedAudio ? "mdi-microphone" : "mdi-microphone-off" }}</v-icon>
-                            </v-btn>
-                            <v-spacer></v-spacer>
-                            <!-- <v-btn class="btn btn-primary mx-4" color="#1565C0" @click="toggleAudioMuteVideo">
-                                <v-icon>{{ audioMutedVideo ? "mdi-video" : "mdi-video-off" }}</v-icon>
-                            </v-btn> -->
-                            <v-btn class="btn btn-danger" color="#C62828" @click="endAudioCall">
-                                <v-icon>mdi-phone-hangup</v-icon>
-                            </v-btn>
                         </div>
                     </div>
-                </div>
-            </v-card>
-        </div>
+                </v-card>
+            </div>
         <!-- Audio Call **END**  -->
 
         <!-- Video Call **START**  -->
-        <div id="video" v-if="videoCallPlaced" style="margin-right:10px;">
-            <v-card width="420" height="550">
-                <v-toolbar dark flat>
-                    <v-btn icon @click="closeChat"> 
-                        <v-icon>mdi-close</v-icon>
-                    </v-btn>
-                    <v-toolbar-title>{{videoCallPartner}}</v-toolbar-title>
-                </v-toolbar>
-                <div class="row mt-5" id="video-row">
-                    <div class="col-12 video-container" >
-                        <video
-                            ref="userVideo"
-                            muted
-                            playsinline
-                            autoplay
-                            class="cursor-pointer"
-                            :class="isVideoFocusMyself === true ? 'user-video' : 'partner-video'"
-                            @click="toggleVideoCameraArea"
-                        />
-                        <video
-                            ref="partnerVideo"
-                            playsinline
-                            autoplay
-                            class="cursor-pointer"
-                            :class="isVideoFocusMyself === true ? 'partner-video' : 'user-video'"
-                            @click="toggleVideoCameraArea"
-                            v-if="videoCallParams.callAccepted"
-                        />
-                        <v-card-text v-else>
-                            <div class="partner-video" >
-                                <div v-if="videoCallPartner" class="column items-center q-pt-xl">
-                                <div class="col q-gutter-y-md text-center">
-                                    <p class="q-pt-md">
-                                    <strong>{{ videoCallPartner }}</strong>
-                                    </p>
-                                    <p>calling...</p>
+            <div id="video" v-if="videoCallPlaced" style="margin-right:10px;">
+                <v-card width="420" height="550">
+                    <v-toolbar dark flat>
+                        <v-btn icon @click="closeChat"> 
+                            <v-icon>mdi-close</v-icon>
+                        </v-btn>
+                        <v-toolbar-title>{{videoCallPartner}}</v-toolbar-title>
+                    </v-toolbar>
+                    <div class="row mt-5" id="video-row">
+                        <div class="col-12 video-container" >
+                            <video
+                                ref="userVideo"
+                                muted
+                                playsinline
+                                autoplay
+                                class="cursor-pointer"
+                                :class="isVideoFocusMyself === true ? 'user-video' : 'partner-video'"
+                                @click="toggleVideoCameraArea"
+                            />
+                            <video
+                                ref="partnerVideo"
+                                playsinline
+                                autoplay
+                                class="cursor-pointer"
+                                :class="isVideoFocusMyself === true ? 'partner-video' : 'user-video'"
+                                @click="toggleVideoCameraArea"
+                                v-if="videoCallParams.callAccepted"
+                            />
+                            <v-card-text v-else>
+                                <div class="partner-video" >
+                                    <div v-if="videoCallPartner" class="column items-center q-pt-xl">
+                                    <div class="col q-gutter-y-md text-center">
+                                        <p class="q-pt-md">
+                                        <strong>{{ videoCallPartner }}</strong>
+                                        </p>
+                                        <p>calling...</p>
+                                    </div>
+                                    </div>
                                 </div>
-                                </div>
+                            </v-card-text>
+                            <div class="action-btns">
+                                <v-btn class="btn btn-info" color="#1565C0" @click="toggleVideoMuteAudio">
+                                    <v-icon>{{ videoMutedAudio ? "mdi-microphone" : "mdi-microphone-off" }}</v-icon>
+                                </v-btn>
+                                <v-btn class="btn btn-primary mx-4" color="#1565C0" @click="toggleVideoMuteVideo">
+                                    <v-icon>{{ videoMutedVideo ? "mdi-video" : "mdi-video-off" }}</v-icon>
+                                </v-btn>
+                                <v-btn class="btn btn-danger" color="#C62828" @click="endVideoCall">
+                                    <v-icon>mdi-phone-hangup</v-icon>
+                                </v-btn>
                             </div>
-                        </v-card-text>
-                        <div class="action-btns">
-                            <v-btn class="btn btn-info" color="#1565C0" @click="toggleVideoMuteAudio">
-                                <v-icon>{{ videoMutedAudio ? "mdi-microphone" : "mdi-microphone-off" }}</v-icon>
-                            </v-btn>
-                            <v-btn class="btn btn-primary mx-4" color="#1565C0" @click="toggleVideoMuteVideo">
-                                <v-icon>{{ videoMutedVideo ? "mdi-video" : "mdi-video-off" }}</v-icon>
-                            </v-btn>
-                            <v-btn class="btn btn-danger" color="#C62828" @click="endVideoCall">
-                                <v-icon>mdi-phone-hangup</v-icon>
-                            </v-btn>
                         </div>
                     </div>
-                </div>
-            </v-card>
-        </div>
+                </v-card>
+            </div>
         <!-- Video Call **END**  -->
 
-        <v-card flat tile elevation="1">
-            <v-card width="420" height="550" class="pa-0" flat tile>
-                <v-card-text class="pa-0" colo>
-                    <v-row no-gutters align="center" style="background-color:#F5F5F5">
-                        <v-col cols="6" md="4">
-                            <v-card-text>
-                                <v-icon>mdi-account-circle</v-icon> {{ authUserName }} </v-card-text>
-                        </v-col>
-                        <v-col cols="12" md="8">
-                            <v-chip-group column>
-                                <v-chip class="ma-1" small v-on:click="openAllMembers()"> All Members </v-chip>
-                                <v-chip class="ma-1" small v-on:click="openFriendList()"> Friend List </v-chip>
-                                <v-chip class="ma-1" small v-on:click="openGroupList()"> Group List </v-chip>
-                                <v-chip class="ma-1" small v-on:click="openSentFriendRequest()"> Friend Request </v-chip>
-                                <v-chip class="ma-1" small v-on:click="openMerchant()"> Merchant </v-chip>
-                            </v-chip-group>
-                        </v-col>
-                    </v-row>
-                </v-card-text>
-
-        <!-- All Members **START** -->
-                <v-list v-if="userVlist" style="max-height: 550px" class="overflow-y-auto">
-                    <v-list-item-group color="#26C6DA" v-model="model">
-                        <template v-for="(user, index) in allusers" >
-                                <v-list-item :key="index"> 
-                                    <v-list-item-avatar>
-                                        <v-icon>
-                                            mdi-account-circle
-                                        </v-icon>
-                                    </v-list-item-avatar>
-                                    <v-list-item-content v-on:click="getUserMessage(user.id, user.name, componentKey++)">
-                                        <v-list-item-title v-html="user.name">{{ user.name }}</v-list-item-title>
-                                        <v-list-item-subtitle>
-                                            <span class="badge badge-light">{{ getUserOnlineStatus(user.id) }}</span>
-                                            <span class="badge badge-light" style="display:none;">{{ getUserOnlineStatusAudio(user.id) }}</span>
-                                            <span class="badge badge-light" style="display:none;">{{ getUserOnlineStatusVideo(user.id) }}</span>
-                                            <span class="badge badge-light" style="display:none;">{{ getUserOnlineGroupVideo(user.id) }}</span>
-                                            <span class="badge badge-light" style="display:none;">{{ getUserOnlineGroupAudio(user.id) }}</span>
-                                        </v-list-item-subtitle>
-                                    </v-list-item-content>
-                                        <v-list-item-action>
-                                            <v-btn icon v-on:click="sentFriendRequest(user.id, user.name)"><v-icon>mdi-account-plus</v-icon></v-btn>
-                                            <v-card-text v-if="sentRequest">Sent</v-card-text>
-                                        </v-list-item-action>
-                                </v-list-item>
-                                <v-divider v-if="user.divider" :key="user.name"></v-divider>
-                        </template>
-                    </v-list-item-group>
-                </v-list>
-        <!-- All Members **END** -->
-
-        <!-- Merchants **START** -->
-                <v-list v-if="merchantVlist"  style="max-height: 550px" class="overflow-y-auto">
-                    <v-list-item-group color="#26C6DA" v-model="model">
-                        <template v-for="(user, index) in allmerchants" >
-                                <v-list-item :key="index"> 
-                                    <v-list-item-avatar>
-                                        <v-icon>
-                                            mdi-account-circle
-                                        </v-icon>
-                                    </v-list-item-avatar>
-                                    <v-list-item-content v-on:click="getUserMessage(user.id, user.name, componentKey++)">
-                                        <v-list-item-title v-html="user.name">{{ user.name }}</v-list-item-title>
-                                        <v-list-item-subtitle>
-                                            <span class="badge badge-light">{{ getUserOnlineStatus(user.id) }}</span>
-                                            <span class="badge badge-light" style="display:none;">{{ getUserOnlineStatusAudio(user.id) }}</span>
-                                            <span class="badge badge-light" style="display:none;">{{ getUserOnlineStatusVideo(user.id) }}</span>
-                                        </v-list-item-subtitle>
-                                    </v-list-item-content>
-                                </v-list-item>
-                                <v-divider v-if="user.divider" :key="user.name"></v-divider>
-                        </template>
-                    </v-list-item-group>
-                </v-list>
-        <!-- Merchants **END** -->
-
-        <!-- Friend Request **START** -->
-                <v-list v-if="friendRequestVlist"  style="max-height: 550px" class="overflow-y-auto">
-                    <v-list-item-group color="#26C6DA" v-model="model">
-                        <template v-for="(user, index) in allFriendRequest" >
-                                <v-list-item :key="index"> 
-                                    <v-list-item-avatar>
-                                        <v-icon>
-                                            mdi-account-circle
-                                        </v-icon>
-                                    </v-list-item-avatar>
-                                    <v-list-item-content v-on:click="getUserMessage(user.id, user.name, componentKey++)">
-                                        <v-list-item-title v-html="user.name">{{ user.name }}</v-list-item-title>
-                                        <v-list-item-subtitle>
-                                            <span class="badge badge-light">{{ getUserOnlineStatus(user.id) }}</span>
-                                            <span class="badge badge-light" style="display:none;">{{ getUserOnlineStatusAudio(user.id) }}</span>
-                                            <span class="badge badge-light" style="display:none;">{{ getUserOnlineStatusVideo(user.id) }}</span>
-                                        </v-list-item-subtitle>
-                                    </v-list-item-content>
-                                    <v-list-item-action>
-                                            <v-card-text>Sent</v-card-text>
-                                        </v-list-item-action>
-                                </v-list-item>
-                                <v-divider v-if="user.divider" :key="user.name"></v-divider>
-                        </template>
-                    </v-list-item-group>
-                </v-list>
-        <!-- Friend Request **END** -->
-
-        <!-- Friend List **START** -->
-                <v-list v-if="friendVlist"  style="max-height: 550px" class="overflow-y-auto">
-                    <v-list-item-group color="#26C6DA" v-model="model">
-                        <template v-for="(user, index) in allFriendList">
-                                <v-list-item :key="index"> 
-                                    <v-list-item-avatar>
-                                        <v-icon>
-                                            mdi-account-circle
-                                        </v-icon>
-                                    </v-list-item-avatar>
-                                    <v-list-item-content v-on:click="getUserMessage(user.id, user.name, componentKey++)">
-                                        <v-list-item-title v-html="user.name">{{ user.name }}</v-list-item-title>
-                                        <v-list-item-subtitle>
-                                            <span class="badge badge-light">{{ getUserOnlineStatus(user.id) }}</span>
-                                            <span class="badge badge-light" style="display:none;">{{ getUserOnlineStatusAudio(user.id) }}</span>
-                                            <span class="badge badge-light" style="display:none;">{{ getUserOnlineStatusVideo(user.id) }}</span>
-                                        </v-list-item-subtitle>
-                                    </v-list-item-content>
-                                    <v-list-item-action>
-                                        <v-col v-if="colFriendStatus == user.status ? true : false">
-                                            <v-btn v-on:click="acceptFriend(user.id)">Accept</v-btn>
-                                            <v-btn v-on:click="rejectFriend(user.id)">Reject</v-btn>
-                                        </v-col>
-                                    </v-list-item-action>
-                                </v-list-item>
-                                <v-divider v-if="user.divider" :key="user.name"></v-divider>
-                        </template>
-                    </v-list-item-group>
-                </v-list>
-        <!-- Friend List **END** -->
-
-        <!-- Group List **START** -->
-                <v-list v-if="groupVlist"   style="max-height: 550px" class="overflow-y-auto">
-                    <v-col v-if="!addGroupChecked">
-                            <v-icon>mdi-account-group</v-icon>
-                            <v-btn text v-on:click="checkGroup(addGroupChecked = !addGroupChecked)"> Add Group</v-btn>
-                        </v-col>
-                    <v-list-item-group color="#26C6DA" v-model="model" v-if="!addGroupChecked">
-                        <template v-for="(user, index) in allGroups">
-                                <v-list-item :key="index" > 
-                                    <v-list-item-avatar>
-                                        <v-icon>
-                                            mdi-account-circle
-                                        </v-icon>
-                                    </v-list-item-avatar>
-                                        <v-list-item-content v-on:click="fetchGroupMessage(user.id, user.name, componentKeyGroup++)">
-                                            <v-list-item-title v-html="user.name">{{ user.name }}</v-list-item-title>
-                                        </v-list-item-content>
-                                </v-list-item>
-                        </template>
-                    </v-list-item-group>
-                    <v-list-item-group color="#26C6DA" v-model="model" v-if="addGroupChecked">
-                        <v-container fill-height>
-                            <v-row  v-if="addGroupChecked" style="margin: 10px;">
-                                <v-text-field
-                                    v-model="newGroupName"
-                                    filled
-                                    label="Group Name"
-                                    ></v-text-field>
-                                <v-btn 
-                                dark
-                                depressed 
-                                color="#26C6DA" 
-                                style="margin-top: 10px;margin-left: 10px;" 
-                                v-on:click="createGroup(newGroupName, addGroupChecked = !addGroupChecked)">Confirm</v-btn>
+        <!-- User List **START** -->
+            <v-card flat tile elevation="1">
+                <v-card width="420" height="550" class="pa-0" flat tile>
+                    <!-- Toolbar **START** -->
+                        <v-card-text class="pa-0" colo>
+                            <v-row no-gutters align="center" style="background-color:#F5F5F5">
+                                <v-col cols="6" md="4">
+                                    <v-card-text>
+                                        <v-icon>mdi-account-circle</v-icon> {{ authUserName }} </v-card-text>
+                                </v-col>
+                                <v-col cols="12" md="8">
+                                    <v-chip-group column>
+                                        <v-chip class="ma-1" small v-on:click="openAllMembers()"> All Members </v-chip>
+                                        <v-chip class="ma-1" small v-on:click="openFriendList()"> Friend List </v-chip>
+                                        <v-chip class="ma-1" small v-on:click="openGroupList()"> Group List </v-chip>
+                                        <v-chip class="ma-1" small v-on:click="openSentFriendRequest()"> Friend Request </v-chip>
+                                        <v-chip class="ma-1" small v-on:click="openMerchant()"> Merchant </v-chip>
+                                    </v-chip-group>
+                                </v-col>
                             </v-row>
-                        </v-container>
-                        <template v-for="(user, index) in allusers">
-                                <v-list-item :key="index" > 
-                                    <v-list-item-avatar>
-                                        <v-icon>
-                                            mdi-account-circle
-                                        </v-icon>
-                                    </v-list-item-avatar>
-                                    <template v-slot:default="{ active }">
-                                        <v-list-item-content>
-                                            <v-list-item-title v-html="user.name">{{ user.name }}</v-list-item-title>
-                                            <v-list-item-subtitle>
-                                                <span class="badge badge-light">{{ getUserOnlineStatus(user.id) }}</span>
-                                                <span class="badge badge-light" style="display:none;">{{ getUserOnlineStatusAudio(user.id) }}</span>
-                                                <span class="badge badge-light" style="display:none;">{{ getUserOnlineStatusVideo(user.id) }}</span>
-                                            </v-list-item-subtitle>
-                                        </v-list-item-content>
-                                        <v-list-item-action>
-                                            <v-checkbox
-                                                :input-value="active"
-                                                color="deep-purple accent-4"
-                                                v-model="chosenUserID"
-                                                :value="user.id"
-                                                ></v-checkbox>
-                                        </v-list-item-action>
-                                        
-                                    </template>
-                                    
-                                </v-list-item>
-                        </template>
-                        
-                    </v-list-item-group>
-                </v-list>
-        <!-- Group List **END** -->
-            </v-card> 
-        </v-card>
-        
+                        </v-card-text>
+                    <!-- Toolbar **END** -->
+
+                    <!-- All Members **START** -->
+                        <v-list v-if="userVlist" style="max-height: 550px" class="overflow-y-auto">
+                            <v-list-item-group color="#26C6DA" v-model="model">
+                                <template v-for="(user, index) in allusers" >
+                                        <v-list-item :key="index"> 
+                                            <v-list-item-avatar>
+                                                <v-icon>
+                                                    mdi-account-circle
+                                                </v-icon>
+                                            </v-list-item-avatar>
+                                            <v-list-item-content v-on:click="getUserMessage(user.id, user.name, componentKey++)">
+                                                <v-list-item-title v-html="user.name">{{ user.name }}</v-list-item-title>
+                                                <v-list-item-subtitle>
+                                                    <span class="badge badge-light">{{ getUserOnlineStatus(user.id) }}</span>
+                                                    <span class="badge badge-light" style="display:none;">{{ getUserOnlineStatusAudio(user.id) }}</span>
+                                                    <span class="badge badge-light" style="display:none;">{{ getUserOnlineStatusVideo(user.id) }}</span>
+                                                    <span class="badge badge-light" style="display:none;">{{ getUserOnlineGroupVideo(user.id) }}</span>
+                                                    <span class="badge badge-light" style="display:none;">{{ getUserOnlineGroupAudio(user.id) }}</span>
+                                                </v-list-item-subtitle>
+                                            </v-list-item-content>
+                                                <v-list-item-action>
+                                                    <v-btn icon v-on:click="sentFriendRequest(user.id, user.name)"><v-icon>mdi-account-plus</v-icon></v-btn>
+                                                    <v-card-text v-if="sentRequest">Sent</v-card-text>
+                                                </v-list-item-action>
+                                        </v-list-item>
+                                        <v-divider v-if="user.divider" :key="user.name"></v-divider>
+                                </template>
+                            </v-list-item-group>
+                        </v-list>
+                    <!-- All Members **END** -->
+
+                    <!-- Merchants **START** -->
+                        <v-list v-if="merchantVlist"  style="max-height: 550px" class="overflow-y-auto">
+                            <v-list-item-group color="#26C6DA" v-model="model">
+                                <template v-for="(user, index) in allmerchants" >
+                                        <v-list-item :key="index"> 
+                                            <v-list-item-avatar>
+                                                <v-icon>
+                                                    mdi-account-circle
+                                                </v-icon>
+                                            </v-list-item-avatar>
+                                            <v-list-item-content v-on:click="getUserMessage(user.id, user.name, componentKey++)">
+                                                <v-list-item-title v-html="user.name">{{ user.name }}</v-list-item-title>
+                                                <v-list-item-subtitle>
+                                                    <span class="badge badge-light">{{ getUserOnlineStatus(user.id) }}</span>
+                                                    <span class="badge badge-light" style="display:none;">{{ getUserOnlineStatusAudio(user.id) }}</span>
+                                                    <span class="badge badge-light" style="display:none;">{{ getUserOnlineStatusVideo(user.id) }}</span>
+                                                </v-list-item-subtitle>
+                                            </v-list-item-content>
+                                        </v-list-item>
+                                        <v-divider v-if="user.divider" :key="user.name"></v-divider>
+                                </template>
+                            </v-list-item-group>
+                        </v-list>
+                    <!-- Merchants **END** -->
+
+                    <!-- Friend Request **START** -->
+                        <v-list v-if="friendRequestVlist"  style="max-height: 550px" class="overflow-y-auto">
+                            <v-list-item-group color="#26C6DA" v-model="model">
+                                <template v-for="(user, index) in allFriendRequest" >
+                                        <v-list-item :key="index"> 
+                                            <v-list-item-avatar>
+                                                <v-icon>
+                                                    mdi-account-circle
+                                                </v-icon>
+                                            </v-list-item-avatar>
+                                            <v-list-item-content v-on:click="getUserMessage(user.id, user.name, componentKey++)">
+                                                <v-list-item-title v-html="user.name">{{ user.name }}</v-list-item-title>
+                                                <v-list-item-subtitle>
+                                                    <span class="badge badge-light">{{ getUserOnlineStatus(user.id) }}</span>
+                                                    <span class="badge badge-light" style="display:none;">{{ getUserOnlineStatusAudio(user.id) }}</span>
+                                                    <span class="badge badge-light" style="display:none;">{{ getUserOnlineStatusVideo(user.id) }}</span>
+                                                </v-list-item-subtitle>
+                                            </v-list-item-content>
+                                            <v-list-item-action>
+                                                    <v-card-text>Sent</v-card-text>
+                                                </v-list-item-action>
+                                        </v-list-item>
+                                        <v-divider v-if="user.divider" :key="user.name"></v-divider>
+                                </template>
+                            </v-list-item-group>
+                        </v-list>
+                    <!-- Friend Request **END** -->
+
+                    <!-- Friend List **START** -->
+                        <v-list v-if="friendVlist"  style="max-height: 550px" class="overflow-y-auto">
+                            <v-list-item-group color="#26C6DA" v-model="model">
+                                <template v-for="(user, index) in allFriendList">
+                                        <v-list-item :key="index"> 
+                                            <v-list-item-avatar>
+                                                <v-icon>
+                                                    mdi-account-circle
+                                                </v-icon>
+                                            </v-list-item-avatar>
+                                            <v-list-item-content v-on:click="getUserMessage(user.id, user.name, componentKey++)">
+                                                <v-list-item-title v-html="user.name">{{ user.name }}</v-list-item-title>
+                                                <v-list-item-subtitle>
+                                                    <span class="badge badge-light">{{ getUserOnlineStatus(user.id) }}</span>
+                                                    <span class="badge badge-light" style="display:none;">{{ getUserOnlineStatusAudio(user.id) }}</span>
+                                                    <span class="badge badge-light" style="display:none;">{{ getUserOnlineStatusVideo(user.id) }}</span>
+                                                </v-list-item-subtitle>
+                                            </v-list-item-content>
+                                            <v-list-item-action>
+                                                <v-col v-if="colFriendStatus == user.status ? true : false">
+                                                    <v-btn v-on:click="acceptFriend(user.id)">Accept</v-btn>
+                                                    <v-btn v-on:click="rejectFriend(user.id)">Reject</v-btn>
+                                                </v-col>
+                                            </v-list-item-action>
+                                        </v-list-item>
+                                        <v-divider v-if="user.divider" :key="user.name"></v-divider>
+                                </template>
+                            </v-list-item-group>
+                        </v-list>
+                    <!-- Friend List **END** -->
+
+                    <!-- Group List **START** -->
+                        <v-list v-if="groupVlist"   style="max-height: 550px" class="overflow-y-auto">
+                            <v-col v-if="!addGroupChecked">
+                                    <v-icon>mdi-account-group</v-icon>
+                                    <v-btn text v-on:click="checkGroup(addGroupChecked = !addGroupChecked)"> Add Group</v-btn>
+                                </v-col>
+                            <v-list-item-group color="#26C6DA" v-model="model" v-if="!addGroupChecked">
+                                <template v-for="(user, index) in allGroups">
+                                        <v-list-item :key="index" > 
+                                            <v-list-item-avatar>
+                                                <v-icon>
+                                                    mdi-account-circle
+                                                </v-icon>
+                                            </v-list-item-avatar>
+                                                <v-list-item-content v-on:click="fetchGroupMessage(user.id, user.name, componentKeyGroup++)">
+                                                    <v-list-item-title v-html="user.name">{{ user.name }}</v-list-item-title>
+                                                </v-list-item-content>
+                                        </v-list-item>
+                                </template>
+                            </v-list-item-group>
+                            <v-list-item-group color="#26C6DA" v-model="model" v-if="addGroupChecked">
+                                <v-container fill-height>
+                                    <v-row  v-if="addGroupChecked" style="margin: 10px;">
+                                        <v-text-field
+                                            v-model="newGroupName"
+                                            filled
+                                            label="Group Name"
+                                            ></v-text-field>
+                                        <v-btn 
+                                        dark
+                                        depressed 
+                                        color="#26C6DA" 
+                                        style="margin-top: 10px;margin-left: 10px;" 
+                                        v-on:click="createGroup(newGroupName, addGroupChecked = !addGroupChecked)">Confirm</v-btn>
+                                    </v-row>
+                                </v-container>
+                                <template v-for="(user, index) in allusers">
+                                        <v-list-item :key="index" > 
+                                            <v-list-item-avatar>
+                                                <v-icon>
+                                                    mdi-account-circle
+                                                </v-icon>
+                                            </v-list-item-avatar>
+                                            <template v-slot:default="{ active }">
+                                                <v-list-item-content>
+                                                    <v-list-item-title v-html="user.name">{{ user.name }}</v-list-item-title>
+                                                    <v-list-item-subtitle>
+                                                        <span class="badge badge-light">{{ getUserOnlineStatus(user.id) }}</span>
+                                                        <span class="badge badge-light" style="display:none;">{{ getUserOnlineStatusAudio(user.id) }}</span>
+                                                        <span class="badge badge-light" style="display:none;">{{ getUserOnlineStatusVideo(user.id) }}</span>
+                                                    </v-list-item-subtitle>
+                                                </v-list-item-content>
+                                                <v-list-item-action>
+                                                    <v-checkbox
+                                                        :input-value="active"
+                                                        color="deep-purple accent-4"
+                                                        v-model="chosenUserID"
+                                                        :value="user.id"
+                                                        ></v-checkbox>
+                                                </v-list-item-action>
+                                                
+                                            </template>
+                                            
+                                        </v-list-item>
+                                </template>
+                                
+                            </v-list-item-group>
+                        </v-list>
+                    <!-- Group List **END** -->
+                </v-card> 
+            </v-card>
+        <!-- User List **END** -->
     </v-layout>
 </template>
 
@@ -693,7 +696,7 @@ export default {
             return null;
         },
 
-        // Group Computed
+        // Group Video Computed
         incomingGroupCallDialog() {
             if (
                 this.groupCallParams.receivingCall &&
@@ -788,20 +791,22 @@ export default {
     },
 
     mounted(){
+        // Get List
         this.getUserList();
         this.getMerchantList();
         this.getSentFriendRequest();
         this.getFriendList();
         this.getGroupList();
 
+        // Initialize Channels
+        this.initializeStatusChannel();
+        this.initializeStatusListeners(); 
+
         this.initializeAudioChannel();
         this.initializeAudioCallListeners();
 
         this.initializeVideoChannel();
         this.initializeVideoCallListeners(); 
-
-        this.initializeStatusChannel();
-        this.initializeStatusListeners(); 
 
         this.initializeGroupChannel();
         this.initializeGroupListeners();
@@ -810,97 +815,73 @@ export default {
         this.initializeGroupAudioCallListeners();
     },
 
-    
     methods: {
-        createGroup(groupName) {
-            this.chosenUserID.push(this.$userId)
-            axios.post('add-group', 
-            {
-                name: groupName,
-                users: this.chosenUserID
-            })
-            .then(response => {
-                this.messages = response.data
-                // console.log(response.data)
-            })
-            .catch(error => {
-                // console.log(error);
-            })
-        },
-
+    /* --START-- Get Users Details */
+        // Get All Members
         getUserList(){
             axios.get('user-member').then(response => {
                 this.allusers = response.data;
             })
         },
-        
-        fetchGroupMessage(groupID, groupName) {
-            this.groupName = groupName;
-            this.groupID = groupID;
-            // fetchMessages-group
-            axios.post('fetchMessages-group', 
-            {
-                group_id: groupID
-            })
-            .then(response => {
-                this.groupMessages = response.data
-                this.componentKeyGroup += 1;
-                // console.log(response.data)
-            })
-            .catch(error => {
-                console.log(error);
-            })
-        },
 
-        sendGroupMessage(){
-            // console.log(this.newGroupMessage);
-            this.groupMessages.push({
-                user_id: this.$userId,
-                user_name: this.authUserName,
-                body: this.newGroupMessage
-            });
-
-            axios.post('send-group', 
-            {
-                body: this.newGroupMessage, 
-                group_id: this.groupID,
-                user_id: this.$userId,
-                user_name: this.authUserName
-            })
-            .then(response => {
-                console.log(response)
-            })
-            .catch((error) => {
-                console.log(error);
-            })
-
-            this.newGroupMessage = ''
-        },
-
+        // Get Merchant List
         getMerchantList(){
             axios.get('user-merchant').then(response => {
                 this.allmerchants = response.data;
             })
         },
 
+        // Get Group List
         getGroupList(){
-           axios.post('group', 
+            axios.post('group', 
+                {
+                    user_id: this.$userId,
+                })
+                .then(response => {
+                    console.log(response.data);
+                    axios.post('getGroupName', 
+                    {
+                        groupID: response.data
+                    })
+                    .then(response => {
+                        this.allGroups = response.data
+                        // console.log(response.data)
+                    })
+                })
+        },
+
+        // Get Friend List
+        getFriendList(){
+            axios.post('getFriendList', 
+            {
+                to_user_id: this.$userId,
+            })
+            .then(response => {
+                this.allFriendList = response.data;
+                // console.log(response.data);
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+        },
+
+        // Get Friend Request
+        getSentFriendRequest() {
+            axios.post('getSentFriendRequest', 
             {
                 user_id: this.$userId,
             })
             .then(response => {
-                console.log(response.data);
-                axios.post('getGroupName', 
-                {
-                    groupID: response.data
-                })
-                .then(response => {
-                    this.allGroups = response.data
-                    // console.log(response.data)
-                })
+                this.allFriendRequest = response.data;
+                // console.log(response.data);
+            })
+            .catch((error) => {
+                console.log(error);
             })
         },
+    /* --END-- Get Users Details */
 
+    /* --START-- Open Lists */
         openAllMembers(){
             this.userVlist = true;
             this.merchantVlist = false;
@@ -940,8 +921,53 @@ export default {
             this.friendVlist = false; 
             this.groupVlist = true; 
         },
+    /* --END-- Open Lists */
 
-        // Get Chat Room ID for messages
+    /* --START-- Fetch & Send Group/Personal Messages */
+        fetchGroupMessage(groupID, groupName) {
+            this.groupName = groupName;
+            this.groupID = groupID;
+            // fetchMessages-group
+            axios.post('fetchMessages-group', 
+            {
+                group_id: groupID
+            })
+            .then(response => {
+                this.groupMessages = response.data
+                this.componentKeyGroup += 1;
+                this.openGroupChat();
+                // console.log(response.data)
+            })
+            .catch(error => {
+                console.log(error);
+            })
+        },
+
+        sendGroupMessage(){
+            // console.log(this.newGroupMessage);
+            this.groupMessages.push({
+                user_id: this.$userId,
+                user_name: this.authUserName,
+                body: this.newGroupMessage
+            });
+
+            axios.post('send-group', 
+            {
+                body: this.newGroupMessage, 
+                group_id: this.groupID,
+                user_id: this.$userId,
+                user_name: this.authUserName
+            })
+            .then(response => {
+                console.log(response)
+            })
+            .catch((error) => {
+                console.log(error);
+            })
+
+            this.newGroupMessage = ''
+        },
+
         getUserMessage(user_id, name, isOpenChat){
             this.userName = name,
             this.toUserId = user_id
@@ -963,18 +989,6 @@ export default {
             })
         },
 
-        openChat(){
-            document.getElementById("chat").style.display = "block";
-        },
-
-        closeChat(){
-            document.getElementById("chat").style.display = "none";
-        },
-
-        closeGroupChat(){
-            document.getElementById("groupChat").style.display = "none";
-        },
-        
         fetchMessages(){
             axios.post('http://127.0.0.1:8000/api/chats', 
             {
@@ -1011,35 +1025,28 @@ export default {
 
             this.newMessage = ''
         },
+    /* --END-- Fetch & Send Group/Personal Messages */
 
-        getSentFriendRequest() {
-            axios.post('getSentFriendRequest', 
-            {
-                user_id: this.$userId,
-            })
-            .then(response => {
-                this.allFriendRequest = response.data;
-                // console.log(response.data);
-            })
-            .catch((error) => {
-                console.log(error);
-            })
+    /* --START-- Open & Close Group/Personal Messages */
+        openChat(){
+            document.getElementById("chat").style.display = "block";
         },
 
-        getFriendList(){
-            axios.post('getFriendList', 
-            {
-                to_user_id: this.$userId,
-            })
-            .then(response => {
-                this.allFriendList = response.data;
-                // console.log(response.data);
-            })
-            .catch((error) => {
-                console.log(error);
-            })
+        closeChat(){
+            document.getElementById("chat").style.display = "none";
         },
 
+        openGroupChat(){
+            document.getElementById("groupChat").style.display = "block";
+        },
+
+
+        closeGroupChat(){
+            document.getElementById("groupChat").style.display = "none";
+        },
+    /* --END-- Open & Close Group/Personal Messages */
+
+    /* --START-- Friend Methods */
         sentFriendRequest(userID, name){
             this.allFriendRequest.push({
                 name: name
@@ -1098,7 +1105,9 @@ export default {
 
             this.colFriendStatus = false;
         },
+    /* --END-- Friend Methods */
 
+    /* --START-- Online Status Methods */
         getUserOnlineStatus(id) {
             const onlineUserIndex = this.checkCallParams.users.findIndex(
                 (data) => data.id === id
@@ -1155,6 +1164,24 @@ export default {
                 return "Online";
             }
         },
+    /* --END-- Online Status Methods */
+
+    /* --START-- Group Methods */
+        // Create new Group
+        createGroup(groupName) {
+            this.chosenUserID.push(this.$userId)
+            axios.post('add-group', 
+            {
+                name: groupName,
+                users: this.chosenUserID
+            })
+            .then(response => {
+                this.messages = response.data
+            })
+            .catch(error => {
+                console.log(error);
+            })
+        },
 
         checkGroup(groupChecked) {
             return groupChecked;
@@ -1163,7 +1190,11 @@ export default {
         addGroup(groupChecked) {
             return groupChecked;
         },
+    /* --END-- Online Status Methods */
 
+    /* --START-- Channel Initialization Methods */
+
+        /* Status Online/Offline */
         initializeStatusChannel() {
             // window.Echo.channel('Demo' +  '2');
             this.checkCallParams.channel = window.Echo.join('checkOnline');
@@ -1206,13 +1237,10 @@ export default {
             });
         },
 
+        /* Video Call Group */
         initializeGroupChannel() {
             this.groupCallParams.channel = window.Echo.join(`GroupDemo.${this.$userId}`);
             
-        },
-
-        initializeGroupAudioChannel() {
-            this.groupAudioCallParams.channel = window.Echo.join(`GroupAudioDemo.${this.$userId}`);
         },
 
         initializeGroupListeners() {
@@ -1252,6 +1280,11 @@ export default {
             
         },
 
+        /* Audio Call Group */
+        initializeGroupAudioChannel() {
+            this.groupAudioCallParams.channel = window.Echo.join(`GroupAudioDemo.${this.$userId}`);
+        },
+
         initializeGroupAudioCallListeners() {
             // Audio Settings
             this.groupAudioCallParams.channel.here((users) => {
@@ -1286,22 +1319,9 @@ export default {
             });
         },
 
-        /* Video Call --START-- */
+        /* Video Call Personal */
         initializeVideoChannel() {
             this.videoCallParams.channel = window.Echo.join(`Demo.${this.$userId}`);
-        },
-
-        getVideoMediaPermission() {
-            return getVideoPermissions()
-                .then((stream) => {
-                this.videoCallParams.stream = stream;
-                if (this.$refs.userVideo) {
-                    this.$refs.userVideo.srcObject = stream;
-                }
-                })
-                .catch((error) => {
-                console.log(error);
-                });
         },
 
         initializeVideoCallListeners() {
@@ -1341,6 +1361,79 @@ export default {
             });
         },
 
+        /* Audio Call Personal */
+        initializeAudioChannel() {
+            this.audioCallParams.channel = window.Echo.join(`DemoAudio.${this.$userId}`);
+        },
+
+        initializeAudioCallListeners() {
+            this.audioCallParams.channel.here((users) => {
+                this.audioCallParams.users = users;
+            });
+
+            this.audioCallParams.channel.joining((user) => {
+                // check user availability
+                const joiningUserIndex = this.audioCallParams.users.findIndex(
+                    (data) => data.id === user.id
+                );
+                if (joiningUserIndex < 0) {
+                    this.audioCallParams.users.push(user);
+                }
+            });
+            this.audioCallParams.channel.leaving((user) => {
+                const leavingUserIndex = this.audioCallParams.users.findIndex(
+                    (data) => data.id === user.id
+                );
+                    this.audioCallParams.users.splice(leavingUserIndex, 1);
+            });
+
+            // listen to incomming call
+            this.audioCallParams.channel.listen("StartAudioChat", ({ data }) => {
+                // console.log(data);
+                if (data.type === "incomingCall") {
+                // add a new line to the sdp to take care of error
+                const updatedSignal = {
+                    ...data.signalData,
+                    sdp: `${data.signalData.sdp}\n`,
+                };
+                this.audioCallParams.receivingCall = true;
+                this.audioCallParams.caller = data.from;
+                this.audioCallParams.callerSignal = updatedSignal;
+                }
+            });
+        },
+
+    /* --END-- Channel Initialization Methods */
+
+    /* --START-- Media Permission */
+        getVideoMediaPermission() {
+            return getVideoPermissions()
+                .then((stream) => {
+                this.videoCallParams.stream = stream;
+                if (this.$refs.userVideo) {
+                    this.$refs.userVideo.srcObject = stream;
+                }
+                })
+                .catch((error) => {
+                console.log(error);
+                });
+        },
+
+        getAudioMediaPermission() {
+            return getAudioPermissions()
+                .then((stream) => {
+                this.audioCallParams.stream = stream;
+                if (this.$refs.userAudio) {
+                    this.$refs.userAudio.srcObject = stream;
+                }
+                })
+                .catch((error) => {
+                    console.log(error);
+                });
+        },
+    /* --END-- Media Permission */
+
+    /* --START-- Video Call */
         async placeVideoCall(id, name){ 
             this.videoCallPlaced = true;
             this.videoCallPartner = name;
@@ -1516,63 +1609,9 @@ export default {
             document.getElementById("video").style.display = "none";
             document.getElementById("chat").style.display = "block";
         },
-        /* Video Call --END-- */
+    /* --END-- Video Call */
 
-        /* Audio Call --START-- */
-        initializeAudioChannel() {
-            this.audioCallParams.channel = window.Echo.join(`DemoAudio.${this.$userId}`);
-        },
-
-        getAudioMediaPermission() {
-            return getAudioPermissions()
-                .then((stream) => {
-                this.audioCallParams.stream = stream;
-                if (this.$refs.userAudio) {
-                    this.$refs.userAudio.srcObject = stream;
-                }
-                })
-                .catch((error) => {
-                    console.log(error);
-                });
-        },
-
-        initializeAudioCallListeners() {
-            this.audioCallParams.channel.here((users) => {
-                this.audioCallParams.users = users;
-            });
-
-            this.audioCallParams.channel.joining((user) => {
-                // check user availability
-                const joiningUserIndex = this.audioCallParams.users.findIndex(
-                    (data) => data.id === user.id
-                );
-                if (joiningUserIndex < 0) {
-                    this.audioCallParams.users.push(user);
-                }
-            });
-            this.audioCallParams.channel.leaving((user) => {
-                const leavingUserIndex = this.audioCallParams.users.findIndex(
-                    (data) => data.id === user.id
-                );
-                    this.audioCallParams.users.splice(leavingUserIndex, 1);
-            });
-
-            // listen to incomming call
-            this.audioCallParams.channel.listen("StartAudioChat", ({ data }) => {
-                // console.log(data);
-                if (data.type === "incomingCall") {
-                // add a new line to the sdp to take care of error
-                const updatedSignal = {
-                    ...data.signalData,
-                    sdp: `${data.signalData.sdp}\n`,
-                };
-                this.audioCallParams.receivingCall = true;
-                this.audioCallParams.caller = data.from;
-                this.audioCallParams.callerSignal = updatedSignal;
-                }
-            });
-        },
-
+    /* --START-- Audio Call */
         async placeAudioCall(id, name){ 
             this.audioCallPlaced = true;
             this.audioCallPartner = name;
@@ -1742,9 +1781,9 @@ export default {
             document.getElementById("audio").style.display = "none";
             document.getElementById("chat").style.display = "block";
         },
-        /* Audio Call --END-- */
+    /* --END-- Audio Call */
 
-        /* Group Video Call --START-- */
+    /* --START-- Group Video Call */
         async placeGroupVideoCall(id, name) {
             this.groupCallPlaced = true;
             this.groupCallPartner = name;
@@ -1810,9 +1849,9 @@ export default {
         acceptGroupCall(roomName){
             window.location.href = 'http://127.0.0.1:8000/room/join/' + roomName;
         },
-        /* Group Video Call --END-- */
+    /* --END-- Group Video Call */
 
-        /* Group Video Call --START-- */
+    /* --START-- Group Audio Call */
         async placeGroupAudioCall(id, name) {
             this.groupAudioCallPlaced = true;
             this.groupAudioCallPartner = name;
@@ -1875,7 +1914,7 @@ export default {
         acceptAudioGroupCall(roomName){
             window.location.href = 'http://127.0.0.1:8000/audio-room/join/' + roomName;
         }
-        /* Group Video Call --END-- */
+    /* --END-- Group Video Call */    
     }
 }
 </script>
