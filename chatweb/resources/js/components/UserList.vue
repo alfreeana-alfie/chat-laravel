@@ -1040,7 +1040,6 @@ export default {
             document.getElementById("groupChat").style.display = "block";
         },
 
-
         closeGroupChat(){
             document.getElementById("groupChat").style.display = "none";
         },
@@ -1067,10 +1066,6 @@ export default {
         },
 
         acceptFriend(userID, name){
-            // this.allFriendList.push({
-            //     name: name
-            // });
-
             axios.post('acceptFriend', 
             {
                 to_user_id: this.$userId,
@@ -1087,10 +1082,6 @@ export default {
         },
 
         rejectFriend(userID, name){
-            // this.allFriendList.push({
-            //     name: name
-            // });
-
             axios.post('rejectFriend', 
             {
                 to_user_id: this.$userId,
