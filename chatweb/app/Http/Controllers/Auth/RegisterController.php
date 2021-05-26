@@ -64,21 +64,9 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return Merchant::create([
+        return User::create([
             'name' => $data['name'],
-            'ssm_no' => $data['ssm_no'],
-            'primary_contact_no' => $data['primary_contact_no'],
-            'secondary_contact_no' => $data['secondary_contact_no'],
             'email' => $data['email'],
-            'address' => $data['address'],
-            'zip_code' => $data['zip_code'],
-            'city' => $data['city'],
-            'state' => $data['state'],
-            'country' => $data['country'],
-            'bank_name' => $data['bank_name'],
-            'bank_acc_no' => $data['bank_acc_no'],
-            'belongs_to' => $data['belongs_to'],
-            'activation' => $data['activation'],
             'password' => Hash::make($data['password']),
         ]);
     }
