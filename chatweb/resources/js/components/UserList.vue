@@ -816,1096 +816,1102 @@ export default {
     },
 
     methods: {
-    /* --START-- Get Users Details */
-        // Get All Members
-        getUserList(){
-            axios.get('user-member').then(response => {
-                this.allusers = response.data;
-            })
-        },
+        /* --START-- Get Users Details */
+            // Get All Members
+            getUserList(){
+                axios.get('user-member').then(response => {
+                    this.allusers = response.data;
+                })
+            },
 
-        // Get Merchant List
-        getMerchantList(){
-            axios.get('user-merchant').then(response => {
-                this.allmerchants = response.data;
-            })
-        },
+            // Get Merchant List
+            getMerchantList(){
+                axios.get('user-merchant').then(response => {
+                    this.allmerchants = response.data;
+                })
+            },
 
-        // Get Group List
-        getGroupList(){
-            axios.post('group', 
+            // Get Group List
+            getGroupList(){
+                axios.post('group', 
+                    {
+                        user_id: this.$userId,
+                    })
+                    .then(response => {
+                        console.log(response.data);
+                        axios.post('getGroupName', 
+                        {
+                            groupID: response.data
+                        })
+                        .then(response => {
+                            this.allGroups = response.data
+                            // console.log(response.data)
+                        })
+                    })
+            },
+
+            // Get Friend List
+            getFriendList(){
+                axios.post('getFriendList', 
+                {
+                    to_user_id: this.$userId,
+                })
+                .then(response => {
+                    this.allFriendList = response.data;
+                    // console.log(response.data);
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
+            },
+
+            // Get Friend Request
+            getSentFriendRequest() {
+                axios.post('getSentFriendRequest', 
                 {
                     user_id: this.$userId,
                 })
                 .then(response => {
-                    console.log(response.data);
-                    axios.post('getGroupName', 
-                    {
-                        groupID: response.data
-                    })
-                    .then(response => {
-                        this.allGroups = response.data
-                        // console.log(response.data)
-                    })
+                    this.allFriendRequest = response.data;
+                    // console.log(response.data);
                 })
-        },
+                .catch((error) => {
+                    console.log(error);
+                })
+            },
+        /* --END-- Get Users Details */
 
-        // Get Friend List
-        getFriendList(){
-            axios.post('getFriendList', 
-            {
-                to_user_id: this.$userId,
-            })
-            .then(response => {
-                this.allFriendList = response.data;
-                // console.log(response.data);
-            })
-            .catch((error) => {
-                console.log(error);
-            })
-        },
+        /* --START-- Open Lists */
+            openAllMembers(){
+                this.userVlist = true;
+                this.merchantVlist = false;
+                this.friendRequestVlist = false;
+                this.friendVlist = false;
+                this.groupVlist = false;
+            },
 
-        // Get Friend Request
-        getSentFriendRequest() {
-            axios.post('getSentFriendRequest', 
-            {
-                user_id: this.$userId,
-            })
-            .then(response => {
-                this.allFriendRequest = response.data;
-                // console.log(response.data);
-            })
-            .catch((error) => {
-                console.log(error);
-            })
-        },
-    /* --END-- Get Users Details */
+            openMerchant(){
+                this.merchantVlist = true;
+                this.userVlist = false; 
+                this.friendRequestVlist = false;  
+                this.friendVlist = false;    
+                this.groupVlist = false;
+            },
 
-    /* --START-- Open Lists */
-        openAllMembers(){
-            this.userVlist = true;
-            this.merchantVlist = false;
-            this.friendRequestVlist = false;
-            this.friendVlist = false;
-            this.groupVlist = false;
-        },
+            openSentFriendRequest(){
+                this.merchantVlist = false;
+                this.userVlist = false; 
+                this.friendRequestVlist = true;   
+                this.friendVlist = false;
+                this.groupVlist = false;
+            },
 
-        openMerchant(){
-            this.merchantVlist = true;
-            this.userVlist = false; 
-            this.friendRequestVlist = false;  
-            this.friendVlist = false;    
-            this.groupVlist = false;
-        },
+            openFriendList(){
+                this.merchantVlist = false;
+                this.userVlist = false; 
+                this.friendRequestVlist = false;
+                this.friendVlist = true; 
+                this.groupVlist = false; 
+            },
 
-        openSentFriendRequest(){
-            this.merchantVlist = false;
-            this.userVlist = false; 
-            this.friendRequestVlist = true;   
-            this.friendVlist = false;
-            this.groupVlist = false;
-        },
+            openGroupList(){
+                this.merchantVlist = false;
+                this.userVlist = false; 
+                this.friendRequestVlist = false;
+                this.friendVlist = false; 
+                this.groupVlist = true; 
+            },
+        /* --END-- Open Lists */
 
-        openFriendList(){
-            this.merchantVlist = false;
-            this.userVlist = false; 
-            this.friendRequestVlist = false;
-            this.friendVlist = true; 
-            this.groupVlist = false; 
-        },
+        /* --START-- Fetch & Send Group/Personal Messages */
+            fetchGroupMessage(groupID, groupName) {
+                this.groupName = groupName;
+                this.groupID = groupID;
+                // fetchMessages-group
+                axios.post('fetchMessages-group', 
+                {
+                    group_id: groupID
+                })
+                .then(response => {
+                    this.groupMessages = response.data
+                    this.componentKeyGroup += 1;
+                    this.openGroupChat();
+                    // console.log(response.data)
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+            },
 
-        openGroupList(){
-            this.merchantVlist = false;
-            this.userVlist = false; 
-            this.friendRequestVlist = false;
-            this.friendVlist = false; 
-            this.groupVlist = true; 
-        },
-    /* --END-- Open Lists */
+            sendGroupMessage(){
+                // console.log(this.newGroupMessage);
+                this.groupMessages.push({
+                    user_id: this.$userId,
+                    user_name: this.authUserName,
+                    body: this.newGroupMessage
+                });
 
-    /* --START-- Fetch & Send Group/Personal Messages */
-        fetchGroupMessage(groupID, groupName) {
-            this.groupName = groupName;
-            this.groupID = groupID;
-            // fetchMessages-group
-            axios.post('fetchMessages-group', 
-            {
-                group_id: groupID
-            })
-            .then(response => {
-                this.groupMessages = response.data
-                this.componentKeyGroup += 1;
-                this.openGroupChat();
-                // console.log(response.data)
-            })
-            .catch(error => {
-                console.log(error);
-            })
-        },
+                axios.post('send-group', 
+                {
+                    body: this.newGroupMessage, 
+                    group_id: this.groupID,
+                    user_id: this.$userId,
+                    user_name: this.authUserName
+                })
+                .then(response => {
+                    console.log(response)
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
 
-        sendGroupMessage(){
-            // console.log(this.newGroupMessage);
-            this.groupMessages.push({
-                user_id: this.$userId,
-                user_name: this.authUserName,
-                body: this.newGroupMessage
-            });
+                this.newGroupMessage = ''
+            },
 
-            axios.post('send-group', 
-            {
-                body: this.newGroupMessage, 
-                group_id: this.groupID,
-                user_id: this.$userId,
-                user_name: this.authUserName
-            })
-            .then(response => {
-                console.log(response)
-            })
-            .catch((error) => {
-                console.log(error);
-            })
+            getUserMessage(user_id, name, isOpenChat){
+                this.userName = name,
+                this.toUserId = user_id
 
-            this.newGroupMessage = ''
-        },
+                axios.post('http://127.0.0.1:8000/api/chatID', 
+                {
+                    user_id: this.$userId, 
+                    to_user_id: user_id
+                })
+                .then(response => {
+                    this.chatID = response.data.id;
+                    this.fetchMessages();
 
-        getUserMessage(user_id, name, isOpenChat){
-            this.userName = name,
-            this.toUserId = user_id
+                    this.componentKey += 1;
+                    this.openChat();
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+            },
 
-            axios.post('http://127.0.0.1:8000/api/chatID', 
-            {
-                user_id: this.$userId, 
-                to_user_id: user_id
-            })
-            .then(response => {
-                this.chatID = response.data.id;
-                this.fetchMessages();
+            fetchMessages(){
+                axios.post('http://127.0.0.1:8000/api/chats', 
+                {
+                    chat_id: this.chatID
+                })
+                .then(response => {
+                    this.messages = response.data
+                    console.log(response.data)
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+            },
 
-                this.componentKey += 1;
-                this.openChat();
-            })
-            .catch(error => {
-                console.log(error);
-            })
-        },
+            sendMessage(){
+                this.messages.push({
+                    user_id: this.$userId,
+                    body: this.newMessage
+                });
 
-        fetchMessages(){
-            axios.post('http://127.0.0.1:8000/api/chats', 
-            {
-                chat_id: this.chatID
-            })
-            .then(response => {
-                this.messages = response.data
-                console.log(response.data)
-            })
-            .catch(error => {
-                console.log(error);
-            })
-        },
+                axios.post('send', 
+                {
+                    body: this.newMessage, 
+                    chat_id: this.chatID,
+                    user_id: this.$userId
+                })
+                .then(response => {
+                    // this.allusers = response.data
+                    // this.allusers = response.data
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
 
-        sendMessage(){
-            this.messages.push({
-                user_id: this.$userId,
-                body: this.newMessage
-            });
+                this.newMessage = ''
+            },
+        /* --END-- Fetch & Send Group/Personal Messages */
 
-            axios.post('send', 
-            {
-                body: this.newMessage, 
-                chat_id: this.chatID,
-                user_id: this.$userId
-            })
-            .then(response => {
-                // this.allusers = response.data
-                // this.allusers = response.data
-            })
-            .catch((error) => {
-                console.log(error);
-            })
+        /* --START-- Open & Close Group/Personal Messages */
+            openChat(){
+                document.getElementById("chat").style.display = "block";
+            },
 
-            this.newMessage = ''
-        },
-    /* --END-- Fetch & Send Group/Personal Messages */
+            closeChat(){
+                document.getElementById("chat").style.display = "none";
+            },
 
-    /* --START-- Open & Close Group/Personal Messages */
-        openChat(){
-            document.getElementById("chat").style.display = "block";
-        },
+            openGroupChat(){
+                document.getElementById("groupChat").style.display = "block";
+            },
 
-        closeChat(){
-            document.getElementById("chat").style.display = "none";
-        },
+            closeGroupChat(){
+                document.getElementById("groupChat").style.display = "none";
+            },
+        /* --END-- Open & Close Group/Personal Messages */
 
-        openGroupChat(){
-            document.getElementById("groupChat").style.display = "block";
-        },
+        /* --START-- Friend Methods */
+            sentFriendRequest(userID, name){
+                this.allFriendRequest.push({
+                    name: name
+                });
 
-        closeGroupChat(){
-            document.getElementById("groupChat").style.display = "none";
-        },
-    /* --END-- Open & Close Group/Personal Messages */
+                axios.post('sendRequest', 
+                {
+                    user_id: this.$userId, 
+                    to_user_id: userID,
+                    status: 'Pending'
+                })
+                .then(response => {
+                    console.log(response);
+                })
+                .catch((error) => {
+                    console.log(error);
+                })
+            },
 
-    /* --START-- Friend Methods */
-        sentFriendRequest(userID, name){
-            this.allFriendRequest.push({
-                name: name
-            });
+            acceptFriend(userID, name){
+                axios.post('acceptFriend', 
+                {
+                    to_user_id: this.$userId,
+                    user_id: userID, 
+                })
+                .then(response => {
+                    console.log(response);
+                })
+                .catch((error) => {
+                    console.log(error);
+                })  
 
-            axios.post('sendRequest', 
-            {
-                user_id: this.$userId, 
-                to_user_id: userID,
-                status: 'Pending'
-            })
-            .then(response => {
-                console.log(response);
-            })
-            .catch((error) => {
-                console.log(error);
-            })
-        },
+                this.colFriendStatus = false;
+            },
 
-        acceptFriend(userID, name){
-            axios.post('acceptFriend', 
-            {
-                to_user_id: this.$userId,
-                user_id: userID, 
-            })
-            .then(response => {
-                console.log(response);
-            })
-            .catch((error) => {
-                console.log(error);
-            })  
+            rejectFriend(userID, name){
+                axios.post('rejectFriend', 
+                {
+                    to_user_id: this.$userId,
+                    user_id: userID, 
+                })
+                .then(response => {
+                    console.log(response);
+                })
+                .catch((error) => {
+                    console.log(error);
+                })  
 
-            this.colFriendStatus = false;
-        },
+                this.colFriendStatus = false;
+            },
+        /* --END-- Friend Methods */
 
-        rejectFriend(userID, name){
-            axios.post('rejectFriend', 
-            {
-                to_user_id: this.$userId,
-                user_id: userID, 
-            })
-            .then(response => {
-                console.log(response);
-            })
-            .catch((error) => {
-                console.log(error);
-            })  
+        /* --START-- Group Methods */
+        
+            // Create new Group
+            createGroup(groupName) {
+                this.chosenUserID.push(this.$userId)
+                axios.post('add-group', 
+                {
+                    name: groupName,
+                    users: this.chosenUserID
+                })
+                .then(response => {
+                    this.messages = response.data
 
-            this.colFriendStatus = false;
-        },
-    /* --END-- Friend Methods */
+                    this.allGroups.push({
+                        id: response.data.id,
+                        name: groupName
+                    });
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+            },
 
-    /* --START-- Online Status Methods */
-        getUserOnlineStatus(id) {
-            const onlineUserIndex = this.checkCallParams.users.findIndex(
-                (data) => data.id === id
-            );
-            
-            if (onlineUserIndex < 0) {
-                return "Offline";
-            }else{
-                return "Online";
-            }
-        },
+            checkGroup(groupChecked) {
+                return groupChecked;
+            },
 
-        getUserOnlineStatusAudio(id) {
-            const onlineUserIndex = this.audioCallParams.users.findIndex(
-                (data) => data.id === id
-            );
-            
-            if (onlineUserIndex < 0) {
-                return "Offline";
-            }else{
-                return "Online";
-            }
-        },
+            addGroup(groupChecked) {
+                return groupChecked;
+            },
+        /* --END-- Group Methods */
 
-        getUserOnlineStatusVideo(id) {
-            const onlineUserIndex = this.videoCallParams.users.findIndex(
-                (data) => data.id === id
-            );
-            if (onlineUserIndex < 0) {
-                return "Offline";
-            }else{
-                return "Online";
-            }
-        },
-
-        getUserOnlineGroupVideo(id) {
-            const onlineUserIndex = this.groupCallParams.users.findIndex(
-                (data) => data.id === id
-            );
-            if (onlineUserIndex < 0) {
-                return "Offline";
-            }else{
-                return "Online";
-            }
-        },
-
-        getUserOnlineGroupAudio(id) {
-            const onlineUserIndex = this.groupAudioCallParams.users.findIndex(
-                (data) => data.id === id
-            );
-            if (onlineUserIndex < 0) {
-                return "Offline";
-            }else{
-                return "Online";
-            }
-        },
-    /* --END-- Online Status Methods */
-
-    /* --START-- Group Methods */
-        // Create new Group
-        createGroup(groupName) {
-            this.chosenUserID.push(this.$userId)
-            axios.post('add-group', 
-            {
-                name: groupName,
-                users: this.chosenUserID
-            })
-            .then(response => {
-                this.messages = response.data
-            })
-            .catch(error => {
-                console.log(error);
-            })
-        },
-
-        checkGroup(groupChecked) {
-            return groupChecked;
-        },
-
-        addGroup(groupChecked) {
-            return groupChecked;
-        },
-    /* --END-- Online Status Methods */
-
-    /* --START-- Channel Initialization Methods */
-
-        /* Status Online/Offline */
-        initializeStatusChannel() {
-            // window.Echo.channel('Demo' +  '2');
-            this.checkCallParams.channel = window.Echo.join('checkOnline');
-        },
-
-        initializeStatusListeners() {
-            this.checkCallParams.channel.here((users) => {
-                this.checkCallParams.users = users;
-            });
-
-            this.checkCallParams.channel.joining((user) => {
-                // check user availability
-                const joiningUserIndex = this.checkCallParams.users.findIndex(
-                    (data) => data.id === user.id
+        /* --START-- Online Status Methods */
+            getUserOnlineStatus(id) {
+                const onlineUserIndex = this.checkCallParams.users.findIndex(
+                    (data) => data.id === id
                 );
-                if (joiningUserIndex < 0) {
-                    this.checkCallParams.users.push(user);
-                }
-            });
-            this.checkCallParams.channel.leaving((user) => {
-                const leavingUserIndex = this.checkCallParams.users.findIndex(
-                    (data) => data.id === user.id
-                );
-                    this.checkCallParams.users.splice(leavingUserIndex, 1);
-            });
-
-            // listen to incomming call
-            this.checkCallParams.channel.listen("checkStatusEvent", ({ data }) => {
-                // console.log(data);
-                if (data.type === "incomingCall") {
-                // add a new line to the sdp to take care of error
-                const updatedSignal = {
-                    ...data.signalData,
-                    sdp: `${data.signalData.sdp}\n`,
-                };
-                this.checkCallParams.receivingCall = true;
-                this.checkCallParams.caller = data.from;
-                this.checkCallParams.callerSignal = updatedSignal;
-                }
-            });
-        },
-
-        /* Video Call Group */
-        initializeGroupChannel() {
-            this.groupCallParams.channel = window.Echo.join(`GroupDemo.${this.$userId}`);
-            
-        },
-
-        initializeGroupListeners() {
-            // Video Settings 
-            this.groupCallParams.channel.here((users) => {
-                this.groupCallParams.users = users;
-            });
-
-            this.groupCallParams.channel.joining((user) => {
-                const joiningUserIndex = this.groupCallParams.users.findIndex(
-                    (data) => data.id === user.id
-                );
-                if (joiningUserIndex < 0) {
-                    this.groupCallParams.users.push(user);
-                }
-            });
-            this.groupCallParams.channel.leaving((user) => {
-                const leavingUserIndex = this.groupCallParams.users.findIndex(
-                    (data) => data.id === user.id
-                );
-                    this.groupCallParams.users.splice(leavingUserIndex, 1);
-            });
-
-            this.groupCallParams.channel.listen("StartGroupVideoChat", ({ data }) => {
-                if (data.type === "incomingCall") {
-                const updatedSignal = {
-                    ...data.signalData,
-                    sdp: `${data.signalData.sdp}\n`,
-                };
-                this.groupCallParams.receivingCall = true;
                 
-                this.groupCallParams.caller = data.from;
-                this.groupCallParams.callerSignal = updatedSignal;
+                if (onlineUserIndex < 0) {
+                    return "Offline";
+                }else{
+                    return "Online";
                 }
-            });
+            },
 
-            
-        },
-
-        /* Audio Call Group */
-        initializeGroupAudioChannel() {
-            this.groupAudioCallParams.channel = window.Echo.join(`GroupAudioDemo.${this.$userId}`);
-        },
-
-        initializeGroupAudioCallListeners() {
-            // Audio Settings
-            this.groupAudioCallParams.channel.here((users) => {
-                this.groupAudioCallParams.users = users;
-            });
-
-            this.groupAudioCallParams.channel.joining((user) => {
-                const joiningUserIndex = this.groupAudioCallParams.users.findIndex(
-                    (data) => data.id === user.id
+            getUserOnlineStatusAudio(id) {
+                const onlineUserIndex = this.audioCallParams.users.findIndex(
+                    (data) => data.id === id
                 );
-                if (joiningUserIndex < 0) {
-                    this.groupAudioCallParams.users.push(user);
+                
+                if (onlineUserIndex < 0) {
+                    return "Offline";
+                }else{
+                    return "Online";
                 }
-            });
-            this.groupAudioCallParams.channel.leaving((user) => {
-                const leavingUserIndex = this.groupAudioCallParams.users.findIndex(
-                    (data) => data.id === user.id
+            },
+
+            getUserOnlineStatusVideo(id) {
+                const onlineUserIndex = this.videoCallParams.users.findIndex(
+                    (data) => data.id === id
                 );
-                    this.groupAudioCallParams.users.splice(leavingUserIndex, 1);
-            });
-
-            this.groupAudioCallParams.channel.listen("StartGroupAudioChat", ({ data }) => {
-                if (data.type === "incomingCall") {
-                const updatedSignal = {
-                    ...data.signalData,
-                    sdp: `${data.signalData.sdp}\n`,
-                };
-                this.groupAudioCallParams.receivingCall = true;
-                this.groupAudioCallParams.caller = data.from;
-                this.groupAudioCallParams.callerSignal = updatedSignal;
+                if (onlineUserIndex < 0) {
+                    return "Offline";
+                }else{
+                    return "Online";
                 }
-            });
-        },
+            },
 
-        /* Video Call Personal */
-        initializeVideoChannel() {
-            this.videoCallParams.channel = window.Echo.join(`Demo.${this.$userId}`);
-        },
-
-        initializeVideoCallListeners() {
-            this.videoCallParams.channel.here((users) => {
-                this.videoCallParams.users = users;
-            });
-
-            this.videoCallParams.channel.joining((user) => {
-                // check user availability
-                const joiningUserIndex = this.videoCallParams.users.findIndex(
-                    (data) => data.id === user.id
+            getUserOnlineGroupVideo(id) {
+                const onlineUserIndex = this.groupCallParams.users.findIndex(
+                    (data) => data.id === id
                 );
-                if (joiningUserIndex < 0) {
-                    this.videoCallParams.users.push(user);
+                if (onlineUserIndex < 0) {
+                    return "Offline";
+                }else{
+                    return "Online";
                 }
-            });
-            this.videoCallParams.channel.leaving((user) => {
-                const leavingUserIndex = this.videoCallParams.users.findIndex(
-                    (data) => data.id === user.id
+            },
+
+            getUserOnlineGroupAudio(id) {
+                const onlineUserIndex = this.groupAudioCallParams.users.findIndex(
+                    (data) => data.id === id
                 );
-                    this.videoCallParams.users.splice(leavingUserIndex, 1);
-            });
-
-            // listen to incomming call
-            this.videoCallParams.channel.listen("StartVideoChat", ({ data }) => {
-                // console.log(data);
-                if (data.type === "incomingCall") {
-                // add a new line to the sdp to take care of error
-                const updatedSignal = {
-                    ...data.signalData,
-                    sdp: `${data.signalData.sdp}\n`,
-                };
-                this.videoCallParams.receivingCall = true;
-                this.videoCallParams.caller = data.from;
-                this.videoCallParams.callerSignal = updatedSignal;
+                if (onlineUserIndex < 0) {
+                    return "Offline";
+                }else{
+                    return "Online";
                 }
-            });
-        },
+            },
+        /* --END-- Online Status Methods */
 
-        /* Audio Call Personal */
-        initializeAudioChannel() {
-            this.audioCallParams.channel = window.Echo.join(`DemoAudio.${this.$userId}`);
-        },
+        /* --START-- Channel Initialization Methods */
 
-        initializeAudioCallListeners() {
-            this.audioCallParams.channel.here((users) => {
-                this.audioCallParams.users = users;
-            });
+            /* Status Online/Offline */
+            initializeStatusChannel() {
+                // window.Echo.channel('Demo' +  '2');
+                this.checkCallParams.channel = window.Echo.join('checkOnline');
+            },
 
-            this.audioCallParams.channel.joining((user) => {
-                // check user availability
-                const joiningUserIndex = this.audioCallParams.users.findIndex(
-                    (data) => data.id === user.id
-                );
-                if (joiningUserIndex < 0) {
-                    this.audioCallParams.users.push(user);
-                }
-            });
-            this.audioCallParams.channel.leaving((user) => {
-                const leavingUserIndex = this.audioCallParams.users.findIndex(
-                    (data) => data.id === user.id
-                );
-                    this.audioCallParams.users.splice(leavingUserIndex, 1);
-            });
-
-            // listen to incomming call
-            this.audioCallParams.channel.listen("StartAudioChat", ({ data }) => {
-                // console.log(data);
-                if (data.type === "incomingCall") {
-                // add a new line to the sdp to take care of error
-                const updatedSignal = {
-                    ...data.signalData,
-                    sdp: `${data.signalData.sdp}\n`,
-                };
-                this.audioCallParams.receivingCall = true;
-                this.audioCallParams.caller = data.from;
-                this.audioCallParams.callerSignal = updatedSignal;
-                }
-            });
-        },
-
-    /* --END-- Channel Initialization Methods */
-
-    /* --START-- Media Permission */
-        getVideoMediaPermission() {
-            return getVideoPermissions()
-                .then((stream) => {
-                this.videoCallParams.stream = stream;
-                if (this.$refs.userVideo) {
-                    this.$refs.userVideo.srcObject = stream;
-                }
-                })
-                .catch((error) => {
-                console.log(error);
+            initializeStatusListeners() {
+                this.checkCallParams.channel.here((users) => {
+                    this.checkCallParams.users = users;
                 });
-        },
 
-        getAudioMediaPermission() {
-            return getAudioPermissions()
-                .then((stream) => {
-                this.audioCallParams.stream = stream;
-                if (this.$refs.userAudio) {
-                    this.$refs.userAudio.srcObject = stream;
-                }
-                })
-                .catch((error) => {
+                this.checkCallParams.channel.joining((user) => {
+                    // check user availability
+                    const joiningUserIndex = this.checkCallParams.users.findIndex(
+                        (data) => data.id === user.id
+                    );
+                    if (joiningUserIndex < 0) {
+                        this.checkCallParams.users.push(user);
+                    }
+                });
+                this.checkCallParams.channel.leaving((user) => {
+                    const leavingUserIndex = this.checkCallParams.users.findIndex(
+                        (data) => data.id === user.id
+                    );
+                        this.checkCallParams.users.splice(leavingUserIndex, 1);
+                });
+
+                // listen to incomming call
+                this.checkCallParams.channel.listen("checkStatusEvent", ({ data }) => {
+                    // console.log(data);
+                    if (data.type === "incomingCall") {
+                    // add a new line to the sdp to take care of error
+                    const updatedSignal = {
+                        ...data.signalData,
+                        sdp: `${data.signalData.sdp}\n`,
+                    };
+                    this.checkCallParams.receivingCall = true;
+                    this.checkCallParams.caller = data.from;
+                    this.checkCallParams.callerSignal = updatedSignal;
+                    }
+                });
+            },
+
+            /* Video Call Group */
+            initializeGroupChannel() {
+                this.groupCallParams.channel = window.Echo.join(`GroupDemo.${this.$userId}`);
+                
+            },
+
+            initializeGroupListeners() {
+                // Video Settings 
+                this.groupCallParams.channel.here((users) => {
+                    this.groupCallParams.users = users;
+                });
+
+                this.groupCallParams.channel.joining((user) => {
+                    const joiningUserIndex = this.groupCallParams.users.findIndex(
+                        (data) => data.id === user.id
+                    );
+                    if (joiningUserIndex < 0) {
+                        this.groupCallParams.users.push(user);
+                    }
+                });
+                this.groupCallParams.channel.leaving((user) => {
+                    const leavingUserIndex = this.groupCallParams.users.findIndex(
+                        (data) => data.id === user.id
+                    );
+                        this.groupCallParams.users.splice(leavingUserIndex, 1);
+                });
+
+                this.groupCallParams.channel.listen("StartGroupVideoChat", ({ data }) => {
+                    if (data.type === "incomingCall") {
+                    const updatedSignal = {
+                        ...data.signalData,
+                        sdp: `${data.signalData.sdp}\n`,
+                    };
+                    this.groupCallParams.receivingCall = true;
+                    
+                    this.groupCallParams.caller = data.from;
+                    this.groupCallParams.callerSignal = updatedSignal;
+                    }
+                });
+
+                
+            },
+
+            /* Audio Call Group */
+            initializeGroupAudioChannel() {
+                this.groupAudioCallParams.channel = window.Echo.join(`GroupAudioDemo.${this.$userId}`);
+            },
+
+            initializeGroupAudioCallListeners() {
+                // Audio Settings
+                this.groupAudioCallParams.channel.here((users) => {
+                    this.groupAudioCallParams.users = users;
+                });
+
+                this.groupAudioCallParams.channel.joining((user) => {
+                    const joiningUserIndex = this.groupAudioCallParams.users.findIndex(
+                        (data) => data.id === user.id
+                    );
+                    if (joiningUserIndex < 0) {
+                        this.groupAudioCallParams.users.push(user);
+                    }
+                });
+                this.groupAudioCallParams.channel.leaving((user) => {
+                    const leavingUserIndex = this.groupAudioCallParams.users.findIndex(
+                        (data) => data.id === user.id
+                    );
+                        this.groupAudioCallParams.users.splice(leavingUserIndex, 1);
+                });
+
+                this.groupAudioCallParams.channel.listen("StartGroupAudioChat", ({ data }) => {
+                    if (data.type === "incomingCall") {
+                    const updatedSignal = {
+                        ...data.signalData,
+                        sdp: `${data.signalData.sdp}\n`,
+                    };
+                    this.groupAudioCallParams.receivingCall = true;
+                    this.groupAudioCallParams.caller = data.from;
+                    this.groupAudioCallParams.callerSignal = updatedSignal;
+                    }
+                });
+            },
+
+            /* Video Call Personal */
+            initializeVideoChannel() {
+                this.videoCallParams.channel = window.Echo.join(`Demo.${this.$userId}`);
+            },
+
+            initializeVideoCallListeners() {
+                this.videoCallParams.channel.here((users) => {
+                    this.videoCallParams.users = users;
+                });
+
+                this.videoCallParams.channel.joining((user) => {
+                    // check user availability
+                    const joiningUserIndex = this.videoCallParams.users.findIndex(
+                        (data) => data.id === user.id
+                    );
+                    if (joiningUserIndex < 0) {
+                        this.videoCallParams.users.push(user);
+                    }
+                });
+                this.videoCallParams.channel.leaving((user) => {
+                    const leavingUserIndex = this.videoCallParams.users.findIndex(
+                        (data) => data.id === user.id
+                    );
+                        this.videoCallParams.users.splice(leavingUserIndex, 1);
+                });
+
+                // listen to incomming call
+                this.videoCallParams.channel.listen("StartVideoChat", ({ data }) => {
+                    // console.log(data);
+                    if (data.type === "incomingCall") {
+                    // add a new line to the sdp to take care of error
+                    const updatedSignal = {
+                        ...data.signalData,
+                        sdp: `${data.signalData.sdp}\n`,
+                    };
+                    this.videoCallParams.receivingCall = true;
+                    this.videoCallParams.caller = data.from;
+                    this.videoCallParams.callerSignal = updatedSignal;
+                    }
+                });
+            },
+
+            /* Audio Call Personal */
+            initializeAudioChannel() {
+                this.audioCallParams.channel = window.Echo.join(`DemoAudio.${this.$userId}`);
+            },
+
+            initializeAudioCallListeners() {
+                this.audioCallParams.channel.here((users) => {
+                    this.audioCallParams.users = users;
+                });
+
+                this.audioCallParams.channel.joining((user) => {
+                    // check user availability
+                    const joiningUserIndex = this.audioCallParams.users.findIndex(
+                        (data) => data.id === user.id
+                    );
+                    if (joiningUserIndex < 0) {
+                        this.audioCallParams.users.push(user);
+                    }
+                });
+                this.audioCallParams.channel.leaving((user) => {
+                    const leavingUserIndex = this.audioCallParams.users.findIndex(
+                        (data) => data.id === user.id
+                    );
+                        this.audioCallParams.users.splice(leavingUserIndex, 1);
+                });
+
+                // listen to incomming call
+                this.audioCallParams.channel.listen("StartAudioChat", ({ data }) => {
+                    // console.log(data);
+                    if (data.type === "incomingCall") {
+                    // add a new line to the sdp to take care of error
+                    const updatedSignal = {
+                        ...data.signalData,
+                        sdp: `${data.signalData.sdp}\n`,
+                    };
+                    this.audioCallParams.receivingCall = true;
+                    this.audioCallParams.caller = data.from;
+                    this.audioCallParams.callerSignal = updatedSignal;
+                    }
+                });
+            },
+
+        /* --END-- Channel Initialization Methods */
+
+        /* --START-- Media Permission */
+            getVideoMediaPermission() {
+                return getVideoPermissions()
+                    .then((stream) => {
+                    this.videoCallParams.stream = stream;
+                    if (this.$refs.userVideo) {
+                        this.$refs.userVideo.srcObject = stream;
+                    }
+                    })
+                    .catch((error) => {
+                    console.log(error);
+                    });
+            },
+
+            getAudioMediaPermission() {
+                return getAudioPermissions()
+                    .then((stream) => {
+                    this.audioCallParams.stream = stream;
+                    if (this.$refs.userAudio) {
+                        this.$refs.userAudio.srcObject = stream;
+                    }
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+            },
+        /* --END-- Media Permission */
+
+        /* --START-- Video Call */
+            async placeVideoCall(id, name){ 
+                this.videoCallPlaced = true;
+                this.videoCallPartner = name;
+                console.log(name);
+
+                await this.getVideoMediaPermission();
+                this.videoCallParams.peer1 = new Peer({
+                    initiator: true,
+                    trickle: false,
+                    stream: this.videoCallParams.stream,
+                });
+
+                this.videoCallParams.peer1.on("signal", (data) => {
+                    axios.post("/video/call-user", {
+                        user_to_call: id,
+                        signal_data: data,
+                        from: this.authUserID,
+                    }).then((response) => {
+                        console.log(response);
+                    }).catch((error) => {
+                        console.log(error);
+                    });
+
+                    // console.log(data);
+                });
+
+                this.videoCallParams.peer1.on("stream", (stream) => {
+                    console.log("Call Streaming...");
+                    if (this.$refs.partnerVideo){
+                        this.$refs.partnerVideo.srcObject = stream;
+                    }
+                });
+
+                this.videoCallParams.peer1.on("connect", () => {
+                    console.log("Peer Connected!")
+                });
+
+                this.videoCallParams.peer1.on("error", (error) => {
                     console.log(error);
                 });
-        },
-    /* --END-- Media Permission */
 
-    /* --START-- Video Call */
-        async placeVideoCall(id, name){ 
-            this.videoCallPlaced = true;
-            this.videoCallPartner = name;
-            console.log(name);
-
-            await this.getVideoMediaPermission();
-            this.videoCallParams.peer1 = new Peer({
-                initiator: true,
-                trickle: false,
-                stream: this.videoCallParams.stream,
-            });
-
-            this.videoCallParams.peer1.on("signal", (data) => {
-                axios.post("/video/call-user", {
-                    user_to_call: id,
-                    signal_data: data,
-                    from: this.authUserID,
-                }).then((response) => {
-                    console.log(response);
-                }).catch((error) => {
-                    console.log(error);
+                this.videoCallParams.peer1.on("close", () => {
+                    console.log("Call Closed Caller");
                 });
 
-                // console.log(data);
-            });
+                this.videoCallParams.channel.listen("StartVideoChat", ({data}) => {
+                    if(data.type == "callAccepted"){
+                        if (data.signal.renegotiate) {
+                            console.log("renegotating");
+                        }
+                        if(data.signal.sdp){
+                            this.videoCallParams.callAccepted = true;
+                            const updateSignal = {
+                                ...data.signal,
+                                sdp: `${data.signal.sdp}\n`,
+                            };
+                            this.videoCallParams.peer1.signal(updateSignal);
+                        }
+                    }
+                });
+                document.getElementById("chat").style.display = "none";
+            },
 
-            this.videoCallParams.peer1.on("stream", (stream) => {
-                console.log("Call Streaming...");
-                if (this.$refs.partnerVideo){
+            async acceptVideoCall(name) {
+                
+                this.videoCallPlaced = true;
+                this.videoCallParams.callAccepted = true;
+                this.videoCallPartner = name;
+                console.log(name);
+
+                await this.getVideoMediaPermission();
+
+                this.videoCallParams.peer2 = new Peer({
+                    initiator: false,
+                    trickle: false,
+                    stream: this.videoCallParams.stream,
+                });
+
+                this.videoCallParams.receivingCall = false;
+                this.videoCallParams.peer2.on("signal", (data) => {
+                    axios.post("/video/accept-call", {
+                        signal: data,
+                        to: this.videoCallParams.caller,
+                    }).then((response) => {
+                        console.log(response);
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+                });
+
+                this.videoCallParams.peer2.on("stream", (stream) => {
+                    this.videoCallParams.callAccepted = true;
                     this.$refs.partnerVideo.srcObject = stream;
+                });
+
+                this.videoCallParams.peer2.on("connect", () => {
+                    console.log("Peer02 Connected");
+                    this.videoCallParams.callAccepted = true;
+                });
+
+                this.videoCallParams.peer2.on("error", (err) => {
+                    console.log(err);
+                });
+
+                this.videoCallParams.peer2.on("close", () => {
+                    console.log("Call Closed Accepter");
+                });
+
+                this.videoCallParams.peer2.signal(this.videoCallParams.callerSignal);
+                document.getElementById("chat").style.display = "none";
+            },
+
+            declineVideoCall(){
+                this.videoCallParams.receivingCall = false;
+                document.getElementById("chatCard").style.display = "block";
+            },
+
+            endVideoCall(){
+                if(!this.videoMutedVideo) this.toggleVideoMuteVideo();
+                if(!this.videoMutedAudio) this.toggleVideoMuteAudio();
+
+                this.stopStreamedVideoCall(this.$refs.userVideo);
+                if (this.authuserid === this.videoCallParams.caller) {
+                    this.videoCallParams.peer1.destroy();
+                } else {
+                    this.videoCallParams.peer2.destroy();
                 }
-            });
+                this.videoCallParams.channel.pusher.channels.channels[
+                    `presence-Demo.${this.$userId}`
+                ].disconnect();
 
-            this.videoCallParams.peer1.on("connect", () => {
-                console.log("Peer Connected!")
-            });
+                setTimeout(() => {
+                    this.videoCallPlaced = false;
+                }, 3000);
+                
+                
+            },
 
-            this.videoCallParams.peer1.on("error", (error) => {
-                console.log(error);
-            });
-
-            this.videoCallParams.peer1.on("close", () => {
-                console.log("Call Closed Caller");
-            });
-
-            this.videoCallParams.channel.listen("StartVideoChat", ({data}) => {
-                if(data.type == "callAccepted"){
-                    if (data.signal.renegotiate) {
-                        console.log("renegotating");
-                    }
-                    if(data.signal.sdp){
-                        this.videoCallParams.callAccepted = true;
-                        const updateSignal = {
-                            ...data.signal,
-                            sdp: `${data.signal.sdp}\n`,
-                        };
-                        this.videoCallParams.peer1.signal(updateSignal);
-                    }
+            toggleVideoCameraArea() {
+                if (this.videoCallParams.callAccepted) {
+                    this.isVideoFocusMyself = !this.isVideoFocusMyself;
                 }
-            });
-            document.getElementById("chat").style.display = "none";
-        },
+            },
 
-        async acceptVideoCall(name) {
-            
-            this.videoCallPlaced = true;
-            this.videoCallParams.callAccepted = true;
-            this.videoCallPartner = name;
-            console.log(name);
+            toggleVideoMuteAudio(){
+                if(this.videoMutedAudio){
+                    this.$refs.userVideo.srcObject.getAudioTracks()[0].enabled = true;
+                    this.videoMutedAudio = false;
+                }else{
+                    this.$refs.userVideo.srcObject.getAudioTracks()[0].enabled = false;
+                    this.videoMutedAudio = true;
+                }
+            },
 
-            await this.getVideoMediaPermission();
+            toggleVideoMuteVideo(){
+                if (this.videoMutedVideo) {
+                    this.$refs.userVideo.srcObject.getVideoTracks()[0].enabled = true;
+                    this.videoMutedVideo = false;
+                } else {
+                    this.$refs.userVideo.srcObject.getVideoTracks()[0].enabled = false;
+                    this.videoMutedVideo = true;
+                }
+            },
 
-            this.videoCallParams.peer2 = new Peer({
-                initiator: false,
-                trickle: false,
-                stream: this.videoCallParams.stream,
-            });
+            stopStreamedVideoCall(videoElem) {
+                const stream = videoElem.srcObject;
+                const tracks = stream.getTracks();
+                tracks.forEach((track) => {
+                    track.stop();
+                });
+                videoElem.srcObject = null;
+                document.getElementById("video").style.display = "none";
+                document.getElementById("chat").style.display = "block";
+            },
+        /* --END-- Video Call */
 
-            this.videoCallParams.receivingCall = false;
-            this.videoCallParams.peer2.on("signal", (data) => {
-                axios.post("/video/accept-call", {
-                    signal: data,
-                    to: this.videoCallParams.caller,
-                }).then((response) => {
-                    console.log(response);
-                })
-                .catch((error) => {
+        /* --START-- Audio Call */
+            async placeAudioCall(id, name){ 
+                this.audioCallPlaced = true;
+                this.audioCallPartner = name;
+                // console.log(name);
+
+                await this.getAudioMediaPermission();
+                this.audioCallParams.peer1 = new Peer({
+                    initiator: true,
+                    trickle: false,
+                    stream: this.audioCallParams.stream,
+                });
+
+                this.audioCallParams.peer1.on("signal", (data) => {
+                    axios.post("/audio/call-user", {
+                        user_to_call: id,
+                        signal_data: data,
+                        from: this.authUserID,
+                    }).then((response) => {
+                        console.log(response);
+                    }).catch((error) => {
+                        console.log(error);
+                    });
+                });
+
+                this.audioCallParams.peer1.on("stream", (stream) => {
+                    console.log("Call Streaming...");
+                    if (this.$refs.partnerAudio){
+                        this.$refs.partnerAudio.srcObject = stream;
+                    }
+                });
+
+                this.audioCallParams.peer1.on("connect", () => {
+                    console.log("Peer Connected!")
+                });
+
+                this.audioCallParams.peer1.on("error", (error) => {
                     console.log(error);
                 });
-            });
 
-            this.videoCallParams.peer2.on("stream", (stream) => {
-                this.videoCallParams.callAccepted = true;
-                this.$refs.partnerVideo.srcObject = stream;
-            });
-
-            this.videoCallParams.peer2.on("connect", () => {
-                console.log("Peer02 Connected");
-                this.videoCallParams.callAccepted = true;
-            });
-
-            this.videoCallParams.peer2.on("error", (err) => {
-                console.log(err);
-            });
-
-            this.videoCallParams.peer2.on("close", () => {
-                console.log("Call Closed Accepter");
-            });
-
-            this.videoCallParams.peer2.signal(this.videoCallParams.callerSignal);
-            document.getElementById("chat").style.display = "none";
-        },
-
-        declineVideoCall(){
-            this.videoCallParams.receivingCall = false;
-            document.getElementById("chatCard").style.display = "block";
-        },
-
-        endVideoCall(){
-            if(!this.videoMutedVideo) this.toggleVideoMuteVideo();
-            if(!this.videoMutedAudio) this.toggleVideoMuteAudio();
-
-            this.stopStreamedVideoCall(this.$refs.userVideo);
-            if (this.authuserid === this.videoCallParams.caller) {
-                this.videoCallParams.peer1.destroy();
-            } else {
-                this.videoCallParams.peer2.destroy();
-            }
-            this.videoCallParams.channel.pusher.channels.channels[
-                `presence-Demo.${this.$userId}`
-            ].disconnect();
-
-            setTimeout(() => {
-                this.videoCallPlaced = false;
-            }, 3000);
-            
-            
-        },
-
-        toggleVideoCameraArea() {
-            if (this.videoCallParams.callAccepted) {
-                this.isVideoFocusMyself = !this.isVideoFocusMyself;
-            }
-        },
-
-        toggleVideoMuteAudio(){
-            if(this.videoMutedAudio){
-                this.$refs.userVideo.srcObject.getAudioTracks()[0].enabled = true;
-                this.videoMutedAudio = false;
-            }else{
-                this.$refs.userVideo.srcObject.getAudioTracks()[0].enabled = false;
-                this.videoMutedAudio = true;
-            }
-        },
-
-        toggleVideoMuteVideo(){
-            if (this.videoMutedVideo) {
-                this.$refs.userVideo.srcObject.getVideoTracks()[0].enabled = true;
-                this.videoMutedVideo = false;
-            } else {
-                this.$refs.userVideo.srcObject.getVideoTracks()[0].enabled = false;
-                this.videoMutedVideo = true;
-            }
-        },
-
-        stopStreamedVideoCall(videoElem) {
-            const stream = videoElem.srcObject;
-            const tracks = stream.getTracks();
-            tracks.forEach((track) => {
-                track.stop();
-            });
-            videoElem.srcObject = null;
-            document.getElementById("video").style.display = "none";
-            document.getElementById("chat").style.display = "block";
-        },
-    /* --END-- Video Call */
-
-    /* --START-- Audio Call */
-        async placeAudioCall(id, name){ 
-            this.audioCallPlaced = true;
-            this.audioCallPartner = name;
-            // console.log(name);
-
-            await this.getAudioMediaPermission();
-            this.audioCallParams.peer1 = new Peer({
-                initiator: true,
-                trickle: false,
-                stream: this.audioCallParams.stream,
-            });
-
-            this.audioCallParams.peer1.on("signal", (data) => {
-                axios.post("/audio/call-user", {
-                    user_to_call: id,
-                    signal_data: data,
-                    from: this.authUserID,
-                }).then((response) => {
-                    console.log(response);
-                }).catch((error) => {
-                    console.log(error);
+                this.audioCallParams.peer1.on("close", () => {
+                    console.log("Call Closed Caller");
                 });
-            });
 
-            this.audioCallParams.peer1.on("stream", (stream) => {
-                console.log("Call Streaming...");
-                if (this.$refs.partnerAudio){
+                this.audioCallParams.channel.listen("StartAudioChat", ({data}) => {
+                    if(data.type == "callAccepted"){
+                        if (data.signal.renegotiate) {
+                            console.log("renegotating");
+                        }
+                        if(data.signal.sdp){
+                            this.audioCallParams.callAccepted = true;
+                            const updateSignal = {
+                                ...data.signal,
+                                sdp: `${data.signal.sdp}\n`,
+                            };
+                            this.audioCallParams.peer1.signal(updateSignal);
+                        }
+                    }
+                });
+                document.getElementById("chat").style.display = "none";
+            },
+
+            async acceptAudioCall(name) {
+                this.audioCallPlaced = true;
+                this.audioCallParams.callAccepted = true;
+                this.audioCallPartner = name;
+                // console.log(name);
+
+                await this.getAudioMediaPermission();
+
+                this.audioCallParams.peer2 = new Peer({
+                    initiator: false,
+                    trickle: false,
+                    stream: this.audioCallParams.stream,
+                });
+
+                this.audioCallParams.receivingCall = false;
+                this.audioCallParams.peer2.on("signal", (data) => {
+                    axios.post("/audio/accept-call", {
+                        signal: data,
+                        to: this.audioCallParams.caller,
+                    }).then((response) => {
+                        console.log(response);
+                    })
+                    .catch((error) => {
+                        console.log(error);
+                    });
+                });
+
+                this.audioCallParams.peer2.on("stream", (stream) => {
+                    this.audioCallParams.callAccepted = true;
                     this.$refs.partnerAudio.srcObject = stream;
+                });
+
+                this.audioCallParams.peer2.on("connect", () => {
+                    console.log("Peer02 Connected");
+                    this.audioCallParams.callAccepted = true;
+                });
+
+                this.audioCallParams.peer2.on("error", (err) => {
+                    console.log(err);
+                });
+
+                this.audioCallParams.peer2.on("close", () => {
+                    console.log("Call Closed Accepter");
+                });
+
+                this.audioCallParams.peer2.signal(this.audioCallParams.callerSignal);
+                document.getElementById("chat").style.display = "none";
+            },
+
+            declineAudioCall(){
+                this.audioCallParams.receivingCall = false;
+                document.getElementById("chatCard").style.display = "block";
+            },
+
+            endAudioCall(){
+                if(!this.audioMutedAudio) this.toggleAudioMuteAudio();
+
+                this.stopStreamedAudioCall(this.$refs.userAudio);
+                if (this.authUserID === this.audioCallParams.caller) {
+                    this.audioCallParams.peer1.destroy();
+                } else {
+                    this.audioCallParams.peer2.destroy();
                 }
-            });
+                this.audioCallParams.channel.pusher.channels.channels[
+                    `presence-DemoAudio.${this.$userId}`
+                ].disconnect();
 
-            this.audioCallParams.peer1.on("connect", () => {
-                console.log("Peer Connected!")
-            });
+                setTimeout(() => {
+                    this.audioCallPlaced = false;
+                }, 3000);
+            },
 
-            this.audioCallParams.peer1.on("error", (error) => {
-                console.log(error);
-            });
-
-            this.audioCallParams.peer1.on("close", () => {
-                console.log("Call Closed Caller");
-            });
-
-            this.audioCallParams.channel.listen("StartAudioChat", ({data}) => {
-                if(data.type == "callAccepted"){
-                    if (data.signal.renegotiate) {
-                        console.log("renegotating");
-                    }
-                    if(data.signal.sdp){
-                        this.audioCallParams.callAccepted = true;
-                        const updateSignal = {
-                            ...data.signal,
-                            sdp: `${data.signal.sdp}\n`,
-                        };
-                        this.audioCallParams.peer1.signal(updateSignal);
-                    }
+            toggleAudioCameraArea() {
+                if (this.audioCallParams.callAccepted) {
+                    this.isAudioFocusMyself = !this.isAudioFocusMyself;
                 }
-            });
-            document.getElementById("chat").style.display = "none";
-        },
+            },
 
-        async acceptAudioCall(name) {
-            this.audioCallPlaced = true;
-            this.audioCallParams.callAccepted = true;
-            this.audioCallPartner = name;
-            // console.log(name);
+            toggleAudioMuteAudio(){
+                if(this.audioMutedAudio){
+                    this.$refs.userAudio.srcObject.getAudioTracks()[0].enabled = true;
+                    this.audioMutedAudio = false;
+                }else{
+                    this.$refs.userAudio.srcObject.getAudioTracks()[0].enabled = false;
+                    this.audioMutedAudio = true;
+                }
+            },
 
-            await this.getAudioMediaPermission();
+            toggleAudioMuteVideo(){
+                if (this.audioMutedVideo) {
+                    this.$refs.userAudio.srcObject.getVideoTracks()[0].enabled = true;
+                    this.audioMutedVideo = false;
+                } else {
+                    this.$refs.userAudio.srcObject.getVideoTracks()[0].enabled = false;
+                    this.audioMutedVideo = true;
+                }
+            },
 
-            this.audioCallParams.peer2 = new Peer({
-                initiator: false,
-                trickle: false,
-                stream: this.audioCallParams.stream,
-            });
+            stopStreamedAudioCall(videoElem) {
+                const stream = videoElem.srcObject;
+                const tracks = stream.getTracks();
+                tracks.forEach((track) => {
+                    track.stop();
+                });
+                videoElem.srcObject = null;
+                document.getElementById("audio").style.display = "none";
+                document.getElementById("chat").style.display = "block";
+            },
+        /* --END-- Audio Call */
 
-            this.audioCallParams.receivingCall = false;
-            this.audioCallParams.peer2.on("signal", (data) => {
-                axios.post("/audio/accept-call", {
-                    signal: data,
-                    to: this.audioCallParams.caller,
-                }).then((response) => {
+        /* --START-- Group Video Call */
+            async placeGroupVideoCall(id, name) {
+                this.groupCallPlaced = true;
+                this.groupCallPartner = name;
+
+                console.log(id);
+
+                this.groupCallParams.peer1 = new Peer({
+                    initiator: true,
+                    trickle: false,
+                });
+
+                axios.post('get-ID', 
+                {
+                    group_id: id,
+                    user_id: this.$userId
+                })
+                .then(response => {
+                    console.log(response.data);
+                    var user_id = response.data;
+
+                    user_id.forEach(n => {
+                        this.groupCallParams.peer1.on("signal", (data) => {
+                            axios.post("/testing-audio", {
+                                user_to_call: n,
+                                signal_data: data,
+                                from: id,
+                            }).then((response) => {
+                                console.log(response);
+                            }).catch((error) => {
+                                console.log(error);
+                            });
+                        });
+                    });
+                })
+
+                this.groupCallParams.peer1.on("close", () => {
+                    console.log("Call Closed Caller");
+                });
+
+                var naming = "=" + name;
+                console.log("=" + name);
+
+                this.createRoom(naming);
+
+                setTimeout(() => {
+                    this.acceptGroupCall(naming);
+                }, 5000);
+            },
+
+            createRoom(roomName) {
+                axios.post('room/create', 
+                {
+                    roomName: roomName,
+                })
+                .then(response => {
                     console.log(response);
                 })
-                .catch((error) => {
+                .catch(error => {
                     console.log(error);
+                })
+            },
+
+            acceptGroupCall(roomName){
+                window.location.href = 'http://127.0.0.1:8000/room/join/' + roomName;
+            },
+        /* --END-- Group Video Call */
+
+        /* --START-- Group Audio Call */
+            async placeGroupAudioCall(id, name) {
+                this.groupAudioCallPlaced = true;
+                this.groupAudioCallPartner = name;
+
+                this.groupAudioCallParams.peer1 = new Peer({
+                    initiator: true,
+                    trickle: false,
                 });
-            });
 
-            this.audioCallParams.peer2.on("stream", (stream) => {
-                this.audioCallParams.callAccepted = true;
-                this.$refs.partnerAudio.srcObject = stream;
-            });
+                axios.post('get-ID', 
+                {
+                    group_id: id,
+                    user_id: this.$userId
+                })
+                .then(response => {
+                    console.log(response.data);
+                    var user_id = response.data;
 
-            this.audioCallParams.peer2.on("connect", () => {
-                console.log("Peer02 Connected");
-                this.audioCallParams.callAccepted = true;
-            });
-
-            this.audioCallParams.peer2.on("error", (err) => {
-                console.log(err);
-            });
-
-            this.audioCallParams.peer2.on("close", () => {
-                console.log("Call Closed Accepter");
-            });
-
-            this.audioCallParams.peer2.signal(this.audioCallParams.callerSignal);
-            document.getElementById("chat").style.display = "none";
-        },
-
-        declineAudioCall(){
-            this.audioCallParams.receivingCall = false;
-            document.getElementById("chatCard").style.display = "block";
-        },
-
-        endAudioCall(){
-            if(!this.audioMutedAudio) this.toggleAudioMuteAudio();
-
-            this.stopStreamedAudioCall(this.$refs.userAudio);
-            if (this.authUserID === this.audioCallParams.caller) {
-                this.audioCallParams.peer1.destroy();
-            } else {
-                this.audioCallParams.peer2.destroy();
-            }
-            this.audioCallParams.channel.pusher.channels.channels[
-                `presence-DemoAudio.${this.$userId}`
-            ].disconnect();
-
-            setTimeout(() => {
-                this.audioCallPlaced = false;
-            }, 3000);
-        },
-
-        toggleAudioCameraArea() {
-            if (this.audioCallParams.callAccepted) {
-                this.isAudioFocusMyself = !this.isAudioFocusMyself;
-            }
-        },
-
-        toggleAudioMuteAudio(){
-            if(this.audioMutedAudio){
-                this.$refs.userAudio.srcObject.getAudioTracks()[0].enabled = true;
-                this.audioMutedAudio = false;
-            }else{
-                this.$refs.userAudio.srcObject.getAudioTracks()[0].enabled = false;
-                this.audioMutedAudio = true;
-            }
-        },
-
-        toggleAudioMuteVideo(){
-            if (this.audioMutedVideo) {
-                this.$refs.userAudio.srcObject.getVideoTracks()[0].enabled = true;
-                this.audioMutedVideo = false;
-            } else {
-                this.$refs.userAudio.srcObject.getVideoTracks()[0].enabled = false;
-                this.audioMutedVideo = true;
-            }
-        },
-
-        stopStreamedAudioCall(videoElem) {
-            const stream = videoElem.srcObject;
-            const tracks = stream.getTracks();
-            tracks.forEach((track) => {
-                track.stop();
-            });
-            videoElem.srcObject = null;
-            document.getElementById("audio").style.display = "none";
-            document.getElementById("chat").style.display = "block";
-        },
-    /* --END-- Audio Call */
-
-    /* --START-- Group Video Call */
-        async placeGroupVideoCall(id, name) {
-            this.groupCallPlaced = true;
-            this.groupCallPartner = name;
-
-            console.log(id);
-
-            this.groupCallParams.peer1 = new Peer({
-                initiator: true,
-                trickle: false,
-            });
-
-            axios.post('get-ID', 
-            {
-                group_id: id,
-                user_id: this.$userId
-            })
-            .then(response => {
-                console.log(response.data);
-                var user_id = response.data;
-
-                user_id.forEach(n => {
-                    this.groupCallParams.peer1.on("signal", (data) => {
-                        axios.post("/testing-audio", {
-                            user_to_call: n,
-                            signal_data: data,
-                            from: id,
-                        }).then((response) => {
-                            console.log(response);
-                        }).catch((error) => {
-                            console.log(error);
+                    user_id.forEach(n => {
+                        this.groupAudioCallParams.peer1.on("signal", (data) => {
+                            axios.post("/testing-audio", {
+                                user_to_call: n,
+                                signal_data: data,
+                                from: id,
+                            }).then((response) => {
+                                console.log(response);
+                            }).catch((error) => {
+                                console.log(error);
+                            });
                         });
                     });
+                })
+
+                this.groupAudioCallParams.peer1.on("close", () => {
+                    console.log("Call Closed Caller");
                 });
-            })
 
-            this.groupCallParams.peer1.on("close", () => {
-                console.log("Call Closed Caller");
-            });
+                var naming = "=" + name;
 
-            var naming = "=" + name;
-            console.log("=" + name);
+                this.createAudioRoom(naming);
 
-            this.createRoom(naming);
+                setTimeout(() => {
+                    this.acceptAudioGroupCall(naming);
+                }, 5000);
+            },
 
-            setTimeout(() => {
-                this.acceptGroupCall(naming);
-            }, 5000);
-        },
+            createAudioRoom(roomName) {
+                axios.post('audio-room/create', 
+                {
+                    roomName: roomName,
+                })
+                .then(response => {
+                    console.log(response);
+                })
+                .catch(error => {
+                    console.log(error);
+                })
+            },
 
-        createRoom(roomName) {
-            axios.post('room/create', 
-            {
-                roomName: roomName,
-            })
-            .then(response => {
-                console.log(response);
-            })
-            .catch(error => {
-                console.log(error);
-            })
-        },
-
-        acceptGroupCall(roomName){
-            window.location.href = 'http://127.0.0.1:8000/room/join/' + roomName;
-        },
-    /* --END-- Group Video Call */
-
-    /* --START-- Group Audio Call */
-        async placeGroupAudioCall(id, name) {
-            this.groupAudioCallPlaced = true;
-            this.groupAudioCallPartner = name;
-
-            this.groupAudioCallParams.peer1 = new Peer({
-                initiator: true,
-                trickle: false,
-            });
-
-            axios.post('get-ID', 
-            {
-                group_id: id,
-                user_id: this.$userId
-            })
-            .then(response => {
-                console.log(response.data);
-                var user_id = response.data;
-
-                user_id.forEach(n => {
-                    this.groupAudioCallParams.peer1.on("signal", (data) => {
-                        axios.post("/testing-audio", {
-                            user_to_call: n,
-                            signal_data: data,
-                            from: id,
-                        }).then((response) => {
-                            console.log(response);
-                        }).catch((error) => {
-                            console.log(error);
-                        });
-                    });
-                });
-            })
-
-            this.groupAudioCallParams.peer1.on("close", () => {
-                console.log("Call Closed Caller");
-            });
-
-            var naming = "=" + name;
-
-            this.createAudioRoom(naming);
-
-            setTimeout(() => {
-                this.acceptAudioGroupCall(naming);
-            }, 5000);
-        },
-
-        createAudioRoom(roomName) {
-            axios.post('audio-room/create', 
-            {
-                roomName: roomName,
-            })
-            .then(response => {
-                console.log(response);
-            })
-            .catch(error => {
-                console.log(error);
-            })
-        },
-
-        acceptAudioGroupCall(roomName){
-            window.location.href = 'http://127.0.0.1:8000/audio-room/join/' + roomName;
-        }
-    /* --END-- Group Video Call */    
+            acceptAudioGroupCall(roomName){
+                window.location.href = 'http://127.0.0.1:8000/audio-room/join/' + roomName;
+            }
+        /* --END-- Group Video Call */    
     }
 }
 </script>

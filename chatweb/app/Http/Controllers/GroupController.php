@@ -7,6 +7,7 @@ use App\Models\GroupUser;
 use App\Models\GroupChat;
 use Illuminate\Http\Request;
 use App\Events\GroupMessageSent;
+use App\Events\CreateGroupSent;
 
 class GroupController extends Controller
 {
@@ -36,8 +37,7 @@ class GroupController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
         $group = Group::create([
             'name' => $request['name']
         ]);
@@ -48,6 +48,8 @@ class GroupController extends Controller
                 'group_id' => $group->id
             ]);
         }
+
+        broadcast(new CreateGroupSent($group))->toOthers();
 
         return $group;
     }
