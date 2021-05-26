@@ -41,12 +41,12 @@
 
                         {{-- Primary Contact No. --}}
                         <div class="form-group row">
-                            <label for="primary_contact_no " class="col-md-4 col-form-label text-md-right">{{ __('Primary Contact No. ') }}</label>
+                            <label for="primary_contact_no" class="col-md-4 col-form-label text-md-right">{{ __('Primary Contact No. ') }}</label>
 
                             <div class="col-md-6">
-                                <input id="primary_contact_no " type="text" class="form-control @error('primary_contact_no ') is-invalid @enderror" name="primary_contact_no " value="{{ old('primary_contact_no ') }}" required autocomplete="primary_contact_no " autofocus>
+                                <input id="primary_contact_no" type="text" class="form-control @error('primary_contact_no') is-invalid @enderror" name="primary_contact_no" value="{{ old('primary_contact_no') }}" required autocomplete="primary_contact_no " autofocus>
 
-                                @error('primary_contact_no ')
+                                @error('primary_contact_no')
                                     <span class="invalid-feedback" role="alert">
                                         <strong>{{ $message }}</strong>
                                     </span>

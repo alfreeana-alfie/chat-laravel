@@ -32,7 +32,7 @@ class Merchant extends Authenticatable
         'bank_acc_no',
         'belongs_to',
         'activation',
-        'password',
+        'password'
     ];
 
     /**
