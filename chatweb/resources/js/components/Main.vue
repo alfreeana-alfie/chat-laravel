@@ -13,7 +13,6 @@
         {{ hidden ? 'Show' : 'Hide' }}
         </v-btn>
     </v-fab-transition>
-    <!-- <VideoChatComponent :allusers="allusers" :authUserID="authUserID"></VideoChatComponent> -->
 </v-container>
 </template>
 
@@ -37,10 +36,9 @@
 
 <script>
     import UserList from "./UserList";
-    import VideoChatComponent from "./VideoChatComponent";
 
     export default {
-        components: { UserList, VideoChatComponent },
+        components: { UserList },
 
         props: ['UserName'],
 
