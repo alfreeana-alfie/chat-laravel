@@ -1105,6 +1105,41 @@ export default {
             this.colFriendStatus = false;
         },
 
+    /* --START-- Group Methods */
+
+        // Create new Group
+        createGroup(groupName) {
+            
+
+            this.chosenUserID.push(this.$userId)
+            axios.post('add-group', 
+            {
+                name: groupName,
+                users: this.chosenUserID
+            })
+            .then(response => {
+                this.messages = response.data
+                // console.log(response.data.id);
+                    this.allGroups.push({
+                    id: response.data.id,
+                    name: groupName
+                });
+            })
+            .catch(error => {
+                console.log(error);
+            })
+        },
+
+        checkGroup(groupChecked) {
+            return groupChecked;
+        },
+
+        addGroup(groupChecked) {
+            return groupChecked;
+        },
+    /* --END-- Online Status Methods */
+
+    /* --START-- Online Status Methods */
         getUserOnlineStatus(id) {
             const onlineUserIndex = this.checkCallParams.users.findIndex(
                 (data) => data.id === id
@@ -1161,15 +1196,11 @@ export default {
                 return "Online";
             }
         },
+    /* --END-- Online Status Methods */
 
-        checkGroup(groupChecked) {
-            return groupChecked;
-        },
+    /* --START-- Channel Initialization Methods */
 
-        addGroup(groupChecked) {
-            return groupChecked;
-        },
-
+        /* Status Online/Offline */
         initializeStatusChannel() {
             // window.Echo.channel('Demo' +  '2');
             this.checkCallParams.channel = window.Echo.join('checkOnline');

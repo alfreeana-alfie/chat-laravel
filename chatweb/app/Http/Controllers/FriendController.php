@@ -39,8 +39,7 @@ class FriendController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
         $friend = auth()->user()->friends()->create([
             'user_id' => auth()->user()->id,
             'to_user_id' => $request['to_user_id'],
@@ -53,7 +52,7 @@ class FriendController extends Controller
         return $friend;
     }
 
-    public function getFriendList(Request $request){
+    public function getFriendList(Request $request) {
         $friend = Friend::where(['to_user_id' => $request['to_user_id']])->pluck('user_id');
 
         foreach($friend as $f){
@@ -67,7 +66,7 @@ class FriendController extends Controller
         $count = count($newArr);
     }
 
-    public function getSentFriendRequest(Request $request){
+    public function getSentFriendRequest(Request $request) {
 
         $friend = Friend::where(['user_id' => $request['user_id']])->pluck('to_user_id');
 
