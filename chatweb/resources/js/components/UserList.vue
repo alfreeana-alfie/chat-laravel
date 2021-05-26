@@ -523,17 +523,12 @@
 
 
 <script>
-import Chat from "./Chat";
 import Peer from "simple-peer";
 import moment from "moment";
 import { getVideoPermissions } from "../helpers-video";
 import { getAudioPermissions } from "../helpers-audio";
 
 export default {
-    components: {
-        Chat
-    },
-
     props: [
         'authUserName',
         "authUserID"

@@ -2,7 +2,7 @@
 
 
 @section('content')
-    <combine/>
+    {{-- <combine/> --}}
     {{-- <a href="http://127.0.0.1:8000/streaming/112acde2">Click</a> --}}
 
     <meta name="user-id" content="{{ Auth::user()->id }}">

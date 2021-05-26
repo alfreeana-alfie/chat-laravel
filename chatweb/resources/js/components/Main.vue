@@ -10,10 +10,9 @@
         fab
         @click="hidden = !hidden"
         class="v-btn-bottom">
-        {{ hidden ? 'Show' : 'Hide' }}
+        {{ hidden ? 'Chat' : 'Chat' }}
         </v-btn>
     </v-fab-transition>
-    <!-- <VideoChatComponent :allusers="allusers" :authUserID="authUserID"></VideoChatComponent> -->
 </v-container>
 </template>
 
@@ -37,10 +36,9 @@
 
 <script>
     import UserList from "./UserList";
-    import VideoChatComponent from "./VideoChatComponent";
 
     export default {
-        components: { UserList, VideoChatComponent },
+        components: { UserList },
 
         props: ['UserName'],
 
