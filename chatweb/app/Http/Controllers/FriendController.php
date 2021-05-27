@@ -7,7 +7,7 @@ use App\Models\User;
 use App\Events\FriendRequestSent;
 use App\Events\FriendRequestAccept;
 use App\Events\FriendRequestReject;
-
+use DB;
 
 use Illuminate\Http\Request;
 
@@ -54,15 +54,23 @@ class FriendController extends Controller
     }
 
     public function getFriendList(Request $request){
-        $friend = Friend::where(['to_user_id' => $request['to_user_id']])->pluck('user_id');
 
-        foreach($friend as $f){
-            $user = User::where(['id' => $f])->first();
+        $users = DB::table('friends')
+        ->join('users', 'friends.to_user_id','=','users.id')->where(['to_user_id' => $request['to_user_id']])->get();
 
-            $newArr[] = $user;
-        }
+        return $users;
+        // $friend = Friend::where(['to_user_id' => $request['to_user_id']])->pluck('user_id');
+        // $friendStatus = Friend::where(['to_user_id' => $request['to_user_id']])->pluck('status');
 
-        return $newArr;
+        // foreach($friend as $f){
+        //     foreach($friendStatus as $fStatus){
+        //         $user = User::where(['id' => $f])->first();
+    
+        //         $newArr[] = $user;
+        //     }
+        // }
+
+        // return $newArr;
 
         $count = count($newArr);
     }

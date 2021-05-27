@@ -1,6 +1,5 @@
 <template>
     <v-layout>
-        
         <!-- Incoming Audio Call **START** -->
             <div style="margin: 15px;">
                 <v-card >
@@ -67,7 +66,7 @@
 
         <!-- Chat Messages **START** -->
             <div id='chat' v-if="componentKey" style="margin-right:10px;" >
-                <v-card outlined tile elevation="1" width="420" height="550">
+                <v-card outlined tile elevation="1" width="420" height="450">
                         <v-app-bar dark color="#26C6DA">
                             <v-btn icon @click="closeChat"> 
                                 <v-icon>mdi-close</v-icon>
@@ -131,7 +130,7 @@
 
         <!-- Chat Group Messages **START** -->
             <div id='groupChat' v-if="componentKeyGroup" style="margin-right:10px;">
-                <v-card outlined tile elevation="1" width="420" height="550">
+                <v-card outlined tile elevation="1" width="420" height="450">
                         <v-app-bar dark color="#26C6DA">
                             <v-btn icon @click="closeGroupChat"> 
                                 <v-icon>mdi-close</v-icon>
@@ -429,18 +428,21 @@
                                                     mdi-account-circle
                                                 </v-icon>
                                             </v-list-item-avatar>
-                                            <v-list-item-content v-on:click="getUserMessage(user.id, user.name, componentKey++)">
+                                            <v-list-item-content v-on:click="getUserMessage(user.user_id, user.name, componentKey++)">
                                                 <v-list-item-title v-html="user.name">{{ user.name }}</v-list-item-title>
                                                 <v-list-item-subtitle>
-                                                    <span class="badge badge-light">{{ getUserOnlineStatus(user.id) }}</span>
-                                                    <span class="badge badge-light" style="display:none;">{{ getUserOnlineStatusAudio(user.id) }}</span>
-                                                    <span class="badge badge-light" style="display:none;">{{ getUserOnlineStatusVideo(user.id) }}</span>
+                                                    <span class="badge badge-light">{{ getUserOnlineStatus(user.user_id) }}</span>
+                                                    <span class="badge badge-light" style="display:none;">{{ getUserOnlineStatusAudio(user.user_id) }}</span>
+                                                    <span class="badge badge-light" style="display:none;">{{ getUserOnlineStatusVideo(user.user_id) }}</span>
                                                 </v-list-item-subtitle>
                                             </v-list-item-content>
                                             <v-list-item-action>
-                                                <v-col v-if="colFriendStatus == user.status ? true : false">
-                                                    <v-btn v-on:click="acceptFriend(user.id)">Accept</v-btn>
-                                                    <v-btn v-on:click="rejectFriend(user.id)">Reject</v-btn>
+                                                <v-col id="statusOption" v-if="user.status == 'Pending' ">
+                                                    <v-btn v-on:click="acceptFriend(user.user_id)">Accept</v-btn>
+                                                    <v-btn v-on:click="rejectFriend(user.user_id)">Reject</v-btn>
+                                                </v-col>
+                                                <v-col v-if="isRejected">
+                                                    <span>Rejected</span>
                                                 </v-col>
                                             </v-list-item-action>
                                         </v-list-item>
@@ -522,10 +524,8 @@
                 </v-card> 
             </v-card>
         <!-- User List **END** -->
-
     </v-layout>
 </template>
-
 
 <script>
 import Peer from "simple-peer";
@@ -547,7 +547,7 @@ export default {
             friendVlist: false,
             groupVlist: false,
             sentRequest: false,
-            colFriendStatus: "Pending",
+            isRejected: false,
             addGroupChecked: false,
             loading: false,
 
@@ -860,7 +860,7 @@ export default {
                 })
                 .then(response => {
                     this.allFriendList = response.data;
-                    // console.log(response.data);
+                    console.log(response.data);
                 })
                 .catch((error) => {
                     console.log(error);
@@ -1075,12 +1075,12 @@ export default {
                 })
                 .then(response => {
                     console.log(response);
+                    document.getElementById("statusOption").style.display = "none";
                 })
                 .catch((error) => {
                     console.log(error);
                 })  
 
-                this.colFriendStatus = false;
             },
 
             rejectFriend(userID, name){
@@ -1096,7 +1096,8 @@ export default {
                     console.log(error);
                 })  
 
-                this.colFriendStatus = false;
+                document.getElementById("statusOption").style.display = "none";
+                this.isRejected = true;
             },
         /* --END-- Friend Methods */
 

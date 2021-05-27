@@ -12,7 +12,8 @@ class Friend extends Model
     protected $fillable = [
         "user_id", 
         "to_user_id", 
-        "status"
+        "status",
+        "is_checked"
     ];
 
     public function user(){

@@ -17,9 +17,9 @@ class UserController extends Controller
 
     // Merchant List
     public function merchantID(){
-        $user = Merchant::where('id', '!=', auth()->user()->id)
+        $user = User::where('id', '!=', auth()->user()->id)
+        ->where('type', '=', '1')
         ->get();
-        
         return $user;
     }
 
