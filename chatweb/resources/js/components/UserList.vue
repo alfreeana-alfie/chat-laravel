@@ -20,7 +20,7 @@
         <!-- Incoming Video Call **START** -->
             <div style="margin: 15px;">
                 <v-card>
-                    <div class="row" id="videoPersonalCallDialog" v-if="incomingVideoCallDialog" style="padding: 15px;">
+                    <div class="row" v-if="incomingVideoCallDialog" style="padding: 15px;">
                         <div class="col"> 
                             <p style="text-align:center;">Incoming Video Call from <strong>{{ videoCallerDetails.name }}</strong></p>
                             <div class="btn-group" role="group" style="padding: 0px 25px 0px 25px">
