@@ -1,5 +1,6 @@
 <template>
     <v-layout>
+        
         <!-- Incoming Audio Call **START** -->
             <div style="margin: 15px;">
                 <v-card >
@@ -19,7 +20,7 @@
         <!-- Incoming Video Call **START** -->
             <div style="margin: 15px;">
                 <v-card>
-                    <div class="row" v-if="incomingVideoCallDialog" style="padding: 15px;">
+                    <div class="row" id="videoPersonalCallDialog" v-if="incomingVideoCallDialog" style="padding: 15px;">
                         <div class="col"> 
                             <p style="text-align:center;">Incoming Video Call from <strong>{{ videoCallerDetails.name }}</strong></p>
                             <div class="btn-group" role="group" style="padding: 0px 25px 0px 25px">
@@ -335,7 +336,7 @@
                     <!-- Toolbar **END** -->
 
                     <!-- All Members **START** -->
-                        <v-list v-if="userVlist" style="max-height: 550px" class="overflow-y-auto">
+                        <v-list v-if="userVlist" style="max-height: 450px" class="overflow-y-auto">
                             <v-list-item-group color="#26C6DA" v-model="model">
                                 <template v-for="(user, index) in allusers" >
                                         <v-list-item :key="index"> 
@@ -366,7 +367,7 @@
                     <!-- All Members **END** -->
 
                     <!-- Merchants **START** -->
-                        <v-list v-if="merchantVlist"  style="max-height: 550px" class="overflow-y-auto">
+                        <v-list v-if="merchantVlist"  style="max-height: 450px" class="overflow-y-auto">
                             <v-list-item-group color="#26C6DA" v-model="model">
                                 <template v-for="(user, index) in allmerchants" >
                                         <v-list-item :key="index"> 
@@ -391,7 +392,7 @@
                     <!-- Merchants **END** -->
 
                     <!-- Friend Request **START** -->
-                        <v-list v-if="friendRequestVlist"  style="max-height: 550px" class="overflow-y-auto">
+                        <v-list v-if="friendRequestVlist"  style="max-height: 450px" class="overflow-y-auto">
                             <v-list-item-group color="#26C6DA" v-model="model">
                                 <template v-for="(user, index) in allFriendRequest" >
                                         <v-list-item :key="index"> 
@@ -419,7 +420,7 @@
                     <!-- Friend Request **END** -->
 
                     <!-- Friend List **START** -->
-                        <v-list v-if="friendVlist"  style="max-height: 550px" class="overflow-y-auto">
+                        <v-list v-if="friendVlist"  style="max-height: 450px" class="overflow-y-auto">
                             <v-list-item-group color="#26C6DA" v-model="model">
                                 <template v-for="(user, index) in allFriendList">
                                         <v-list-item :key="index"> 
@@ -450,7 +451,7 @@
                     <!-- Friend List **END** -->
 
                     <!-- Group List **START** -->
-                        <v-list v-if="groupVlist"   style="max-height: 550px" class="overflow-y-auto">
+                        <v-list v-if="groupVlist"   style="max-height: 450px" class="overflow-y-auto">
                             <v-col v-if="!addGroupChecked">
                                     <v-icon>mdi-account-group</v-icon>
                                     <v-btn text v-on:click="checkGroup(addGroupChecked = !addGroupChecked)"> Add Group</v-btn>
@@ -521,6 +522,7 @@
                 </v-card> 
             </v-card>
         <!-- User List **END** -->
+
     </v-layout>
 </template>
 
@@ -1541,12 +1543,13 @@ export default {
                 });
 
                 this.videoCallParams.peer2.signal(this.videoCallParams.callerSignal);
-                document.getElementById("chat").style.display = "none";
+
+                // document.getElementById("chat").style.display = "none";
             },
 
             declineVideoCall(){
                 this.videoCallParams.receivingCall = false;
-                document.getElementById("chatCard").style.display = "block";
+                // document.getElementById("chatCard").style.display = "block";
             },
 
             endVideoCall(){
@@ -1554,20 +1557,17 @@ export default {
                 if(!this.videoMutedAudio) this.toggleVideoMuteAudio();
 
                 this.stopStreamedVideoCall(this.$refs.userVideo);
-                if (this.authuserid === this.videoCallParams.caller) {
+                if (this.authUserID === this.videoCallParams.caller) {
                     this.videoCallParams.peer1.destroy();
-                } else {
-                    this.videoCallParams.peer2.destroy();
-                }
+                } 
+
                 this.videoCallParams.channel.pusher.channels.channels[
-                    `presence-Demo.${this.$userId}`
+                    `presence-Demo.${this.authUserID}`
                 ].disconnect();
 
                 setTimeout(() => {
                     this.videoCallPlaced = false;
-                }, 3000);
-                
-                
+                }, 3000); 
             },
 
             toggleVideoCameraArea() {
@@ -1603,8 +1603,6 @@ export default {
                     track.stop();
                 });
                 videoElem.srcObject = null;
-                document.getElementById("video").style.display = "none";
-                document.getElementById("chat").style.display = "block";
             },
         /* --END-- Video Call */
 
@@ -1612,7 +1610,6 @@ export default {
             async placeAudioCall(id, name){ 
                 this.audioCallPlaced = true;
                 this.audioCallPartner = name;
-                // console.log(name);
 
                 await this.getAudioMediaPermission();
                 this.audioCallParams.peer1 = new Peer({
@@ -1667,7 +1664,7 @@ export default {
                         }
                     }
                 });
-                document.getElementById("chat").style.display = "none";
+                // document.getElementById("chat").style.display = "none";
             },
 
             async acceptAudioCall(name) {
@@ -1716,12 +1713,12 @@ export default {
                 });
 
                 this.audioCallParams.peer2.signal(this.audioCallParams.callerSignal);
-                document.getElementById("chat").style.display = "none";
+                // document.getElementById("chat").style.display = "none";
             },
 
             declineAudioCall(){
                 this.audioCallParams.receivingCall = false;
-                document.getElementById("chatCard").style.display = "block";
+                // document.getElementById("chatCard").style.display = "block";
             },
 
             endAudioCall(){
@@ -1775,8 +1772,8 @@ export default {
                     track.stop();
                 });
                 videoElem.srcObject = null;
-                document.getElementById("audio").style.display = "none";
-                document.getElementById("chat").style.display = "block";
+                // document.getElementById("audio").style.display = "none";
+                // document.getElementById("chat").style.display = "block";
             },
         /* --END-- Audio Call */
 
