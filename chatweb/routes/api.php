@@ -18,8 +18,8 @@ use App\Http\Controllers\AccessTokenController;
 |
 */
 Route::get('/users/{user_id}', [UserController::class, 'show']);
-Route::post('/chats', [ConversationController::class, 'fetchPersonal']);
-Route::post('/chatID', [ConversationController::class, 'fetchChatID']);
+// Route::post('/chats', [ConversationController::class, 'fetchPersonal']);
+// Route::post('/chatID', [ConversationController::class, 'fetchChatID']);
 Route::post('/send', [ConversationController::class, 'sendMessage']);
 
 // User Routes

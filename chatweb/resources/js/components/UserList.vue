@@ -974,7 +974,7 @@ export default {
                 this.userName = name,
                 this.toUserId = user_id
 
-                axios.post('http://127.0.0.1:8000/api/chatID', 
+                axios.post('chat-id', 
                 {
                     user_id: this.$userId, 
                     to_user_id: user_id
@@ -992,7 +992,7 @@ export default {
             },
 
             fetchMessages(){
-                axios.post('http://127.0.0.1:8000/api/chats', 
+                axios.post('chats-personal', 
                 {
                     chat_id: this.chatID
                 })

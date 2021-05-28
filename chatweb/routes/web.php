@@ -43,6 +43,8 @@ Route::get('/conversation', function () {
 // Message routes
 Route::post('/send', [ConversationController::class, 'sendMessage']);
 Route::get('/chats/{from_user_id}', [ConversationController::class, 'fetchPersonal']);
+Route::post('/chats-personal', [ConversationController::class, 'fetchPersonal']);
+Route::post('/chat-id', [ConversationController::class, 'fetchChatID']);
 Route::get('/messages', [ConversationController::class, 'fetchMessages']);
 Route::post('/messages', 'ChatsController@sendMessage');
 
