@@ -5,7 +5,15 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ConversationController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\GroupController;
+use App\Http\Controllers\VideoChatController;
+use App\Http\Controllers\AudioChatController;
+use App\Http\Controllers\FriendController;
+use App\Http\Controllers\GroupVideoChatController;
 use App\Http\Controllers\AccessTokenController;
+use App\Http\Controllers\VideoRoomsController;
+use App\Http\Controllers\AudioRoomController;
+use App\Http\Controllers\GroupRequestController;
+use App\Http\Controllers\GroupRequestAudioController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,14 +25,14 @@ use App\Http\Controllers\AccessTokenController;
 | is assigned the "api" middleware group. Enjoy building your API!
 |
 */
-Route::get('/users/{user_id}', [UserController::class, 'show']);
-Route::post('/chats', [ConversationController::class, 'fetchPersonal']);
-Route::post('/chatID', [ConversationController::class, 'fetchChatID']);
-Route::post('/send', [ConversationController::class, 'sendMessage']);
 
-// User Routes
+// User routes
+Route::get('/users', [UserController::class, 'index']);
 Route::get('/user-merchant', [UserController::class, 'merchantID']);
 Route::get('/user-member', [UserController::class, 'memberID']);
+Route::post('/user-single', [UserController::class, 'singleID']);
+Route::get('/users/{user_id}', [UserController::class, 'show']);
+Route::post('/users-name', [UserController::class, 'getName']);
 
 
 // Route::post('/create', [GroupController::class, 'store']);
